@@ -1,0 +1,40 @@
+# OpenClaw Agent - .gitignore
+
+# Environment variables (sensitive)
+.env
+.env.local
+.env.*.local
+
+# OpenClaw runtime data
+.openclaw/
+
+# Session data (large files)
+*.jsonl
+sessions/
+
+# Runtime logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node modules (if using node scripts)
+node_modules/
+
+# Backup files
+*.bak
+*.backup

@@ -1,0 +1,14 @@
+{
+  "name": "market-intelligence-hourly",
+  "schedule": {
+    "kind": "every",
+    "everyMs": 3600000
+  },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Run MarketIntelligence cycle now: node MarketIntelligence/scripts/run-cycle.js --write-memory memory/macro-insights.md. If high-impact items exist, send concise briefing to Tuan.",
+    "timeoutSeconds": 300
+  },
+  "sessionTarget": "isolated",
+  "enabled": true
+}

@@ -6,3 +6,31 @@
 - **Affected Pairs:** XAUUSD
 - **Analysis:** File initialized, waiting for live macro updates.
 - **Expiry:** N/A
+
+
+## 2026-03-01T07:52:40.923Z — Automated Briefing
+
+# Market Intelligence Briefing
+
+- Generated: 2026-03-01T07:52:40.921Z
+- Total Items: 120
+- High Impact: 18
+- Sources: forexfactory=ok, yahoo=ok, brave=disabled-or-missing-key
+
+## Top High-Impact
+- **ECB President Lagarde Speaks** (forexfactory) | Impact: HIGH | Bias: n/a
+- **Core CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Bias: n/a
+- **CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Bias: n/a
+- **Italian Prelim CPI m/m** (forexfactory) | Impact: HIGH | Bias: n/a
+- **FOMC Member Williams Speaks** (forexfactory) | Impact: HIGH | Bias: n/a
+
+## Watchlist
+- [HIGH] ECB President Lagarde Speaks (forexfactory)
+- [HIGH] Core CPI Flash Estimate y/y (forexfactory)
+- [HIGH] CPI Flash Estimate y/y (forexfactory)
+- [HIGH] Italian Prelim CPI m/m (forexfactory)
+- [HIGH] FOMC Member Williams Speaks (forexfactory)
+- [HIGH] Wards Total Vehicle Sales (forexfactory)
+- [HIGH] FOMC Member Kashkari Speaks (forexfactory)
+- [HIGH] CPI m/m (forexfactory)
+

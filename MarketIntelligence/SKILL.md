@@ -21,6 +21,7 @@ Run scripts from this skill to collect and summarize economic and macro headline
 ```bash
 node MarketIntelligence/scripts/fetch-intel.js
 node MarketIntelligence/scripts/analyze-intel.js
+node MarketIntelligence/scripts/run-cycle.js --write-memory ./memory/macro-insights.md
 ```
 
 Optional flags:
@@ -35,6 +36,7 @@ node MarketIntelligence/scripts/analyze-intel.js --write-memory ./memory/macro-i
 - `state/raw-intel.json` — normalized raw events/headlines
 - `state/latest-briefing.json` — structured scored output
 - `state/latest-briefing.md` — human-readable summary
+- `references/cron-template.json` — ready template for hourly scheduling
 
 ## Notes
 

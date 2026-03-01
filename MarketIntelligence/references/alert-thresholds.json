@@ -3,6 +3,7 @@
   "quietHours": { "start": 23, "end": 7 },
   "weekend": { "enabled": true },
   "braveMaxPerHour": 1,
+  "braveMaxPerDay": 32,
   "level2": {
     "minImpact": "HIGH",
     "minSourceConfirmations": 2,

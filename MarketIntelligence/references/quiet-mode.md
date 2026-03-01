@@ -44,6 +44,7 @@
 
 ## Brave Usage Control
 - Hard cap: **max 1 Brave request per hour**.
+- Hard cap daily: **max 32 Brave requests per day (WIB)**.
 - Use Brave only if:
   - free feeds fail, or
   - a high-impact item needs confirmation.

@@ -64,9 +64,17 @@ async function maybeBraveFallback(allowReason) {
   if (!forceBrave && allowReason !== 'needed') return { used: false, items: [], reason: 'not-needed-this-cycle' };
 
   const now = Date.now();
-  const state = await readJson(BRAVE_STATE, { lastRequestMs: 0 });
+  const dayKey = getWibDayKey(); // enforce daily cap in WIB.
+  const state = await readJson(BRAVE_STATE, { lastRequestMs: 0, dayKey, dayCount: 0, totalCount: 0 });
+
+  let dayCount = state.dayCount || 0;
+  if (state.dayKey !== dayKey) dayCount = 0;
+
   const oneHour = 60 * 60 * 1000;
+  const dailyCap = 32;
+
   if (!forceBrave && now - (state.lastRequestMs || 0) < oneHour) return { used: false, items: [], reason: 'hourly-cap-reached' };
+  if (!forceBrave && dayCount >= dailyCap) return { used: false, items: [], reason: 'daily-cap-reached-32' };
 
   const qs = new URLSearchParams({ q: braveQuery, count: '5', freshness: 'pw' });
   const url = `https://api.search.brave.com/res/v1/web/search?${qs.toString()}`;
@@ -79,14 +87,28 @@ async function maybeBraveFallback(allowReason) {
     title: r.title || 'Untitled result', url: r.url || null, summary: r.description || null, impact_raw: null,
     assets_affected: mapAssetsFromText(`${r.title || ''} ${r.description || ''}`.toLowerCase())
   }));
-  await fs.writeFile(BRAVE_STATE, JSON.stringify({ lastRequestMs: now, query: braveQuery }, null, 2));
-  return { used: true, items, reason: 'ok' };
+
+  const nextState = {
+    lastRequestMs: now,
+    query: braveQuery,
+    dayKey,
+    dayCount: dayCount + 1,
+    totalCount: (state.totalCount || 0) + 1
+  };
+  await fs.writeFile(BRAVE_STATE, JSON.stringify(nextState, null, 2));
+  return { used: true, items, reason: `ok(day=${nextState.dayCount}/32)` };
 }
 
 function inferUtcDate(date, time) {
   if (!date) return null;
   const parsed = new Date(`${date} ${time || '00:00am'} UTC`);
   return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
+}
+function getWibDayKey() {
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(now);
+  const byType = Object.fromEntries(parts.map((p) => [p.type, p.value]));
+  return `${byType.year}-${byType.month}-${byType.day}`;
 }
 function mapAssetsFromCurrency(currency = '') {
   const c = String(currency).toUpperCase(); const assets = [];

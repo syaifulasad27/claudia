@@ -9,8 +9,12 @@ const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..')
 const STATE_DIR = path.join(ROOT, 'state');
 const RAW_FILE = path.join(STATE_DIR, 'raw-intel.json');
 const BRAVE_STATE = path.join(STATE_DIR, 'brave-usage.json');
+const FF_CACHE_FILE = path.join(STATE_DIR, 'ff-last-success.json');
 
-const FF_URL = 'https://nfs.faireconomy.media/ff_calendar_thisweek.xml';
+const FF_URLS = [
+  'https://nfs.faireconomy.media/ff_calendar_thisweek.xml',
+  'https://cdn-nfs.faireconomy.media/ff_calendar_thisweek.xml'
+];
 const YAHOO_URL = 'https://feeds.finance.yahoo.com/rss/2.0/headline?s=GC=F,^IXIC&region=US&lang=en-US';
 const FXSTREET_URL = 'https://www.fxstreet.com/rss/news';
 const INVESTING_URL = 'https://www.investing.com/rss/news.rss';
@@ -26,13 +30,7 @@ const xmlParser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: 
 
 async function ensureStateDir() { await fs.mkdir(STATE_DIR, { recursive: true }); }
 
-async function fetchForexFactory() {
-  const res = await fetch(FF_URL, { headers: { 'User-Agent': 'MarketIntelligence/0.2' } });
-  if (!res.ok) throw new Error(`ForexFactory fetch failed: ${res.status}`);
-  const xml = await res.text();
-  const parsed = xmlParser.parse(xml);
-  const events = parsed?.weeklyevents?.event ?? [];
-  const list = Array.isArray(events) ? events : [events];
+function mapFFEvents(list) {
   return list.filter(Boolean).map((e) => ({
     id: `ff-${e.id ?? `${e.date}-${e.time}-${e.currency}-${e.title}`}`,
     timestamp_utc: inferUtcDate(e.date, e.time), source: 'forexfactory', type: 'economic',
@@ -40,6 +38,36 @@ async function fetchForexFactory() {
     impact_raw: e.impact ?? e.impact_title ?? null, actual: e.actual ?? null, forecast: e.forecast ?? null, previous: e.previous ?? null,
     assets_affected: mapAssetsFromCurrency(e.currency)
   }));
+}
+
+async function fetchForexFactory() {
+  let lastErr = null;
+  for (const ffUrl of FF_URLS) {
+    try {
+      const res = await fetch(ffUrl, { headers: { 'User-Agent': 'MarketIntelligence/0.3' } });
+      if (res.status === 429) {
+        lastErr = new Error(`ForexFactory rate-limited (429) at ${ffUrl}`);
+        continue;
+      }
+      if (!res.ok) {
+        lastErr = new Error(`ForexFactory fetch failed: ${res.status} at ${ffUrl}`);
+        continue;
+      }
+      const xml = await res.text();
+      const parsed = xmlParser.parse(xml);
+      const events = parsed?.weeklyevents?.event ?? [];
+      const list = Array.isArray(events) ? events : [events];
+      const mapped = mapFFEvents(list);
+      await fs.writeFile(FF_CACHE_FILE, JSON.stringify({ fetchedAt: new Date().toISOString(), count: mapped.length, items: mapped }, null, 2));
+      return { items: mapped, mode: 'live' };
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+
+  const cached = await readJson(FF_CACHE_FILE, null);
+  if (cached?.items?.length) return { items: cached.items, mode: 'cache' };
+  throw lastErr || new Error('ForexFactory unavailable and no cache fallback');
 }
 
 function mapRssItems(source, feed) {
@@ -64,21 +92,19 @@ async function maybeBraveFallback(allowReason) {
   if (!forceBrave && allowReason !== 'needed') return { used: false, items: [], reason: 'not-needed-this-cycle' };
 
   const now = Date.now();
-  const dayKey = getWibDayKey(); // enforce daily cap in WIB.
+  const dayKey = getWibDayKey();
   const state = await readJson(BRAVE_STATE, { lastRequestMs: 0, dayKey, dayCount: 0, totalCount: 0 });
-
   let dayCount = state.dayCount || 0;
   if (state.dayKey !== dayKey) dayCount = 0;
 
   const oneHour = 60 * 60 * 1000;
   const dailyCap = 32;
-
   if (!forceBrave && now - (state.lastRequestMs || 0) < oneHour) return { used: false, items: [], reason: 'hourly-cap-reached' };
   if (!forceBrave && dayCount >= dailyCap) return { used: false, items: [], reason: 'daily-cap-reached-32' };
 
   const qs = new URLSearchParams({ q: braveQuery, count: '5', freshness: 'pw' });
   const url = `https://api.search.brave.com/res/v1/web/search?${qs.toString()}`;
-  const res = await fetch(url, { headers: { Accept: 'application/json', 'X-Subscription-Token': key, 'User-Agent': 'MarketIntelligence/0.2' } });
+  const res = await fetch(url, { headers: { Accept: 'application/json', 'X-Subscription-Token': key, 'User-Agent': 'MarketIntelligence/0.3' } });
   if (!res.ok) return { used: false, items: [], reason: `brave-http-${res.status}` };
 
   const json = await res.json();
@@ -88,13 +114,7 @@ async function maybeBraveFallback(allowReason) {
     assets_affected: mapAssetsFromText(`${r.title || ''} ${r.description || ''}`.toLowerCase())
   }));
 
-  const nextState = {
-    lastRequestMs: now,
-    query: braveQuery,
-    dayKey,
-    dayCount: dayCount + 1,
-    totalCount: (state.totalCount || 0) + 1
-  };
+  const nextState = { lastRequestMs: now, query: braveQuery, dayKey, dayCount: dayCount + 1, totalCount: (state.totalCount || 0) + 1 };
   await fs.writeFile(BRAVE_STATE, JSON.stringify(nextState, null, 2));
   return { used: true, items, reason: `ok(day=${nextState.dayCount}/32)` };
 }
@@ -126,7 +146,8 @@ async function readJson(file, fallback) { try { return JSON.parse(await fs.readF
 
 async function main() {
   await ensureStateDir();
-  const ff = await Promise.allSettled([fetchForexFactory()]).then((r) => r[0]);
+
+  const ffRes = await Promise.allSettled([fetchForexFactory()]).then((r) => r[0]);
   const y = await Promise.allSettled([fetchYahoo()]).then((r) => r[0]);
 
   let fallbackSource = { status: 'skipped', items: [] };
@@ -140,19 +161,21 @@ async function main() {
     }
   }
 
-  const needBrave = ff.status !== 'fulfilled' || (y.status !== 'fulfilled' && fallbackSource.status !== 'fulfilled');
+  const needBrave = ffRes.status !== 'fulfilled' || (y.status !== 'fulfilled' && fallbackSource.status !== 'fulfilled');
   const brave = await maybeBraveFallback(needBrave ? 'needed' : 'not-needed');
+
+  const ffMode = ffRes.status === 'fulfilled' ? ffRes.value.mode : 'error';
 
   const payload = {
     generated_at: new Date().toISOString(),
     sources: {
-      forexfactory: ff.status === 'fulfilled' ? 'ok' : `error: ${ff.reason?.message || ff.reason}`,
+      forexfactory: ffRes.status === 'fulfilled' ? `ok:${ffMode}` : `error: ${ffRes.reason?.message || ffRes.reason}`,
       yahoo: y.status === 'fulfilled' ? 'ok' : `error: ${y.reason?.message || y.reason}`,
       fallback_rss: y.status === 'fulfilled' ? 'not-used' : (fallbackSource.status === 'fulfilled' ? `ok:${fallbackSource.name}` : `error:${fallbackSource.error || 'none'}`),
       brave: brave.reason
     },
     items: [
-      ...(ff.status === 'fulfilled' ? ff.value : []),
+      ...(ffRes.status === 'fulfilled' ? ffRes.value.items : []),
       ...(y.status === 'fulfilled' ? y.value : []),
       ...(y.status !== 'fulfilled' && fallbackSource.status === 'fulfilled' ? fallbackSource.items : []),
       ...brave.items

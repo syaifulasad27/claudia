@@ -1,0 +1,15 @@
+{
+  "name": "market-intelligence-daily-digest-wib",
+  "schedule": {
+    "kind": "cron",
+    "expr": "0 7 * * 1-5",
+    "tz": "Asia/Jakarta"
+  },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Run MarketIntelligence cycle and send one concise morning digest (WIB) with top 3 events, XAUUSD/NASDAQ bias, health marker, and confidence. Keep message short and actionable.",
+    "timeoutSeconds": 300
+  },
+  "sessionTarget": "isolated",
+  "enabled": true
+}

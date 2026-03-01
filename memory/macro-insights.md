@@ -98,3 +98,32 @@
 - Core CPI Flash Estimate y/y
 - Impact: HIGH, Confirmations: 1
 
+
+
+## 2026-03-01T08:25:15.989Z — Automated Briefing
+
+# Market Intelligence Briefing
+
+- Generated: 2026-03-01T08:25:15.986Z
+- Health: partial_degraded
+- Total Items: 109
+- High Impact: 17
+- Sources: forexfactory=ok, yahoo=ok, fallback_rss=not-used, brave=disabled-or-missing-key
+
+## Top High-Impact
+- **ECB President Lagarde Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Core CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Italian Prelim CPI m/m** (forexfactory) | Impact: HIGH | Confirm: 1
+- **FOMC Member Williams Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+- **FOMC Member Kashkari Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+
+## Watchlist
+- [HIGH] ECB President Lagarde Speaks (forexfactory)
+- [HIGH] Core CPI Flash Estimate y/y (forexfactory)
+- [HIGH] Italian Prelim CPI m/m (forexfactory)
+- [HIGH] FOMC Member Williams Speaks (forexfactory)
+- [HIGH] FOMC Member Kashkari Speaks (forexfactory)
+- [HIGH] FOMC Member Daly Speaks (forexfactory)
+- [HIGH] FOMC Member Paulson Speaks (forexfactory)
+- [HIGH] FOMC Member Hammack Speaks (forexfactory)
+

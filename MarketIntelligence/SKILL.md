@@ -39,6 +39,7 @@ node MarketIntelligence/scripts/analyze-intel.js --write-memory ./memory/macro-i
 - `references/cron-template.json` — ready template for hourly scheduling
 - `references/quiet-mode.md` — detailed weekend/quiet-hour notification policy
 - `references/alert-thresholds.json` — numeric threshold + Telegram alert template
+- `references/daily-digest-template.json` — weekday morning digest cron template (WIB)
 
 ## Notes
 

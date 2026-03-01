@@ -13,116 +13,65 @@ const THRESHOLDS_FILE = path.join(ROOT, 'references', 'alert-thresholds.json');
 const writeMemoryIdx = process.argv.indexOf('--write-memory');
 const writeMemoryPath = writeMemoryIdx > -1 ? process.argv[writeMemoryIdx + 1] : null;
 
+const rank = { LOW: 1, MEDIUM: 2, HIGH: 3 };
+
+const normalizeText = (s = '') => s.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+const tokenize = (s = '') => new Set(normalizeText(s).split(' ').filter((w) => w.length >= 3));
+function jaccard(a, b) { if (!a.size || !b.size) return 0; let i = 0; for (const w of a) if (b.has(w)) i++; const u = a.size + b.size - i; return u ? i / u : 0; }
+
 function classifyImpact(item) {
   const text = `${item.title || ''} ${item.summary || ''} ${item.impact_raw || ''}`.toLowerCase();
   if (/(nfp|cpi|fomc|rate decision|powell|ecb|boe|war|sanction|missile|default|bank run)/.test(text)) return 'HIGH';
   if (/(pmi|gdp|jobless|treasury|inflation|fed|geopolitical|opec)/.test(text)) return 'MEDIUM';
   return 'LOW';
 }
-
 function assetBias(item) {
   const text = `${item.title || ''} ${item.summary || ''}`.toLowerCase();
   const out = {};
-  if ((item.assets_affected || []).includes('XAUUSD')) {
-    if (/(risk off|war|geopolitical|recession|dovish|rate cut)/.test(text)) out.XAUUSD = 'bullish';
-    else if (/(strong dollar|hawkish|higher yields|rate hike)/.test(text)) out.XAUUSD = 'bearish';
-    else out.XAUUSD = 'neutral';
-  }
-  if ((item.assets_affected || []).includes('NASDAQ')) {
-    if (/(dovish|rate cut|ai boom|earnings beat|soft landing)/.test(text)) out.NASDAQ = 'bullish';
-    else if (/(hawkish|higher yields|regulation|earnings miss|risk off)/.test(text)) out.NASDAQ = 'bearish';
-    else out.NASDAQ = 'neutral';
-  }
+  if ((item.assets_affected || []).includes('XAUUSD')) out.XAUUSD = /(risk off|war|geopolitical|recession|dovish|rate cut)/.test(text) ? 'bullish' : (/(strong dollar|hawkish|higher yields|rate hike)/.test(text) ? 'bearish' : 'neutral');
+  if ((item.assets_affected || []).includes('NASDAQ')) out.NASDAQ = /(dovish|rate cut|ai boom|earnings beat|soft landing)/.test(text) ? 'bullish' : (/(hawkish|higher yields|regulation|earnings miss|risk off)/.test(text) ? 'bearish' : 'neutral');
   return out;
-}
-
-function normalizeText(s = '') {
-  return s
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-function tokenize(s = '') {
-  return new Set(normalizeText(s).split(' ').filter((w) => w.length >= 3));
-}
-
-function jaccard(aSet, bSet) {
-  if (!aSet.size || !bSet.size) return 0;
-  let inter = 0;
-  for (const w of aSet) if (bSet.has(w)) inter += 1;
-  const uni = aSet.size + bSet.size - inter;
-  return uni === 0 ? 0 : inter / uni;
-}
-
-function fuzzyKey(item) {
-  const txt = `${item.title || ''} ${item.summary || ''}`;
-  const tokens = [...tokenize(txt)].slice(0, 12).sort();
-  return tokens.join(' ');
 }
 
 function dedup(items, simThreshold = 0.62) {
   const out = [];
   for (const item of items) {
-    const candidateTokens = tokenize(`${item.title || ''} ${item.summary || ''}`);
-    let duplicate = false;
-    for (const kept of out) {
-      const keptTokens = tokenize(`${kept.title || ''} ${kept.summary || ''}`);
-      const sim = jaccard(candidateTokens, keptTokens);
-      if (sim >= simThreshold) {
-        duplicate = true;
-        break;
-      }
-    }
-    if (!duplicate) out.push(item);
+    const t1 = tokenize(`${item.title || ''} ${item.summary || ''}`);
+    if (out.some((k) => jaccard(t1, tokenize(`${k.title || ''} ${k.summary || ''}`)) >= simThreshold)) continue;
+    out.push(item);
   }
   return out;
 }
 
 function addConfirmations(items, simThreshold = 0.55) {
   const groups = [];
-
-  for (const it of items) {
-    const t = tokenize(`${it.title || ''} ${it.summary || ''}`);
-    let assigned = false;
-
+  for (const item of items) {
+    const tok = tokenize(`${item.title || ''} ${item.summary || ''}`);
+    let grouped = false;
     for (const g of groups) {
-      const sim = jaccard(t, g.repTokens);
-      const sameAssetFocus = overlapSize(new Set(it.assets_affected || []), g.assets) > 0;
-      if (sim >= simThreshold || (sim >= simThreshold - 0.1 && sameAssetFocus)) {
-        g.items.push(it);
-        g.sources.add(it.source || 'unknown');
-        for (const a of (it.assets_affected || [])) g.assets.add(a);
-        assigned = true;
-        break;
-      }
+      const sim = jaccard(tok, g.rep);
+      if (sim >= simThreshold) { g.items.push(item); g.sources.add(item.source || 'unknown'); grouped = true; break; }
     }
-
-    if (!assigned) {
-      groups.push({
-        repTokens: t,
-        items: [it],
-        sources: new Set([it.source || 'unknown']),
-        assets: new Set(it.assets_affected || [])
-      });
-    }
+    if (!grouped) groups.push({ rep: tok, items: [item], sources: new Set([item.source || 'unknown']) });
   }
-
-  const enriched = [];
-  for (const g of groups) {
-    const conf = g.sources.size;
-    for (const it of g.items) {
-      enriched.push({ ...it, confirmations: conf, fuzzy_cluster: fuzzyKey(it) });
-    }
-  }
-  return enriched;
+  return groups.flatMap((g) => g.items.map((it) => ({ ...it, confirmations: g.sources.size })));
 }
 
-function overlapSize(a, b) {
-  let n = 0;
-  for (const x of a) if (b.has(x)) n += 1;
-  return n;
+function computeHealthMarker(sources = {}) {
+  const entries = Object.entries(sources).filter(([k]) => k !== 'brave'); // Brave is optional/capped.
+  const vals = entries.map(([, v]) => String(v || ''));
+  const oks = vals.filter((v) => v.startsWith('ok') || v === 'not-used' || v === 'not-needed-this-cycle').length;
+  const total = vals.length || 1;
+  if (oks === total) return 'feeds_ok';
+  if (oks >= Math.ceil(total / 2)) return 'partial_degraded';
+  return 'degraded';
+}
+
+function confidenceLabel(item, health) {
+  if (!item) return 'LOW';
+  if ((item.confirmations || 1) >= 3 && health === 'feeds_ok') return 'HIGH';
+  if ((item.confirmations || 1) >= 2 && health !== 'degraded') return 'MEDIUM';
+  return 'LOW';
 }
 
 function isCriticalByKeyword(item, keywords) {
@@ -130,114 +79,55 @@ function isCriticalByKeyword(item, keywords) {
   return keywords.some((k) => text.includes(String(k).toLowerCase()));
 }
 
-function topLevel2(sorted, cfg) {
+function pickLevel2(sorted, cfg) {
   const minConfirm = cfg?.level2?.minSourceConfirmations ?? 2;
   const minImpact = cfg?.level2?.minImpact ?? 'HIGH';
   const criticalWords = cfg?.level2?.keywordsCritical ?? [];
-  const rank = { LOW: 1, MEDIUM: 2, HIGH: 3 };
   const minRank = rank[minImpact] ?? 3;
-
-  return sorted.find((x) => {
-    const impactOk = (rank[x.impact] || 0) >= minRank;
-    const confirmOk = (x.confirmations || 1) >= minConfirm;
-    const keywordCritical = isCriticalByKeyword(x, criticalWords);
-    return impactOk && (confirmOk || keywordCritical);
-  }) || null;
+  return sorted.find((x) => (rank[x.impact] || 0) >= minRank && ((x.confirmations || 1) >= minConfirm || isCriticalByKeyword(x, criticalWords))) || null;
 }
 
-function renderAlert(item, cfg) {
+function renderAlert(item, cfg, health) {
   if (!item) return '';
-  const template = cfg?.telegramTemplate?.format || [
-    '⚠️ MARKET ALERT [LEVEL 2]',
-    'Event: {title}',
-    'Impact: {impact} | Confirm: {confirmations} sources',
-    'Assets: {assets} | Bias: {bias}',
-    'Action: {action}'
-  ];
-
+  const tpl = cfg?.telegramTemplate?.format || ['⚠️ MARKET ALERT [LEVEL 2]', 'Event: {title}', 'Impact: {impact} | Confirm: {confirmations} sources', 'Assets: {assets} | Bias: {bias}', 'Action: {action}'];
   const bias = Object.entries(item.bias || {}).map(([k, v]) => `${k}:${v}`).join(', ') || 'n/a';
   const assets = (item.assets_affected || []).join(', ') || 'XAUUSD, NASDAQ';
   const action = item.impact === 'HIGH' ? 'caution + monitor closely' : 'monitor';
-
-  const rendered = template.map((line) => line
-    .replace('{title}', item.title || 'n/a')
-    .replace('{impact}', item.impact || 'n/a')
-    .replace('{confirmations}', String(item.confirmations || 1))
-    .replace('{assets}', assets)
-    .replace('{bias}', bias)
-    .replace('{action}', action)
-  );
-
-  const maxLines = cfg?.telegramTemplate?.maxLines ?? 5;
-  return rendered.slice(0, maxLines).join('\n');
+  const confidence = confidenceLabel(item, health);
+  const lines = tpl.map((line) => line.replace('{title}', item.title || 'n/a').replace('{impact}', item.impact || 'n/a').replace('{confirmations}', String(item.confirmations || 1)).replace('{assets}', assets).replace('{bias}', bias).replace('{action}', action));
+  lines.push(`Confidence: ${confidence} | Feed: ${health}`);
+  return lines.slice(0, (cfg?.telegramTemplate?.maxLines ?? 5) + 1).join('\n');
 }
 
 function toMarkdown(brief) {
-  const lines = [];
-  lines.push(`# Market Intelligence Briefing`);
-  lines.push(``);
-  lines.push(`- Generated: ${brief.generated_at}`);
-  lines.push(`- Total Items: ${brief.stats.total_items}`);
-  lines.push(`- High Impact: ${brief.stats.high_impact}`);
-  lines.push(`- Sources: ${Object.entries(brief.sources).map(([k, v]) => `${k}=${v}`).join(', ')}`);
-  lines.push(``);
-  lines.push(`## Top High-Impact`);
-  if (!brief.top_high.length) {
-    lines.push(`- No high-impact item detected.`);
-  } else {
-    for (const item of brief.top_high) {
-      const bias = Object.entries(item.bias || {}).map(([k, v]) => `${k}:${v}`).join(', ') || 'n/a';
-      lines.push(`- **${item.title}** (${item.source}) | Impact: ${item.impact} | Confirm: ${item.confirmations} | Bias: ${bias}`);
-    }
-  }
-  lines.push(``);
-  lines.push(`## Watchlist`);
-  for (const item of brief.watchlist.slice(0, 8)) {
-    lines.push(`- [${item.impact}] ${item.title} (${item.source})`);
-  }
-  lines.push(``);
-  if (brief.level2Candidate) {
-    lines.push(`## Level2 Candidate`);
-    lines.push(`- ${brief.level2Candidate.title}`);
-    lines.push(`- Impact: ${brief.level2Candidate.impact}, Confirmations: ${brief.level2Candidate.confirmations}`);
-    lines.push(``);
-  }
-  return lines.join('\n');
+  return [
+    '# Market Intelligence Briefing', '',
+    `- Generated: ${brief.generated_at}`,
+    `- Health: ${brief.health_marker}`,
+    `- Total Items: ${brief.stats.total_items}`,
+    `- High Impact: ${brief.stats.high_impact}`,
+    `- Sources: ${Object.entries(brief.sources).map(([k, v]) => `${k}=${v}`).join(', ')}`,
+    '', '## Top High-Impact',
+    ...(brief.top_high.length ? brief.top_high.map((i) => `- **${i.title}** (${i.source}) | Impact: ${i.impact} | Confirm: ${i.confirmations}`) : ['- No high-impact item detected.']),
+    '', '## Watchlist', ...brief.watchlist.slice(0, 8).map((i) => `- [${i.impact}] ${i.title} (${i.source})`), ''
+  ].join('\n');
 }
 
-async function readJson(file, fallback = {}) {
-  try {
-    return JSON.parse(await fs.readFile(file, 'utf8'));
-  } catch {
-    return fallback;
-  }
-}
+async function readJson(file, fallback = {}) { try { return JSON.parse(await fs.readFile(file, 'utf8')); } catch { return fallback; } }
 
 async function main() {
   const raw = await readJson(RAW_FILE, { items: [], sources: {} });
   const cfg = await readJson(THRESHOLDS_FILE, {});
 
-  const cleaned = dedup(raw.items || [], 0.62).map((item) => {
-    const impact = classifyImpact(item);
-    const bias = assetBias(item);
-    return { ...item, impact, bias };
-  });
-
-  const enriched = addConfirmations(cleaned, 0.55);
-
-  const sorted = enriched.sort((a, b) => {
-    const rank = { HIGH: 3, MEDIUM: 2, LOW: 1 };
-    if ((rank[b.impact] || 0) !== (rank[a.impact] || 0)) {
-      return (rank[b.impact] || 0) - (rank[a.impact] || 0);
-    }
-    return (b.confirmations || 1) - (a.confirmations || 1);
-  });
-
-  const level2 = topLevel2(sorted, cfg);
+  const enriched = addConfirmations(dedup(raw.items || []).map((x) => ({ ...x, impact: classifyImpact(x), bias: assetBias(x) })));
+  const sorted = enriched.sort((a, b) => ((rank[b.impact] || 0) - (rank[a.impact] || 0)) || ((b.confirmations || 1) - (a.confirmations || 1)));
+  const health = computeHealthMarker(raw.sources || {});
+  const level2 = pickLevel2(sorted, cfg);
 
   const brief = {
     generated_at: new Date().toISOString(),
     sources: raw.sources || {},
+    health_marker: health,
     stats: {
       total_items: sorted.length,
       high_impact: sorted.filter((x) => x.impact === 'HIGH').length,
@@ -247,24 +137,18 @@ async function main() {
     top_high: sorted.filter((x) => x.impact === 'HIGH').slice(0, 5),
     watchlist: sorted.slice(0, 20),
     level2Candidate: level2,
-    shouldAlertNow: Boolean(level2)
+    shouldAlertNow: Boolean(level2),
+    confidence: confidenceLabel(level2, health)
   };
 
   const md = toMarkdown(brief);
-  const alertText = renderAlert(level2, cfg);
-
+  const alert = renderAlert(level2, cfg, health);
   await fs.writeFile(BRIEF_JSON, JSON.stringify(brief, null, 2));
   await fs.writeFile(BRIEF_MD, md);
-  await fs.writeFile(ALERT_TXT, alertText || '');
+  await fs.writeFile(ALERT_TXT, alert || '');
+  if (writeMemoryPath) await fs.appendFile(writeMemoryPath, `\n\n## ${new Date().toISOString()} — Automated Briefing\n\n${md}\n`);
 
-  if (writeMemoryPath) {
-    await fs.appendFile(writeMemoryPath, `\n\n## ${new Date().toISOString()} — Automated Briefing\n\n${md}\n`);
-  }
-
-  console.log(JSON.stringify({ ok: true, json: BRIEF_JSON, markdown: BRIEF_MD, alert: ALERT_TXT, shouldAlertNow: brief.shouldAlertNow }, null, 2));
+  console.log(JSON.stringify({ ok: true, json: BRIEF_JSON, markdown: BRIEF_MD, alert: ALERT_TXT, shouldAlertNow: brief.shouldAlertNow, confidence: brief.confidence, health: brief.health_marker }, null, 2));
 }
 
-main().catch((err) => {
-  console.error(JSON.stringify({ ok: false, error: err.message }, null, 2));
-  process.exit(1);
-});
+main().catch((err) => { console.error(JSON.stringify({ ok: false, error: err.message }, null, 2)); process.exit(1); });

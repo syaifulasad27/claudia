@@ -35,6 +35,11 @@ Thumbs.db
 # Node modules (if using node scripts)
 node_modules/
 
+# MarketIntelligence runtime state/cache
+MarketIntelligence/state/*.json
+MarketIntelligence/state/*.md
+!MarketIntelligence/state/.gitkeep
+
 # Backup files
 *.bak
 *.backup

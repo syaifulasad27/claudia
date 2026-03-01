@@ -1,0 +1,42 @@
+---
+name: MarketIntelligence
+description: Collect macro market intelligence using low-cost sources first (ForexFactory calendar + Yahoo Finance RSS), score impact for XAUUSD and NASDAQ, and use Brave Search only as a capped fallback (max 1 request per hour). Use when user asks for economic calendar checks, macro/geopolitical news scans, or scheduled market briefing summaries.
+---
+
+# MarketIntelligence
+
+Run scripts from this skill to collect and summarize economic and macro headlines with strict source/cost controls.
+
+## Workflow
+
+1. Run `scripts/fetch-intel.js` to pull data from free sources and normalize output.
+2. Run `scripts/analyze-intel.js` to deduplicate, score impact, and create a concise briefing.
+3. Only use Brave fallback when:
+   - free sources fail, or
+   - high-impact event needs confirmation.
+4. Never exceed one Brave request per hour (`state/brave-usage.json`).
+
+## Commands
+
+```bash
+node MarketIntelligence/scripts/fetch-intel.js
+node MarketIntelligence/scripts/analyze-intel.js
+```
+
+Optional flags:
+
+```bash
+node MarketIntelligence/scripts/fetch-intel.js --use-brave --brave-query "fed rate outlook"
+node MarketIntelligence/scripts/analyze-intel.js --write-memory ./memory/macro-insights.md
+```
+
+## Outputs
+
+- `state/raw-intel.json` — normalized raw events/headlines
+- `state/latest-briefing.json` — structured scored output
+- `state/latest-briefing.md` — human-readable summary
+
+## Notes
+
+- Keep `state/*.json` out of git.
+- Keep long-term learnings in `memory/macro-insights.md`.

@@ -16,6 +16,7 @@ function run(cmd, args) {
 async function main() {
   await run('node', ['scripts/fetch-intel.js']);
   await run('node', ['scripts/analyze-intel.js', '--write-memory', writeMemoryPath]);
+  await run('node', ['scripts/escalation-check.js']);
   console.log(JSON.stringify({ ok: true, message: 'Market intelligence cycle completed', writeMemoryPath }, null, 2));
 }
 

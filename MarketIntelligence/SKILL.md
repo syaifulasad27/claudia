@@ -36,6 +36,7 @@ node MarketIntelligence/scripts/analyze-intel.js --write-memory ./memory/macro-i
 - `state/raw-intel.json` — normalized raw events/headlines
 - `state/latest-briefing.json` — structured scored output
 - `state/latest-briefing.md` — human-readable summary
+- `state/ops-alert.txt` — ops escalation alert when feed degraded repeatedly
 - `references/cron-template.json` — ready template for hourly scheduling
 - `references/quiet-mode.md` — detailed weekend/quiet-hour notification policy
 - `references/alert-thresholds.json` — numeric threshold + Telegram alert template

@@ -36,30 +36,93 @@ function assetBias(item) {
   return out;
 }
 
-function dedup(items) {
-  const seen = new Set();
+function normalizeText(s = '') {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function tokenize(s = '') {
+  return new Set(normalizeText(s).split(' ').filter((w) => w.length >= 3));
+}
+
+function jaccard(aSet, bSet) {
+  if (!aSet.size || !bSet.size) return 0;
+  let inter = 0;
+  for (const w of aSet) if (bSet.has(w)) inter += 1;
+  const uni = aSet.size + bSet.size - inter;
+  return uni === 0 ? 0 : inter / uni;
+}
+
+function fuzzyKey(item) {
+  const txt = `${item.title || ''} ${item.summary || ''}`;
+  const tokens = [...tokenize(txt)].slice(0, 12).sort();
+  return tokens.join(' ');
+}
+
+function dedup(items, simThreshold = 0.62) {
   const out = [];
   for (const item of items) {
-    const key = (item.title || '').trim().toLowerCase();
-    if (!key || seen.has(key)) continue;
-    seen.add(key);
-    out.push(item);
+    const candidateTokens = tokenize(`${item.title || ''} ${item.summary || ''}`);
+    let duplicate = false;
+    for (const kept of out) {
+      const keptTokens = tokenize(`${kept.title || ''} ${kept.summary || ''}`);
+      const sim = jaccard(candidateTokens, keptTokens);
+      if (sim >= simThreshold) {
+        duplicate = true;
+        break;
+      }
+    }
+    if (!duplicate) out.push(item);
   }
   return out;
 }
 
-function addConfirmations(items) {
-  const titleMap = new Map();
+function addConfirmations(items, simThreshold = 0.55) {
+  const groups = [];
+
   for (const it of items) {
-    const key = (it.title || '').trim().toLowerCase();
-    if (!titleMap.has(key)) titleMap.set(key, new Set());
-    titleMap.get(key).add(it.source || 'unknown');
+    const t = tokenize(`${it.title || ''} ${it.summary || ''}`);
+    let assigned = false;
+
+    for (const g of groups) {
+      const sim = jaccard(t, g.repTokens);
+      const sameAssetFocus = overlapSize(new Set(it.assets_affected || []), g.assets) > 0;
+      if (sim >= simThreshold || (sim >= simThreshold - 0.1 && sameAssetFocus)) {
+        g.items.push(it);
+        g.sources.add(it.source || 'unknown');
+        for (const a of (it.assets_affected || [])) g.assets.add(a);
+        assigned = true;
+        break;
+      }
+    }
+
+    if (!assigned) {
+      groups.push({
+        repTokens: t,
+        items: [it],
+        sources: new Set([it.source || 'unknown']),
+        assets: new Set(it.assets_affected || [])
+      });
+    }
   }
-  return items.map((it) => {
-    const key = (it.title || '').trim().toLowerCase();
-    const confirmations = titleMap.get(key)?.size || 1;
-    return { ...it, confirmations };
-  });
+
+  const enriched = [];
+  for (const g of groups) {
+    const conf = g.sources.size;
+    for (const it of g.items) {
+      enriched.push({ ...it, confirmations: conf, fuzzy_cluster: fuzzyKey(it) });
+    }
+  }
+  return enriched;
+}
+
+function overlapSize(a, b) {
+  let n = 0;
+  for (const x of a) if (b.has(x)) n += 1;
+  return n;
 }
 
 function isCriticalByKeyword(item, keywords) {
@@ -154,13 +217,15 @@ async function main() {
   const raw = await readJson(RAW_FILE, { items: [], sources: {} });
   const cfg = await readJson(THRESHOLDS_FILE, {});
 
-  const clean = addConfirmations(dedup(raw.items || []).map((item) => {
+  const cleaned = dedup(raw.items || [], 0.62).map((item) => {
     const impact = classifyImpact(item);
     const bias = assetBias(item);
     return { ...item, impact, bias };
-  }));
+  });
 
-  const sorted = clean.sort((a, b) => {
+  const enriched = addConfirmations(cleaned, 0.55);
+
+  const sorted = enriched.sort((a, b) => {
     const rank = { HIGH: 3, MEDIUM: 2, LOW: 1 };
     if ((rank[b.impact] || 0) !== (rank[a.impact] || 0)) {
       return (rank[b.impact] || 0) - (rank[a.impact] || 0);

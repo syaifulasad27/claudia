@@ -38,6 +38,7 @@ node MarketIntelligence/scripts/analyze-intel.js --write-memory ./memory/macro-i
 - `state/latest-briefing.md` — human-readable summary
 - `references/cron-template.json` — ready template for hourly scheduling
 - `references/quiet-mode.md` — detailed weekend/quiet-hour notification policy
+- `references/alert-thresholds.json` — numeric threshold + Telegram alert template
 
 ## Notes
 

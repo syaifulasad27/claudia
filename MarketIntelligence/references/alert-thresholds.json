@@ -1,0 +1,32 @@
+{
+  "timezone": "Asia/Jakarta",
+  "quietHours": { "start": 23, "end": 7 },
+  "weekend": { "enabled": true },
+  "braveMaxPerHour": 1,
+  "level2": {
+    "minImpact": "HIGH",
+    "minSourceConfirmations": 2,
+    "keywordsCritical": [
+      "fomc",
+      "rate decision",
+      "powell",
+      "cpi",
+      "nfp",
+      "war",
+      "sanction",
+      "missile",
+      "default",
+      "bank run"
+    ]
+  },
+  "telegramTemplate": {
+    "maxLines": 5,
+    "format": [
+      "⚠️ MARKET ALERT [LEVEL 2]",
+      "Event: {title}",
+      "Impact: {impact} | Confirm: {confirmations} sources",
+      "Assets: {assets} | Bias: {bias}",
+      "Action: {action}"
+    ]
+  }
+}

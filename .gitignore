@@ -38,6 +38,7 @@ node_modules/
 # MarketIntelligence runtime state/cache
 MarketIntelligence/state/*.json
 MarketIntelligence/state/*.md
+MarketIntelligence/state/*.txt
 !MarketIntelligence/state/.gitkeep
 
 # Backup files

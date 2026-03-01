@@ -1,197 +1,38 @@
 # Macro Insights Archive
 
-## 2026-03-01 — Initialization
-- **Source:** N/A
-- **Impact:** LOW
-- **Affected Pairs:** XAUUSD
-- **Analysis:** File initialized, waiting for live macro updates.
-- **Expiry:** N/A
-
-
-## 2026-03-01T07:52:40.923Z — Automated Briefing
+## 2026-03-01T11:57:28.450Z — Automated Briefing
 
 # Market Intelligence Briefing
 
-- Generated: 2026-03-01T07:52:40.921Z
-- Total Items: 120
-- High Impact: 18
-- Sources: forexfactory=ok, yahoo=ok, brave=disabled-or-missing-key
-
-## Top High-Impact
-- **ECB President Lagarde Speaks** (forexfactory) | Impact: HIGH | Bias: n/a
-- **Core CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Bias: n/a
-- **CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Bias: n/a
-- **Italian Prelim CPI m/m** (forexfactory) | Impact: HIGH | Bias: n/a
-- **FOMC Member Williams Speaks** (forexfactory) | Impact: HIGH | Bias: n/a
-
-## Watchlist
-- [HIGH] ECB President Lagarde Speaks (forexfactory)
-- [HIGH] Core CPI Flash Estimate y/y (forexfactory)
-- [HIGH] CPI Flash Estimate y/y (forexfactory)
-- [HIGH] Italian Prelim CPI m/m (forexfactory)
-- [HIGH] FOMC Member Williams Speaks (forexfactory)
-- [HIGH] Wards Total Vehicle Sales (forexfactory)
-- [HIGH] FOMC Member Kashkari Speaks (forexfactory)
-- [HIGH] CPI m/m (forexfactory)
-
-
-
-## 2026-03-01T08:01:43.114Z — Automated Briefing
-
-# Market Intelligence Briefing
-
-- Generated: 2026-03-01T08:01:43.111Z
-- Total Items: 120
-- High Impact: 18
-- Sources: forexfactory=ok, yahoo=ok, brave=disabled-or-missing-key
-
-## Top High-Impact
-- **ECB President Lagarde Speaks** (forexfactory) | Impact: HIGH | Confirm: 1 | Bias: n/a
-- **Core CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Confirm: 1 | Bias: n/a
-- **CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Confirm: 1 | Bias: n/a
-- **Italian Prelim CPI m/m** (forexfactory) | Impact: HIGH | Confirm: 1 | Bias: n/a
-- **FOMC Member Williams Speaks** (forexfactory) | Impact: HIGH | Confirm: 1 | Bias: n/a
-
-## Watchlist
-- [HIGH] ECB President Lagarde Speaks (forexfactory)
-- [HIGH] Core CPI Flash Estimate y/y (forexfactory)
-- [HIGH] CPI Flash Estimate y/y (forexfactory)
-- [HIGH] Italian Prelim CPI m/m (forexfactory)
-- [HIGH] FOMC Member Williams Speaks (forexfactory)
-- [HIGH] Wards Total Vehicle Sales (forexfactory)
-- [HIGH] FOMC Member Kashkari Speaks (forexfactory)
-- [HIGH] CPI m/m (forexfactory)
-
-## Level2 Candidate
-- Core CPI Flash Estimate y/y
-- Impact: HIGH, Confirmations: 1
-
-
-
-## 2026-03-01T08:05:07.797Z — Automated Briefing
-
-# Market Intelligence Briefing
-
-- Generated: 2026-03-01T08:05:07.794Z
-- Total Items: 109
-- High Impact: 17
-- Sources: forexfactory=ok, yahoo=ok, brave=disabled-or-missing-key
-
-## Top High-Impact
-- **ECB President Lagarde Speaks** (forexfactory) | Impact: HIGH | Confirm: 1 | Bias: n/a
-- **Core CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Confirm: 1 | Bias: n/a
-- **Italian Prelim CPI m/m** (forexfactory) | Impact: HIGH | Confirm: 1 | Bias: n/a
-- **FOMC Member Williams Speaks** (forexfactory) | Impact: HIGH | Confirm: 1 | Bias: n/a
-- **FOMC Member Kashkari Speaks** (forexfactory) | Impact: HIGH | Confirm: 1 | Bias: n/a
-
-## Watchlist
-- [HIGH] ECB President Lagarde Speaks (forexfactory)
-- [HIGH] Core CPI Flash Estimate y/y (forexfactory)
-- [HIGH] Italian Prelim CPI m/m (forexfactory)
-- [HIGH] FOMC Member Williams Speaks (forexfactory)
-- [HIGH] FOMC Member Kashkari Speaks (forexfactory)
-- [HIGH] FOMC Member Daly Speaks (forexfactory)
-- [HIGH] FOMC Member Paulson Speaks (forexfactory)
-- [HIGH] FOMC Member Hammack Speaks (forexfactory)
-
-## Level2 Candidate
-- Core CPI Flash Estimate y/y
-- Impact: HIGH, Confirmations: 1
-
-
-
-## 2026-03-01T08:25:15.989Z — Automated Briefing
-
-# Market Intelligence Briefing
-
-- Generated: 2026-03-01T08:25:15.986Z
+- Generated: 2026-03-01T11:57:28.450Z
 - Health: partial_degraded
-- Total Items: 109
-- High Impact: 17
-- Sources: forexfactory=ok, yahoo=ok, fallback_rss=not-used, brave=disabled-or-missing-key
+- Total Items: 20
+- High Impact: 5
+- Sources: forexfactory=error: ForexFactory fetch failed: 429, yahoo=ok, fallback_rss=not-used, brave=disabled-or-missing-key
 
 ## Top High-Impact
-- **ECB President Lagarde Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
-- **Core CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Confirm: 1
-- **Italian Prelim CPI m/m** (forexfactory) | Impact: HIGH | Confirm: 1
-- **FOMC Member Williams Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
-- **FOMC Member Kashkari Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Warren Buffett's Final $373 Billion Warning Sent Shockwaves Through Wall Street** (yahoo-finance-rss) | Impact: HIGH | Confirm: 1
+- **Crypto Market Hedges Iran War Risks With 24/7 Oil and Gold Trading** (yahoo-finance-rss) | Impact: HIGH | Confirm: 1
+- **Pinnacle Silver and Gold CEO discusses progress at El Potrero project - ICYMI** (yahoo-finance-rss) | Impact: HIGH | Confirm: 1
+- **Newmont Corporation (NEM): A Bull Case Theory** (yahoo-finance-rss) | Impact: HIGH | Confirm: 1
+- **Robert Kiyosaki says the 'biggest crash in history' is about to hit — warns millions could lose everything** (yahoo-finance-rss) | Impact: HIGH | Confirm: 1
 
 ## Watchlist
-- [HIGH] ECB President Lagarde Speaks (forexfactory)
-- [HIGH] Core CPI Flash Estimate y/y (forexfactory)
-- [HIGH] Italian Prelim CPI m/m (forexfactory)
-- [HIGH] FOMC Member Williams Speaks (forexfactory)
-- [HIGH] FOMC Member Kashkari Speaks (forexfactory)
-- [HIGH] FOMC Member Daly Speaks (forexfactory)
-- [HIGH] FOMC Member Paulson Speaks (forexfactory)
-- [HIGH] FOMC Member Hammack Speaks (forexfactory)
+- [HIGH] Warren Buffett's Final $373 Billion Warning Sent Shockwaves Through Wall Street (yahoo-finance-rss)
+- [HIGH] Crypto Market Hedges Iran War Risks With 24/7 Oil and Gold Trading (yahoo-finance-rss)
+- [HIGH] Pinnacle Silver and Gold CEO discusses progress at El Potrero project - ICYMI (yahoo-finance-rss)
+- [HIGH] Newmont Corporation (NEM): A Bull Case Theory (yahoo-finance-rss)
+- [HIGH] Robert Kiyosaki says the 'biggest crash in history' is about to hit — warns millions could lose everything (yahoo-finance-rss)
+- [MEDIUM] Bank of America revamps gold stock price target for 2026 (yahoo-finance-rss)
+- [LOW] Assessing Natural Resource Partners (NRP) Valuation As P/E Discount And DCF Gap Draw Attention (yahoo-finance-rss)
+- [LOW] Is the Trump Bull Market on Its Last Leg? 4 Historically Accurate Indicators Offer a Clear Answer. (yahoo-finance-rss)
 
 
-
-## 2026-03-01T08:28:44.976Z — Automated Briefing
+## 2026-03-01T12:21:24.781Z — Automated Briefing
 
 # Market Intelligence Briefing
 
-- Generated: 2026-03-01T08:28:44.973Z
-- Health: feeds_ok
-- Total Items: 109
-- High Impact: 17
-- Sources: forexfactory=ok, yahoo=ok, fallback_rss=not-used, brave=disabled-or-missing-key
-
-## Top High-Impact
-- **ECB President Lagarde Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
-- **Core CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Confirm: 1
-- **Italian Prelim CPI m/m** (forexfactory) | Impact: HIGH | Confirm: 1
-- **FOMC Member Williams Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
-- **FOMC Member Kashkari Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
-
-## Watchlist
-- [HIGH] ECB President Lagarde Speaks (forexfactory)
-- [HIGH] Core CPI Flash Estimate y/y (forexfactory)
-- [HIGH] Italian Prelim CPI m/m (forexfactory)
-- [HIGH] FOMC Member Williams Speaks (forexfactory)
-- [HIGH] FOMC Member Kashkari Speaks (forexfactory)
-- [HIGH] FOMC Member Daly Speaks (forexfactory)
-- [HIGH] FOMC Member Paulson Speaks (forexfactory)
-- [HIGH] FOMC Member Hammack Speaks (forexfactory)
-
-
-
-## 2026-03-01T08:44:42.633Z — Automated Briefing
-
-# Market Intelligence Briefing
-
-- Generated: 2026-03-01T08:44:42.630Z
-- Health: feeds_ok
-- Total Items: 109
-- High Impact: 17
-- Sources: forexfactory=ok, yahoo=ok, fallback_rss=not-used, brave=disabled-or-missing-key
-
-## Top High-Impact
-- **ECB President Lagarde Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
-- **Core CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Confirm: 1
-- **Italian Prelim CPI m/m** (forexfactory) | Impact: HIGH | Confirm: 1
-- **FOMC Member Williams Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
-- **FOMC Member Kashkari Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
-
-## Watchlist
-- [HIGH] ECB President Lagarde Speaks (forexfactory)
-- [HIGH] Core CPI Flash Estimate y/y (forexfactory)
-- [HIGH] Italian Prelim CPI m/m (forexfactory)
-- [HIGH] FOMC Member Williams Speaks (forexfactory)
-- [HIGH] FOMC Member Kashkari Speaks (forexfactory)
-- [HIGH] FOMC Member Daly Speaks (forexfactory)
-- [HIGH] FOMC Member Paulson Speaks (forexfactory)
-- [HIGH] FOMC Member Hammack Speaks (forexfactory)
-
-
-
-## 2026-03-01T08:56:26.986Z — Automated Briefing
-
-# Market Intelligence Briefing
-
-- Generated: 2026-03-01T08:56:26.984Z
+- Generated: 2026-03-01T12:21:24.778Z
 - Health: feeds_ok
 - Total Items: 109
 - High Impact: 17

@@ -41,6 +41,9 @@ MarketIntelligence/state/*.md
 MarketIntelligence/state/*.txt
 !MarketIntelligence/state/.gitkeep
 
+# Memory short-term state
+memory/active-session-bias.md
+
 # Backup files
 *.bak
 *.backup

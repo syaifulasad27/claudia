@@ -5,10 +5,12 @@ import process from 'node:process';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const RAW_FILE = path.join(ROOT, 'state', 'raw-intel.json');
+const BREAKING_FILE = path.join(ROOT, 'state', 'breaking-news.json');
 const BRIEF_JSON = path.join(ROOT, 'state', 'latest-briefing.json');
 const BRIEF_MD = path.join(ROOT, 'state', 'latest-briefing.md');
 const ALERT_TXT = path.join(ROOT, 'state', 'latest-alert.txt');
 const THRESHOLDS_FILE = path.join(ROOT, 'references', 'alert-thresholds.json');
+const SESSION_BIAS_MD = path.join(ROOT, '..', 'memory', 'active-session-bias.md');
 
 const writeMemoryIdx = process.argv.indexOf('--write-memory');
 const writeMemoryPath = writeMemoryIdx > -1 ? process.argv[writeMemoryIdx + 1] : null;
@@ -21,7 +23,7 @@ function jaccard(a, b) { if (!a.size || !b.size) return 0; let i = 0; for (const
 
 function classifyImpact(item) {
   const text = `${item.title || ''} ${item.summary || ''} ${item.impact_raw || ''}`.toLowerCase();
-  if (/(nfp|cpi|fomc|rate decision|powell|ecb|boe|war|sanction|missile|default|bank run)/.test(text)) return 'HIGH';
+  if (/(nfp|cpi|fomc|rate decision|powell|ecb|boe|war|sanction|missile|emergency|intervention|surprise|default|bank run)/.test(text)) return 'HIGH';
   if (/(pmi|gdp|jobless|treasury|inflation|fed|geopolitical|opec)/.test(text)) return 'MEDIUM';
   return 'LOW';
 }
@@ -87,6 +89,19 @@ function pickLevel2(sorted, cfg) {
   return sorted.find((x) => (rank[x.impact] || 0) >= minRank && ((x.confirmations || 1) >= minConfirm || isCriticalByKeyword(x, criticalWords))) || null;
 }
 
+function evaluateEmergencyOverride(items) {
+  const shockWords = ['emergency', 'missile', 'surprise', 'intervention', 'escalation', 'attack', 'strike', 'assassination'];
+  for (const item of items) {
+    if (item.type !== 'breaking_news') continue;
+    const text = `${item.title || ''} ${item.summary || ''}`.toLowerCase();
+    if (shockWords.some((w) => text.includes(w))) {
+       item.impact = 'HIGH'; // Force high impact
+       return item;
+    }
+  }
+  return null;
+}
+
 function renderAlert(item, cfg, health) {
   if (!item) return '';
   const tpl = cfg?.telegramTemplate?.format || ['⚠️ MARKET ALERT [LEVEL 2]', 'Event: {title}', 'Impact: {impact} | Confirm: {confirmations} sources', 'Assets: {assets} | Bias: {bias}', 'Action: {action}'];
@@ -117,12 +132,27 @@ async function readJson(file, fallback = {}) { try { return JSON.parse(await fs.
 
 async function main() {
   const raw = await readJson(RAW_FILE, { items: [], sources: {} });
+  const breaking = await readJson(BREAKING_FILE, { items: [], sources: {} });
   const cfg = await readJson(THRESHOLDS_FILE, {});
 
-  const enriched = addConfirmations(dedup(raw.items || []).map((x) => ({ ...x, impact: classifyImpact(x), bias: assetBias(x) })));
-  const sorted = enriched.sort((a, b) => ((rank[b.impact] || 0) - (rank[a.impact] || 0)) || ((b.confirmations || 1) - (a.confirmations || 1)));
+  const allItems = [...(raw.items || []), ...(breaking.items || [])];
+
+  const enriched = addConfirmations(dedup(allItems).map((x) => ({ ...x, impact: classifyImpact(x), bias: assetBias(x) })));
+  // Time-Decay weight: breaking news is prioritized
+  const sorted = enriched.sort((a, b) => {
+    const typeA = a.type === 'breaking_news' ? 1 : 0;
+    const typeB = b.type === 'breaking_news' ? 1 : 0;
+    if (typeA !== typeB) return typeB - typeA;
+    return ((rank[b.impact] || 0) - (rank[a.impact] || 0)) || ((b.confirmations || 1) - (a.confirmations || 1));
+  });
+
   const health = computeHealthMarker(raw.sources || {});
-  const level2 = pickLevel2(sorted, cfg);
+  let level2 = pickLevel2(sorted, cfg);
+  let emergency = evaluateEmergencyOverride(breaking.items || []);
+  
+  if (emergency) {
+     level2 = emergency; // Override with emergency breaking news
+  }
 
   const brief = {
     generated_at: new Date().toISOString(),
@@ -147,6 +177,18 @@ async function main() {
   await fs.writeFile(BRIEF_MD, md);
   await fs.writeFile(ALERT_TXT, alert || '');
   if (writeMemoryPath) await fs.appendFile(writeMemoryPath, `\n\n## ${new Date().toISOString()} — Automated Briefing\n\n${md}\n`);
+
+  // Active Session Bias output
+  const activeSessionLines = [
+    `# Active Session Bias (Generated: ${brief.generated_at})`,
+    `> **Emergency State:** ${emergency ? `ACTIVE - ${emergency.title}` : 'Clear'}`,
+    '',
+    '### Immediate Market Context (Top 3 items)',
+    ...sorted.slice(0, 3).map((i) => `- [${i.impact}] ${i.title} (Bias: ${Object.entries(i.bias || {}).map(([k,v])=>`${k}:${v}`).join(', ') || 'neutral'})`),
+    '',
+    `### Health Status: ${brief.health_marker}`
+  ];
+  await fs.writeFile(SESSION_BIAS_MD, activeSessionLines.join('\n'));
 
   console.log(JSON.stringify({ ok: true, json: BRIEF_JSON, markdown: BRIEF_MD, alert: ALERT_TXT, shouldAlertNow: brief.shouldAlertNow, confidence: brief.confidence, health: brief.health_marker }, null, 2));
 }

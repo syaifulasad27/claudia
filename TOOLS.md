@@ -314,3 +314,64 @@ Semua endpoint mengembalikan structured JSON. Jika menerima:
 - **EURUSD:** Pair paling liquid. Spread biasanya ketat.
 - **GBPUSD:** Volatile terutama saat London session dan BOE events.
 - **US100:** Index — perhatikan corporate earnings dan Fed announcements.
+
+---
+
+## QMD — Local Document Search
+
+**QMD (Quick Markdown Search)** tersedia untuk search knowledge base lokal.
+
+### CLI Location
+```
+/root/.bun/bin/qmd
+```
+
+### Collections Tersedia
+- `openclaw_docs` — Dokumentasi OpenClaw
+- `openclaw_workspace` — Workspace files (AGENTS.md, SOUL.md, dll)
+
+### Usage
+```bash
+# Search keyword (BM25)
+qmd search "trading strategy" -c openclaw_workspace
+
+# Semantic search (natural language)
+qmd query "cara setup telegram bot"
+
+# Search dengan multiple types
+qmd query $'lex: XAUUSD\nvec: gold trading strategy'
+
+# List files
+qmd ls openclaw_workspace
+
+# Get specific document
+qmd get qmd://openclaw_workspace/memory/macro-insights.md
+```
+
+### Kapan Digunakan
+- Cari referensi dari dokumentasi lokal
+- Search insight atau analysis yang pernah ditulis
+- Temukan setup trading yang pernah di-log
+
+### Query Types
+| Type | Gunakan Untuk |
+|------|---------------|
+| `lex` | Keyword exact — nama pair, teknikal term |
+| `vec` | Natural language — "bagaimana cara..." |
+| `hyde` | Hypothetical answer (advanced) |
+
+### Status
+```bash
+qmd status
+```
+
+### Reindex (Jika Ada Perubahan File)
+```bash
+# Quick reindex
+/root/.openclaw/workspace/qmd-refresh.sh
+
+# Atau manual:
+qmd collection remove openclaw_workspace
+qmd collection add /root/.openclaw/workspace --name openclaw_workspace
+qmd embed
+```

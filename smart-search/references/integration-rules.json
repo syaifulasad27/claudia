@@ -1,0 +1,14 @@
+{
+  "timezone": "Asia/Jakarta",
+  "triggerWindowsWIB": {
+    "startHour": 19,
+    "endHour": 23
+  },
+  "triggerWhen": {
+    "marketIntelligence": {
+      "shouldAlertNow": true,
+      "confidenceIn": ["LOW", "MEDIUM"]
+    }
+  },
+  "queryTemplate": "urgent confirmation for {event} impact on XAUUSD and NASDAQ today"
+}

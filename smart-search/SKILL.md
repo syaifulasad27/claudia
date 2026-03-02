@@ -31,4 +31,7 @@ node smart-search/scripts/smart-search.js --query "ecb statement market impact" 
 - `smart-search/state/usage.json` — quota counters
 - `smart-search/state/search-log.jsonl` — audit trail
 - `smart-search/state/latest-result.json` — latest merged search result
+- `smart-search/state/integration-result.json` — hook trigger result from MarketIntelligence
+- `smart-search/state/usage-report.json` — daily/monthly usage report
 - `smart-search/references/urgency-rules.json` — automatic urgency scoring rules
+- `smart-search/references/integration-rules.json` — phase-6 trigger rules

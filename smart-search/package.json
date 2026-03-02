@@ -4,6 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "search": "node scripts/smart-search.js"
+    "search": "node scripts/smart-search.js",
+    "hook": "node scripts/integration-hook.js",
+    "report": "node scripts/usage-report.js"
   }
 }

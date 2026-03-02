@@ -1,0 +1,21 @@
+{
+  "urgentKeywords": [
+    "breaking",
+    "urgent",
+    "war",
+    "strike",
+    "sanction",
+    "fomc",
+    "cpi",
+    "nfp",
+    "rate decision",
+    "flash crash",
+    "liquidity",
+    "default",
+    "missile",
+    "hormuz",
+    "emergency"
+  ],
+  "marketCriticalAssets": ["xauusd", "nasdaq", "us100", "eurusd", "gbpusd"],
+  "minUrgencyScore": 2
+}

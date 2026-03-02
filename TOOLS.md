@@ -229,6 +229,21 @@ POST {BRIDGE_BASE_URL}/close
 
 **Purpose:** Menutup posisi berdasarkan ticket number
 
+**Request Body:**
+```json
+{
+  "ticket": 12345678
+}
+```
+
+**Kapan digunakan:**
+- ✅ Take profit manual (jika analisis menunjukkan reversal sebelum TP)
+- ✅ Cut loss manual (jika kondisi berubah drastis)
+- ✅ Emergency close atas perintah Tuan
+- ✅ Close saat mencapai risk limit
+
+---
+
 ### 7. Modify Position SL/TP
 
 ```
@@ -245,18 +260,15 @@ PATCH {BRIDGE_BASE_URL}/order/{ticket}
 }
 ```
 
-**Request Body:**
-```json
-{
-  "ticket": 12345678
-}
-```
-
 **Kapan digunakan:**
-- ✅ Take profit manual (jika analisis menunjukkan reversal sebelum TP)
-- ✅ Cut loss manual (jika kondisi berubah drastis)
-- ✅ Emergency close atas perintah Tuan
-- ✅ Close saat mencapai risk limit
+- ✅ Update SL saat trailing stop diperlukan
+- ✅ Adjust TP berdasarkan perubahan kondisi market
+- ✅ Emergency risk management — menambahkan SL pada posisi yang belum memiliki SL
+
+**CRITICAL NOTES:**
+- ⚠️ **Fallback jika modify gagal:** Close posisi existing + buka posisi baru dengan SL/TP yang benar
+- ⚠️ **JANGAN biarkan posisi tanpa SL** — ini adalah uncontrolled risk
+- ⚠️ **Validasi comment field** sebelum modify — hanya posisi dengan prefix `Claudia-*` yang di-manage
 
 ---
 

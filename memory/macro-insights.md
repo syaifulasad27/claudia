@@ -293,3 +293,293 @@ File ini berisi briefing market intelligence otomatis dari Claudia.
 - [HIGH] ECB President Lagarde Speaks (forexfactory)
 - [HIGH] Core CPI Flash Estimate y/y (forexfactory)
 
+
+
+## 2026-03-02T13:57:57.626Z — Automated Briefing
+
+# Market Intelligence Briefing
+
+- Generated: 2026-03-02T13:57:57.623Z
+- Health: feeds_ok
+- Total Items: 124
+- High Impact: 19
+- Sources: forexfactory=ok:live, yahoo=ok, fallback_rss=not-used, brave=disabled-or-missing-key
+
+## Top High-Impact
+- **Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan** (yahoo-finance) | Impact: HIGH | Confirm: 1
+- **ECB President Lagarde Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Core CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Italian Prelim CPI m/m** (forexfactory) | Impact: HIGH | Confirm: 1
+- **FOMC Member Williams Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+
+## Watchlist
+- [HIGH] Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan (yahoo-finance)
+- [LOW] SLAM Reports Soil Samples up to 0.466 g/t Gold at Jake Lee (yahoo-finance)
+- [LOW] Sonoro Gold Releases Updated Mineral Resource Estimate, Preliminary Economic Assessment on Cerro Caliche Gold Project (yahoo-finance)
+- [LOW] Stocks Fall Pre-Bell, Oil Prices Jump Following US-Israel Strikes on Iran (yahoo-finance)
+- [LOW] Athena Receives Permits for Maiden Drill Program at Laird Lake Project in Ontario's Red Lake Gold Camp (yahoo-finance)
+- [LOW] Jaguar Mining Reports on Ongoing Exploration Drilling at the BA Zone of the Pilar Gold Mine, Brazil (yahoo-finance)
+- [LOW] Westhaven Appoints Senior Leaders in Indigenous, Community Relations and Permitting (yahoo-finance)
+- [LOW] Mayo Delineates Reduced Intrusion Related Gold System Target at Dawn Gulch (yahoo-finance)
+
+
+
+## 2026-03-02T14:57:55.605Z — Automated Briefing
+
+# Market Intelligence Briefing
+
+- Generated: 2026-03-02T14:57:55.603Z
+- Health: feeds_ok
+- Total Items: 124
+- High Impact: 19
+- Sources: forexfactory=ok:live, yahoo=ok, fallback_rss=not-used, brave=disabled-or-missing-key
+
+## Top High-Impact
+- **Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan** (yahoo-finance) | Impact: HIGH | Confirm: 1
+- **ECB President Lagarde Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Core CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Italian Prelim CPI m/m** (forexfactory) | Impact: HIGH | Confirm: 1
+- **FOMC Member Williams Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+
+## Watchlist
+- [HIGH] Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan (yahoo-finance)
+- [LOW] SLAM Reports Soil Samples up to 0.466 g/t Gold at Jake Lee (yahoo-finance)
+- [LOW] Sonoro Gold Releases Updated Mineral Resource Estimate, Preliminary Economic Assessment on Cerro Caliche Gold Project (yahoo-finance)
+- [LOW] Stocks Fall Pre-Bell, Oil Prices Jump Following US-Israel Strikes on Iran (yahoo-finance)
+- [LOW] Athena Receives Permits for Maiden Drill Program at Laird Lake Project in Ontario's Red Lake Gold Camp (yahoo-finance)
+- [LOW] Jaguar Mining Reports on Ongoing Exploration Drilling at the BA Zone of the Pilar Gold Mine, Brazil (yahoo-finance)
+- [LOW] Westhaven Appoints Senior Leaders in Indigenous, Community Relations and Permitting (yahoo-finance)
+- [LOW] Mayo Delineates Reduced Intrusion Related Gold System Target at Dawn Gulch (yahoo-finance)
+
+
+
+## 2026-03-02T15:57:56.544Z — Automated Briefing
+
+# Market Intelligence Briefing
+
+- Generated: 2026-03-02T15:57:56.541Z
+- Health: feeds_ok
+- Total Items: 125
+- High Impact: 21
+- Sources: forexfactory=ok:live, yahoo=ok, fallback_rss=not-used, brave=disabled-or-missing-key
+
+## Top High-Impact
+- **Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan** (yahoo-finance) | Impact: HIGH | Confirm: 1
+- **ECB President Lagarde Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Core CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Italian Prelim CPI m/m** (forexfactory) | Impact: HIGH | Confirm: 1
+- **FOMC Member Williams Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+
+## Watchlist
+- [HIGH] Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan (yahoo-finance)
+- [LOW] SLAM Reports Soil Samples up to 0.466 g/t Gold at Jake Lee (yahoo-finance)
+- [LOW] Sonoro Gold Releases Updated Mineral Resource Estimate, Preliminary Economic Assessment on Cerro Caliche Gold Project (yahoo-finance)
+- [LOW] Stocks Fall Pre-Bell, Oil Prices Jump Following US-Israel Strikes on Iran (yahoo-finance)
+- [LOW] Athena Receives Permits for Maiden Drill Program at Laird Lake Project in Ontario's Red Lake Gold Camp (yahoo-finance)
+- [LOW] Jaguar Mining Reports on Ongoing Exploration Drilling at the BA Zone of the Pilar Gold Mine, Brazil (yahoo-finance)
+- [LOW] Westhaven Appoints Senior Leaders in Indigenous, Community Relations and Permitting (yahoo-finance)
+- [LOW] Mayo Delineates Reduced Intrusion Related Gold System Target at Dawn Gulch (yahoo-finance)
+
+
+
+## 2026-03-02T16:57:59.639Z — Automated Briefing
+
+# Market Intelligence Briefing
+
+- Generated: 2026-03-02T16:57:59.636Z
+- Health: feeds_ok
+- Total Items: 125
+- High Impact: 17
+- Sources: forexfactory=ok:live, yahoo=ok, fallback_rss=not-used, brave=disabled-or-missing-key
+
+## Top High-Impact
+- **Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan** (yahoo-finance) | Impact: HIGH | Confirm: 1
+- **ECB President Lagarde Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Core CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Italian Prelim CPI m/m** (forexfactory) | Impact: HIGH | Confirm: 1
+- **FOMC Member Williams Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+
+## Watchlist
+- [HIGH] Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan (yahoo-finance)
+- [LOW] SLAM Reports Soil Samples up to 0.466 g/t Gold at Jake Lee (yahoo-finance)
+- [LOW] Sonoro Gold Releases Updated Mineral Resource Estimate, Preliminary Economic Assessment on Cerro Caliche Gold Project (yahoo-finance)
+- [LOW] Stocks Fall Pre-Bell, Oil Prices Jump Following US-Israel Strikes on Iran (yahoo-finance)
+- [LOW] Athena Receives Permits for Maiden Drill Program at Laird Lake Project in Ontario's Red Lake Gold Camp (yahoo-finance)
+- [LOW] Jaguar Mining Reports on Ongoing Exploration Drilling at the BA Zone of the Pilar Gold Mine, Brazil (yahoo-finance)
+- [LOW] Westhaven Appoints Senior Leaders in Indigenous, Community Relations and Permitting (yahoo-finance)
+- [LOW] Mayo Delineates Reduced Intrusion Related Gold System Target at Dawn Gulch (yahoo-finance)
+
+
+
+## 2026-03-02T17:57:57.937Z — Automated Briefing
+
+# Market Intelligence Briefing
+
+- Generated: 2026-03-02T17:57:57.934Z
+- Health: feeds_ok
+- Total Items: 125
+- High Impact: 20
+- Sources: forexfactory=ok:live, yahoo=ok, fallback_rss=not-used, brave=disabled-or-missing-key
+
+## Top High-Impact
+- **Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan** (yahoo-finance) | Impact: HIGH | Confirm: 1
+- **ECB President Lagarde Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Core CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Italian Prelim CPI m/m** (forexfactory) | Impact: HIGH | Confirm: 1
+- **FOMC Member Williams Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+
+## Watchlist
+- [HIGH] Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan (yahoo-finance)
+- [LOW] SLAM Reports Soil Samples up to 0.466 g/t Gold at Jake Lee (yahoo-finance)
+- [LOW] Sonoro Gold Releases Updated Mineral Resource Estimate, Preliminary Economic Assessment on Cerro Caliche Gold Project (yahoo-finance)
+- [LOW] Stocks Fall Pre-Bell, Oil Prices Jump Following US-Israel Strikes on Iran (yahoo-finance)
+- [LOW] Athena Receives Permits for Maiden Drill Program at Laird Lake Project in Ontario's Red Lake Gold Camp (yahoo-finance)
+- [LOW] Jaguar Mining Reports on Ongoing Exploration Drilling at the BA Zone of the Pilar Gold Mine, Brazil (yahoo-finance)
+- [LOW] Westhaven Appoints Senior Leaders in Indigenous, Community Relations and Permitting (yahoo-finance)
+- [LOW] Mayo Delineates Reduced Intrusion Related Gold System Target at Dawn Gulch (yahoo-finance)
+
+
+
+## 2026-03-02T18:57:58.815Z — Automated Briefing
+
+# Market Intelligence Briefing
+
+- Generated: 2026-03-02T18:57:58.812Z
+- Health: feeds_ok
+- Total Items: 125
+- High Impact: 20
+- Sources: forexfactory=ok:live, yahoo=ok, fallback_rss=not-used, brave=disabled-or-missing-key
+
+## Top High-Impact
+- **Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan** (yahoo-finance) | Impact: HIGH | Confirm: 1
+- **ECB President Lagarde Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Core CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Italian Prelim CPI m/m** (forexfactory) | Impact: HIGH | Confirm: 1
+- **FOMC Member Williams Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+
+## Watchlist
+- [HIGH] Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan (yahoo-finance)
+- [LOW] SLAM Reports Soil Samples up to 0.466 g/t Gold at Jake Lee (yahoo-finance)
+- [LOW] Sonoro Gold Releases Updated Mineral Resource Estimate, Preliminary Economic Assessment on Cerro Caliche Gold Project (yahoo-finance)
+- [LOW] Stocks Fall Pre-Bell, Oil Prices Jump Following US-Israel Strikes on Iran (yahoo-finance)
+- [LOW] Athena Receives Permits for Maiden Drill Program at Laird Lake Project in Ontario's Red Lake Gold Camp (yahoo-finance)
+- [LOW] Jaguar Mining Reports on Ongoing Exploration Drilling at the BA Zone of the Pilar Gold Mine, Brazil (yahoo-finance)
+- [LOW] Westhaven Appoints Senior Leaders in Indigenous, Community Relations and Permitting (yahoo-finance)
+- [LOW] Mayo Delineates Reduced Intrusion Related Gold System Target at Dawn Gulch (yahoo-finance)
+
+
+
+## 2026-03-02T19:57:55.054Z — Automated Briefing
+
+# Market Intelligence Briefing
+
+- Generated: 2026-03-02T19:57:55.051Z
+- Health: feeds_ok
+- Total Items: 125
+- High Impact: 18
+- Sources: forexfactory=ok:live, yahoo=ok, fallback_rss=not-used, brave=disabled-or-missing-key
+
+## Top High-Impact
+- **Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan** (yahoo-finance) | Impact: HIGH | Confirm: 1
+- **ECB President Lagarde Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Core CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Italian Prelim CPI m/m** (forexfactory) | Impact: HIGH | Confirm: 1
+- **FOMC Member Williams Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+
+## Watchlist
+- [HIGH] Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan (yahoo-finance)
+- [LOW] SLAM Reports Soil Samples up to 0.466 g/t Gold at Jake Lee (yahoo-finance)
+- [LOW] Sonoro Gold Releases Updated Mineral Resource Estimate, Preliminary Economic Assessment on Cerro Caliche Gold Project (yahoo-finance)
+- [LOW] Stocks Fall Pre-Bell, Oil Prices Jump Following US-Israel Strikes on Iran (yahoo-finance)
+- [LOW] Athena Receives Permits for Maiden Drill Program at Laird Lake Project in Ontario's Red Lake Gold Camp (yahoo-finance)
+- [LOW] Jaguar Mining Reports on Ongoing Exploration Drilling at the BA Zone of the Pilar Gold Mine, Brazil (yahoo-finance)
+- [LOW] Westhaven Appoints Senior Leaders in Indigenous, Community Relations and Permitting (yahoo-finance)
+- [LOW] Mayo Delineates Reduced Intrusion Related Gold System Target at Dawn Gulch (yahoo-finance)
+
+
+
+## 2026-03-02T20:57:56.850Z — Automated Briefing
+
+# Market Intelligence Briefing
+
+- Generated: 2026-03-02T20:57:56.847Z
+- Health: feeds_ok
+- Total Items: 125
+- High Impact: 17
+- Sources: forexfactory=ok:live, yahoo=ok, fallback_rss=not-used, brave=disabled-or-missing-key
+
+## Top High-Impact
+- **Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan** (yahoo-finance) | Impact: HIGH | Confirm: 1
+- **ECB President Lagarde Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Core CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Italian Prelim CPI m/m** (forexfactory) | Impact: HIGH | Confirm: 1
+- **FOMC Member Williams Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+
+## Watchlist
+- [HIGH] Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan (yahoo-finance)
+- [LOW] SLAM Reports Soil Samples up to 0.466 g/t Gold at Jake Lee (yahoo-finance)
+- [LOW] Sonoro Gold Releases Updated Mineral Resource Estimate, Preliminary Economic Assessment on Cerro Caliche Gold Project (yahoo-finance)
+- [LOW] Stocks Fall Pre-Bell, Oil Prices Jump Following US-Israel Strikes on Iran (yahoo-finance)
+- [LOW] Athena Receives Permits for Maiden Drill Program at Laird Lake Project in Ontario's Red Lake Gold Camp (yahoo-finance)
+- [LOW] Jaguar Mining Reports on Ongoing Exploration Drilling at the BA Zone of the Pilar Gold Mine, Brazil (yahoo-finance)
+- [LOW] Westhaven Appoints Senior Leaders in Indigenous, Community Relations and Permitting (yahoo-finance)
+- [LOW] Mayo Delineates Reduced Intrusion Related Gold System Target at Dawn Gulch (yahoo-finance)
+
+
+
+## 2026-03-02T21:57:58.927Z — Automated Briefing
+
+# Market Intelligence Briefing
+
+- Generated: 2026-03-02T21:57:58.924Z
+- Health: feeds_ok
+- Total Items: 125
+- High Impact: 16
+- Sources: forexfactory=ok:live, yahoo=ok, fallback_rss=not-used, brave=disabled-or-missing-key
+
+## Top High-Impact
+- **Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan** (yahoo-finance) | Impact: HIGH | Confirm: 1
+- **ECB President Lagarde Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Core CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Italian Prelim CPI m/m** (forexfactory) | Impact: HIGH | Confirm: 1
+- **FOMC Member Williams Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+
+## Watchlist
+- [HIGH] Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan (yahoo-finance)
+- [LOW] SLAM Reports Soil Samples up to 0.466 g/t Gold at Jake Lee (yahoo-finance)
+- [LOW] Sonoro Gold Releases Updated Mineral Resource Estimate, Preliminary Economic Assessment on Cerro Caliche Gold Project (yahoo-finance)
+- [LOW] Stocks Fall Pre-Bell, Oil Prices Jump Following US-Israel Strikes on Iran (yahoo-finance)
+- [LOW] Athena Receives Permits for Maiden Drill Program at Laird Lake Project in Ontario's Red Lake Gold Camp (yahoo-finance)
+- [LOW] Jaguar Mining Reports on Ongoing Exploration Drilling at the BA Zone of the Pilar Gold Mine, Brazil (yahoo-finance)
+- [LOW] Westhaven Appoints Senior Leaders in Indigenous, Community Relations and Permitting (yahoo-finance)
+- [LOW] Mayo Delineates Reduced Intrusion Related Gold System Target at Dawn Gulch (yahoo-finance)
+
+
+
+## 2026-03-02T22:57:56.368Z — Automated Briefing
+
+# Market Intelligence Briefing
+
+- Generated: 2026-03-02T22:57:56.365Z
+- Health: feeds_ok
+- Total Items: 125
+- High Impact: 20
+- Sources: forexfactory=ok:live, yahoo=ok, fallback_rss=not-used, brave=disabled-or-missing-key
+
+## Top High-Impact
+- **Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan** (yahoo-finance) | Impact: HIGH | Confirm: 1
+- **ECB President Lagarde Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Core CPI Flash Estimate y/y** (forexfactory) | Impact: HIGH | Confirm: 1
+- **Italian Prelim CPI m/m** (forexfactory) | Impact: HIGH | Confirm: 1
+- **FOMC Member Williams Speaks** (forexfactory) | Impact: HIGH | Confirm: 1
+
+## Watchlist
+- [HIGH] Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan (yahoo-finance)
+- [LOW] SLAM Reports Soil Samples up to 0.466 g/t Gold at Jake Lee (yahoo-finance)
+- [LOW] Sonoro Gold Releases Updated Mineral Resource Estimate, Preliminary Economic Assessment on Cerro Caliche Gold Project (yahoo-finance)
+- [LOW] Stocks Fall Pre-Bell, Oil Prices Jump Following US-Israel Strikes on Iran (yahoo-finance)
+- [LOW] Athena Receives Permits for Maiden Drill Program at Laird Lake Project in Ontario's Red Lake Gold Camp (yahoo-finance)
+- [LOW] Jaguar Mining Reports on Ongoing Exploration Drilling at the BA Zone of the Pilar Gold Mine, Brazil (yahoo-finance)
+- [LOW] Westhaven Appoints Senior Leaders in Indigenous, Community Relations and Permitting (yahoo-finance)
+- [LOW] Mayo Delineates Reduced Intrusion Related Gold System Target at Dawn Gulch (yahoo-finance)
+

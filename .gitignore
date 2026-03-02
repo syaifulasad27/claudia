@@ -44,6 +44,11 @@ MarketIntelligence/state/*.txt
 # Accidental relative output path guard
 MarketIntelligence/memory/
 
+# smart-search runtime state/cache
+smart-search/state/*.json
+smart-search/state/*.jsonl
+!smart-search/state/.gitkeep
+
 # Memory short-term state
 memory/active-session-bias.md
 

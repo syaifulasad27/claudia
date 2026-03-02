@@ -1,0 +1,31 @@
+{
+  "timezone": "Asia/Jakarta",
+  "dailyCaps": {
+    "brave": 25,
+    "tavily": 25,
+    "total": 50
+  },
+  "monthlyCaps": {
+    "brave": 1000,
+    "tavily": 1000
+  },
+  "usageRules": {
+    "requireUrgent": true,
+    "allowWhen": [
+      "breaking_geopolitical",
+      "central_bank_surprise",
+      "pre_trade_confirmation",
+      "source_conflict_resolution"
+    ],
+    "blockWhen": [
+      "general_education",
+      "routine_recap",
+      "non_actionable_history"
+    ]
+  },
+  "providerOrder": ["brave", "tavily"],
+  "thresholdWarnings": {
+    "warnAt": 0.7,
+    "criticalAt": 0.9
+  }
+}

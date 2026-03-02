@@ -229,6 +229,22 @@ POST {BRIDGE_BASE_URL}/close
 
 **Purpose:** Menutup posisi berdasarkan ticket number
 
+### 7. Modify Position SL/TP
+
+```
+PATCH {BRIDGE_BASE_URL}/order/{ticket}
+```
+
+**Purpose:** Update Stop Loss / Take Profit untuk posisi yang sudah terbuka
+
+**Request Body:**
+```json
+{
+  "sl": 5290.00,
+  "tp": 5400.00
+}
+```
+
 **Request Body:**
 ```json
 {

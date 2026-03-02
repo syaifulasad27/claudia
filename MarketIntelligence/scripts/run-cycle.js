@@ -3,8 +3,17 @@ import { spawn } from 'node:child_process';
 import path from 'node:path';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const WORKSPACE_ROOT = path.resolve(ROOT, '..');
 const writeMemoryIdx = process.argv.indexOf('--write-memory');
-const writeMemoryPath = writeMemoryIdx > -1 ? process.argv[writeMemoryIdx + 1] : path.resolve(ROOT, '..', 'memory', 'macro-insights.md');
+
+function resolveMemoryPath(inputPath) {
+  if (!inputPath) return path.resolve(WORKSPACE_ROOT, 'memory', 'macro-insights.md');
+  if (path.isAbsolute(inputPath)) return inputPath;
+  // Normalize relative paths to workspace root (not MarketIntelligence cwd).
+  return path.resolve(WORKSPACE_ROOT, inputPath);
+}
+
+const writeMemoryPath = resolveMemoryPath(writeMemoryIdx > -1 ? process.argv[writeMemoryIdx + 1] : null);
 
 function run(cmd, args) {
   return new Promise((resolve, reject) => {

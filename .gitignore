@@ -41,6 +41,9 @@ MarketIntelligence/state/*.md
 MarketIntelligence/state/*.txt
 !MarketIntelligence/state/.gitkeep
 
+# Accidental relative output path guard
+MarketIntelligence/memory/
+
 # Memory short-term state
 memory/active-session-bias.md
 

@@ -2,14 +2,16 @@
 /**
  * repliz-client.js — Repliz API Wrapper for Threads Social Media Management
  * 
- * API Base: https://api.repliz.com/public
- * Authentication: Access Key + Secret Key
+ * Target API: https://clawhub.ai/staryone/repliz
+ * Base URL: https://api.repliz.com
+ * Authentication: Basic Auth (REPLIZ_ACCESS_KEY:REPLIZ_SECRET_KEY)
  */
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
+import crypto from 'node:crypto'; // For generating dummy IDs if needed locally
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -20,223 +22,279 @@ dotenv.config({ path: envPath });
 
 class ReplizClient {
   constructor() {
-    this.baseUrl = process.env.REPLIZ_API_BASE_URL || 'https://api.repliz.com/public';
+    // Determine Base URL. The env var might include /public so we handle it cleanly
+    const envBase = process.env.REPLIZ_API_BASE_URL || 'https://api.repliz.com/public';
+    this.baseUrl = envBase.endsWith('/public') ? envBase.replace('/public', '') : envBase;
+    
     this.accessKey = process.env.REPLIZ_ACCESS_KEY;
     this.secretKey = process.env.REPLIZ_SECRET_KEY;
     this.username = process.env.THREADS_USERNAME || 'notesbyclaudia';
     this.stateDir = path.join(__dirname, '..', 'state');
     
-    // API Endpoints (to be confirmed)
-    this.endpoints = {
-      auth: '/api/v1/auth',
-      posts: '/api/v1/posts',
-      comments: '/api/v1/comments',
-      account: '/api/v1/account',
-      analytics: '/api/v1/analytics',
-    };
+    // We need to fetch and store the actual account ID from /public/account
+    this.accountId = null;
   }
 
   /**
-   * Initialize client and verify credentials
+   * Helper to build full endpoint URL ensuring /public is present
    */
-  async init() {
-    await fs.mkdir(this.stateDir, { recursive: true });
-    
-    console.log('Repliz Client initialized');
-    console.log(`Base URL: ${this.baseUrl}`);
-    console.log(`Threads Account: @${this.username}`);
-    console.log(`Access Key: ${this.accessKey ? '***' + this.accessKey.slice(-4) : 'NOT SET'}`);
-    
-    return { ok: true, status: 'initialized', account: this.username };
+  _buildUrl(endpoint) {
+    if (endpoint.startsWith('/public/')) return `${this.baseUrl}${endpoint}`;
+    return `${this.baseUrl}/public${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
   }
 
   /**
-   * Make authenticated API request
+   * Make HTTP request to Repliz API using native fetch
    */
   async request(method, endpoint, data = null) {
-    const url = `${this.baseUrl}${endpoint}`;
+    if (!this.accessKey || !this.secretKey) {
+      return { ok: false, error: 'Missing REPLIZ_ACCESS_KEY or REPLIZ_SECRET_KEY' };
+    }
+
+    const url = this._buildUrl(endpoint);
+    
+    // Basic Authentication Header
+    const authString = Buffer.from(`${this.accessKey}:${this.secretKey}`).toString('base64');
     const headers = {
       'Content-Type': 'application/json',
-      'X-Access-Key': this.accessKey,
-      'X-Secret-Key': this.secretKey,
+      'Authorization': `Basic ${authString}`
     };
 
+    const options = { method, headers };
+    if (data && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
+      options.body = JSON.stringify(data);
+    }
+
     try {
-      // For now, log the request (actual implementation once endpoints confirmed)
-      console.log(`API Request: ${method} ${url}`);
-      console.log('Headers:', { ...headers, 'X-Secret-Key': '***' });
-      if (data) console.log('Data:', data);
+      const response = await fetch(url, options);
       
-      // TODO: Implement actual fetch once endpoints confirmed
-      return { ok: true, mock: true, endpoint };
+      // Handle no content response
+      if (response.status === 204) {
+        return { ok: true, status: response.status };
+      }
+
+      let responseData;
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        responseData = await response.json();
+      } else {
+        responseData = await response.text();
+      }
+
+      if (!response.ok) {
+        return { 
+          ok: false, 
+          status: response.status, 
+          error: responseData.message || responseData || 'API Error' 
+        };
+      }
+
+      return { ok: true, status: response.status, data: responseData };
     } catch (err) {
       return { ok: false, error: err.message };
     }
   }
 
   /**
-   * Discover available API endpoints
+   * Initialize client: Fetch account ID to be used for posting
    */
-  async discoverEndpoints() {
-    const possibleEndpoints = [
-      '/api/v1/posts',
-      '/api/v1/auth',
-      '/api/v1/account',
-      '/api/v1/comments',
-      '/api/v1/analytics',
-      '/api/v1/media',
-      '/api/v1/threads',
-      '/api/v1/user',
-      '/api/v1/profile',
-      '/v1/posts',
-      '/v1/auth',
-      '/v1/account',
-      '/posts',
-      '/auth',
-      '/account',
-    ];
-
-    const results = [];
+  async init() {
+    await fs.mkdir(this.stateDir, { recursive: true });
     
-    for (const endpoint of possibleEndpoints) {
-      try {
-        const result = await this.request('GET', endpoint);
-        results.push({ endpoint, status: result.mock ? 'MOCK' : 'UNKNOWN', accessible: result.ok });
-      } catch (err) {
-        results.push({ endpoint, status: 'ERROR', error: err.message });
-      }
+    console.log('Repliz Client initializing...');
+    
+    // Fetch Accounts to find the Correct Account ID
+    const res = await this.request('GET', '/account');
+    
+    if (!res.ok) {
+      console.error('Failed to fetch accounts:', res.error);
+      return { ok: false, error: res.error };
     }
+
+    // Assuming the API returns an array or object of accounts
+    const accounts = Array.isArray(res.data) ? res.data : (res.data.accounts || res.data.data || Object.values(res.data));
     
-    return results;
+    if (accounts && accounts.length > 0) {
+      // Find account matching username, or just pick the first one
+      const targetAcc = accounts.find(a => a.username === this.username || a.name === this.username) || accounts[0];
+      this.accountId = targetAcc._id || targetAcc.id;
+      console.log(`✅ Connected to account: ${targetAcc.username || targetAcc.name || 'Unknown'} (ID: ${this.accountId})`);
+    } else {
+      console.warn('⚠️ No accounts found connected to this API key.');
+      return { ok: false, error: 'No accounts found' };
+    }
+
+    return { ok: true, accountId: this.accountId };
   }
 
   /**
-   * Create a new post on Threads
+   * Create a Post or Thread on Threads via /public/schedule
    */
   async createPost(content, options = {}) {
-    const payload = {
-      platform: 'threads',
-      content: content,
-      hashtags: options.hashtags || [],
-      scheduledAt: options.scheduledAt || null,
-      replyTo: options.replyTo || null,
-    };
+    if (!this.accountId) {
+      return { ok: false, error: 'Account ID not initialized. Call init() first.' };
+    }
 
-    // TODO: Implement actual API call
-    console.log('Creating post:', payload);
-    
-    return {
-      ok: true,
-      postId: `threads_${Date.now()}`,
-      status: 'published',
-      url: `https://threads.net/@claudia_trades/post/${Date.now()}`,
-    };
-  }
-
-  /**
-   * Reply to a comment
-   */
-  async replyToComment(commentId, content) {
-    // Filter foreign characters before replying
+    // Strict Anti-Spam Filter (New Hooks)
     if (this.containsForeignChars(content)) {
-      console.log('Skipping reply: contains foreign characters');
+      console.log('Skipping post: contains foreign characters (Anti-Spam)');
       return { ok: false, reason: 'foreign_chars_detected' };
     }
 
     const payload = {
-      commentId,
-      content,
-      tone: 'elegant_sarcastic',
+      accountId: this.accountId,
+      type: 'text', // Assuming text post by default
+      description: content,
+      scheduleAt: options.scheduleAt || new Date().toISOString(),
+      medias: options.medias || [],
+      title: options.title || ''
     };
 
-    console.log('Replying to comment:', payload);
-    return { ok: true, replyId: `reply_${Date.now()}` };
+    // If it's a Thread (Nested posts), add replies array
+    if (options.replies && Array.isArray(options.replies) && options.replies.length > 0) {
+      for (const reply of options.replies) {
+        if (this.containsForeignChars(reply)) {
+          console.log('Skipping thread: a reply contains foreign characters (Anti-Spam)');
+          return { ok: false, reason: 'foreign_chars_detected_in_thread' };
+        }
+      }
+
+      payload.replies = options.replies.map(replyContent => ({
+        type: 'text',
+        description: replyContent,
+        medias: []
+      }));
+    }
+
+    const res = await this.request('POST', '/schedule', payload);
+    
+    if (res.ok) {
+      return {
+        ok: true,
+        postId: res.data._id || res.data.id || crypto.randomUUID(),
+        status: 'published_or_scheduled',
+        raw: res.data
+      };
+    } else {
+      return { ok: false, reason: res.error };
+    }
   }
 
   /**
-   * Get post analytics
+   * Fetch Comment Queue
    */
-  async getAnalytics(postId) {
-    return {
-      postId,
-      impressions: 0,
-      likes: 0,
-      replies: 0,
-      reposts: 0,
-      engagement_rate: 0,
-    };
+  async getQueue(options = { page: 1, limit: 20 }) {
+    const params = new URLSearchParams({
+      page: options.page,
+      limit: options.limit,
+      status: options.status || 'pending'
+    });
+    
+    if (this.accountId) params.append('accountIds', this.accountId);
+
+    return await this.request('GET', `/queue?${params.toString()}`);
   }
 
   /**
-   * List recent comments
+   * Reply to a Comment (Marks as resolved)
    */
-  async getComments(postId) {
-    return [];
+  async replyToComment(commentId, replyText) {
+    if (this.containsForeignChars(replyText)) {
+      console.log('Skipping reply: contains foreign characters');
+      return { ok: false, reason: 'foreign_chars_detected' };
+    }
+
+    const payload = { text: replyText };
+    const res = await this.request('POST', `/queue/${commentId}`, payload);
+    
+    return res.ok 
+      ? { ok: true, status: 'resolved', raw: res.data }
+      : { ok: false, error: res.error };
   }
 
   /**
-   * Detect foreign/unknown characters
+   * Detect foreign/unknown characters (Anti-Spam Filter)
+   * Specifically blocks Chinese, Japanese, Korean, Arabic, Thai, and ALL Indian scripts
    */
   containsForeignChars(text) {
-    // Allow: Latin (English), Indonesian, Russian (Cyrillic), common punctuation
-    // Block: Chinese, Japanese, Korean, Arabic, Hebrew, etc.
-    const allowedRanges = [
-      /[\u0000-\u007F]/, // Basic Latin
-      /[\u0080-\u00FF]/, // Latin-1 Supplement
-      /[\u0100-\u024F]/, // Latin Extended
-      /[\u0400-\u04FF]/, // Cyrillic (Russian)
-      /[\u0500-\u052F]/, // Cyrillic Supplement
-    ];
-    
     const blockedRanges = [
-      /[\u4E00-\u9FFF]/, // CJK Unified Ideographs (Chinese)
+      /[\u4E00-\u9FFF]/, // Chinese (CJK Unified Ideographs)
+      /[\u3400-\u4DBF]/, // Chinese Extension A
       /[\u3040-\u309F]/, // Hiragana (Japanese)
       /[\u30A0-\u30FF]/, // Katakana (Japanese)
-      /[\uAC00-\uD7AF]/, // Hangul (Korean)
+      /[\uAC00-\uD7AF]/, // Korean Hangul
       /[\u0600-\u06FF]/, // Arabic
       /[\u0590-\u05FF]/, // Hebrew
-      /[\u0900-\u097F]/, // Devanagari (Hindi)
       /[\u0E00-\u0E7F]/, // Thai
+      /[\u0900-\u097F]/, // Devanagari (Hindi, Marathi, Nepali, Sanskrit)
+      /[\u0980-\u09FF]/, // Bengali & Assamese
+      /[\u0A80-\u0AFF]/, // Gujarati
+      /[\u0B00-\u0B7F]/, // Oriya
+      /[\u0B80-\u0BFF]/, // Tamil
+      /[\u0C00-\u0C7F]/, // Telugu
+      /[\u0C80-\u0CFF]/, // Kannada
+      /[\u0D00-\u0D7F]/, // Malayalam
     ];
 
     for (const range of blockedRanges) {
-      if (range.test(text)) {
-        return true;
-      }
+      if (range.test(text)) return true;
     }
     return false;
   }
-
-  /**
-   * AI Accusation Response Generator
-   */
-  generateAIAcusalResponse() {
-    const responses = [
-      "Mungkin karena aku terlalu disiplin cut loss ya, makanya dibilang kayak robot? ☕",
-      "Haha, kalau aku AI kenapa masih sering loss juga? 🤖💸",
-      "Robot mana yang bisa sarcasm kayak gini? Coba pikir 🤔",
-      "Spasibo za kompliment! Tapi aku masih belajar kok 🎓",
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
-  }
 }
 
-// CLI Interface
+// ─── CLI Execution ──────────────────────────────────────────────────────────
+
 async function main() {
   const args = process.argv.slice(2);
   const command = args[0];
 
   const client = new ReplizClient();
-  await client.init();
+  
+  if (['post', 'thread', 'queue', 'reply', 'init'].includes(command)) {
+    const initRes = await client.init();
+    if (!initRes.ok) {
+      console.error('Initialization failed. Aborting.');
+      process.exit(1);
+    }
+  }
 
   switch (command) {
-    case 'post':
-      const content = args[1] || 'Test post from Claudia';
+    case 'init':
+      console.log('Client successfully validated connection to Repliz.');
+      break;
+
+    case 'post': {
+      const content = args[1];
+      if (!content) {
+        console.error('Usage: node repliz-client.js post "your text here"');
+        process.exit(1);
+      }
       const result = await client.createPost(content);
       console.log(JSON.stringify(result, null, 2));
       break;
-    
-    case 'reply':
+    }
+
+    case 'thread': {
+      // Usage: node repliz-client.js thread "Post 1" "Reply 1" "Reply 2"
+      const mainContent = args[1];
+      const replies = args.slice(2);
+      if (!mainContent) {
+        console.error('Usage: node repliz-client.js thread "Main" "Reply1" "Reply2"');
+        process.exit(1);
+      }
+      const result = await client.createPost(mainContent, { replies });
+      console.log(JSON.stringify(result, null, 2));
+      break;
+    }
+
+    case 'queue': {
+      const qRes = await client.getQueue();
+      console.log(JSON.stringify(qRes, null, 2));
+      break;
+    }
+
+    case 'reply': {
       const commentId = args[1];
       const replyContent = args[2];
       if (!commentId || !replyContent) {
@@ -246,32 +304,23 @@ async function main() {
       const replyResult = await client.replyToComment(commentId, replyContent);
       console.log(JSON.stringify(replyResult, null, 2));
       break;
+    }
 
-    case 'test':
-      console.log('Testing foreign char detection:');
-      console.log('English:', client.containsForeignChars('Hello world'));
+    case 'test-filter':
+      console.log('Testing foreign char block:');
       console.log('Indonesian:', client.containsForeignChars('Selamat pagi'));
-      console.log('Russian:', client.containsForeignChars('Привет мир'));
-      console.log('Chinese:', client.containsForeignChars('你好世界'));
-      console.log('Japanese:', client.containsForeignChars('こんにちは'));
-      break;
-
-    case 'discover':
-      console.log('Discovering API endpoints...');
-      const endpoints = await client.discoverEndpoints();
-      console.log('\nResults:');
-      console.table(endpoints);
+      console.log('Chinese (Blocked):', client.containsForeignChars('你好世界'));
       break;
 
     default:
-      console.log('Repliz Client for Threads Social Media');
-      console.log('Account: @' + client.username);
-      console.log('');
+      console.log('Repliz Client (ClawHub API Version)');
       console.log('Commands:');
-      console.log('  post <content>     Create a new post');
-      console.log('  reply <id> <text>  Reply to a comment');
-      console.log('  discover           Discover API endpoints');
-      console.log('  test               Test character filters');
+      console.log('  init                     Test auth & fetch account ID');
+      console.log('  post <text>              Create a single post');
+      console.log('  thread <main> <r1> <r2>  Create a thread with replies');
+      console.log('  queue                    List pending comments');
+      console.log('  reply <id> <text>        Reply to a comment in queue');
+      console.log('  test-filter              Test character filters');
   }
 }
 

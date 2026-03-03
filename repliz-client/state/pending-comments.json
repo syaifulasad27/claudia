@@ -1,7 +1,41 @@
 {
-  "lastFetch": "2026-03-03T06:54:34.697Z",
-  "totalFetched": 0,
-  "validComments": 0,
+  "lastFetch": "2026-03-03T07:05:00Z",
+  "totalFetched": 3,
+  "validComments": 3,
   "skippedComments": 0,
-  "comments": []
+  "comments": [
+    {
+      "id": "cmt_test_001",
+      "username": "trader_jakarta",
+      "text": "Kak, cara hitung ATR gimana?",
+      "postId": "post_123",
+      "timestamp": "2026-03-03T07:00:00Z",
+      "category": "question",
+      "priority": "high",
+      "status": "drafted",
+      "fetchedAt": "2026-03-03T07:05:00Z"
+    },
+    {
+      "id": "cmt_test_002",
+      "username": "skeptis_01",
+      "text": "Ini pasti bot AI kan?",
+      "postId": "post_123",
+      "timestamp": "2026-03-03T07:01:00Z",
+      "category": "ai_accusation",
+      "priority": "high",
+      "status": "drafted",
+      "fetchedAt": "2026-03-03T07:05:00Z"
+    },
+    {
+      "id": "cmt_test_003",
+      "username": "appreciator",
+      "text": "Mantap kak, ilmunya bermanfaat!",
+      "postId": "post_123",
+      "timestamp": "2026-03-03T07:02:00Z",
+      "category": "appreciation",
+      "priority": "medium",
+      "status": "drafted",
+      "fetchedAt": "2026-03-03T07:05:00Z"
+    }
+  ]
 }

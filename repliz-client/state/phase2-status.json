@@ -1,0 +1,11 @@
+{
+  "phase": "2",
+  "status": "active",
+  "feature": "reply-drafter",
+  "activatedAt": "2026-03-03T07:05:00Z",
+  "style": "Natural Indonesian with minimal Jaksel",
+  "jakselUsage": "Occasional (30% chance), not monotonous",
+  "output": "state/draft-replies.json",
+  "trigger": "Manual or after comment-fetcher",
+  "note": "Phase 2: Draft generator ready. Jaksel style minimized as requested."
+}

@@ -1,0 +1,65 @@
+{
+  "ok": true,
+  "symbol": "XAUUSD",
+  "timestamp": "2026-03-03T00:47:07.596Z",
+  "trade_direction": "BUY",
+  "confluence_score": 9,
+  "max_possible_score": 12,
+  "confidence": "HIGH",
+  "size_multiplier": 1,
+  "decision": "✅ HIGH CONFIDENCE BUY — Score 9/12",
+  "entry_suggestion": {
+    "direction": "BUY",
+    "entry_zone": "Wait for pullback to EMA20 (5335.23)",
+    "entry_price": 5335.2328,
+    "entry_type": "LIMIT",
+    "sl_distance": 45.02,
+    "suggested_sl": 5290.21,
+    "suggested_tp": 5425.28,
+    "rr_ratio": "1:2"
+  },
+  "signals": {
+    "d1_trend": {
+      "score": 1,
+      "direction": "BUY",
+      "detail": "D1 trend BULLISH (EMA20=5102.78 EMA50=4861.41 EMA200=3979.56)",
+      "weight": 3
+    },
+    "h4_structure": {
+      "score": 1,
+      "detail": "H4 price 5357.74 above EMA20=5271.07 EMA50=5184.19",
+      "weight": 2
+    },
+    "h1_ema_alignment": {
+      "score": 1,
+      "detail": "H1 EMA20 (5335.23) > EMA50 (5295.29) — bullish",
+      "weight": 2
+    },
+    "m15_momentum": {
+      "score": 1,
+      "detail": "M15 bullish candle (change: +2.67)",
+      "weight": 1
+    },
+    "volume_confirmation": {
+      "score": 0,
+      "detail": "Volume below avg (ratio: 0.5x)",
+      "weight": 1
+    },
+    "rsi_filter": {
+      "score": 1,
+      "detail": "RSI 57.5 in valid BUY zone (30-70)",
+      "weight": 1
+    },
+    "macro_sentiment": {
+      "score": 0,
+      "detail": "Macro sentiment: not evaluated (no MI briefing loaded)",
+      "weight": 2
+    }
+  },
+  "timeframe_data_available": {
+    "D1": true,
+    "H4": true,
+    "H1": true,
+    "M15": true
+  }
+}

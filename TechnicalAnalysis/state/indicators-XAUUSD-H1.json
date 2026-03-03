@@ -1,0 +1,113 @@
+{
+  "ok": true,
+  "symbol": "XAUUSD",
+  "timeframe": "H1",
+  "bars": 200,
+  "timestamp": "2026-03-03T00:47:07.401Z",
+  "last_candle_time": "2026-03-03T02:00:00+00:00",
+  "price": {
+    "current_price": 5357.71,
+    "previous_close": 5346.02,
+    "change": 11.69,
+    "change_pct": "0.219",
+    "distance_to_ema20": 22.4772,
+    "distance_to_ema20_in_atr": 0.749,
+    "extended": true
+  },
+  "trend": {
+    "direction": "BULLISH",
+    "strength": "STRONG",
+    "ema_order": "EMA20=5335.23 EMA50=5295.29 EMA200=5145.11"
+  },
+  "ema": {
+    "ema20": {
+      "current": 5335.2328,
+      "previous": 5332.86678
+    },
+    "ema50": {
+      "current": 5295.28906,
+      "previous": 5292.74126
+    },
+    "ema200": {
+      "current": 5145.11065,
+      "previous": null
+    }
+  },
+  "atr": {
+    "current": 30.01566,
+    "previous": 30.38302,
+    "sl_distance": 45.0235
+  },
+  "rsi": {
+    "current": 57.46057,
+    "previous": 55.1078,
+    "overbought": false,
+    "oversold": false,
+    "zone": "NEUTRAL"
+  },
+  "macd": {
+    "macd_line": 11.0905,
+    "signal_line": 17.37818,
+    "histogram": -6.28768,
+    "crossover": "NONE",
+    "momentum": "BEARISH"
+  },
+  "bollinger": {
+    "upper": 5426.27898,
+    "middle": 5355.99,
+    "lower": 5285.70102,
+    "width": 2.62469,
+    "position": "51.2%",
+    "squeeze": false
+  },
+  "pivot_points": {
+    "pp": 5338.08333,
+    "r1": 5355.10667,
+    "r2": 5364.19333,
+    "r3": 5381.21667,
+    "s1": 5328.99667,
+    "s2": 5311.97333,
+    "s3": 5302.88667
+  },
+  "fibonacci": {
+    "swing_high": 5419.26,
+    "swing_low": 5094.14,
+    "range": 325.12,
+    "levels": {
+      "23.6%": {
+        "retrace_down": 5342.53168,
+        "retrace_up": 5170.86832
+      },
+      "38.2%": {
+        "retrace_down": 5295.06416,
+        "retrace_up": 5218.33584
+      },
+      "50.0%": {
+        "retrace_down": 5256.7,
+        "retrace_up": 5256.7
+      },
+      "61.8%": {
+        "retrace_down": 5218.33584,
+        "retrace_up": 5295.06416
+      },
+      "78.6%": {
+        "retrace_down": 5163.71568,
+        "retrace_up": 5349.68432
+      }
+    }
+  },
+  "volume": {
+    "current": 14292,
+    "average_20": 28586.6,
+    "ratio": 0.5,
+    "above_average": false
+  },
+  "tick": {
+    "bid": 5357.71,
+    "ask": 5357.77,
+    "last": 0,
+    "volume": 0,
+    "time": "2026-03-03T02:47:07+00:00"
+  },
+  "spread": 6
+}

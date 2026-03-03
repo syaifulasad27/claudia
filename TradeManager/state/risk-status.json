@@ -1,0 +1,32 @@
+{
+  "ok": true,
+  "timestamp": "2026-03-03T00:46:54.443Z",
+  "trading_allowed": true,
+  "decision": "✅ TRADING ALLOWED",
+  "account": {
+    "equity": 98654.83,
+    "balance": 98654.83,
+    "free_margin": 98654.83
+  },
+  "risk_metrics": {
+    "daily_pl": 0,
+    "daily_pl_pct": 0,
+    "weekly_pl": 0,
+    "weekly_pl_pct": 0,
+    "drawdown_pct": 1.35,
+    "consecutive_losses": 0,
+    "open_positions": 0,
+    "cooldown_active": false,
+    "cooldown_until": null
+  },
+  "limits": {
+    "daily_loss_limit": "-5%",
+    "weekly_loss_limit": "-10%",
+    "max_drawdown": "20%",
+    "max_consecutive_losses": 3,
+    "max_positions": 1
+  },
+  "alerts": [],
+  "trades_today": 1,
+  "trades_this_week": 1
+}

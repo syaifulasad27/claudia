@@ -11,8 +11,14 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import dotenv from 'dotenv';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Load .env from root
+const rootDir = path.join(__dirname, '..', '..');
+dotenv.config({ path: path.join(rootDir, '.env') });
+
 const STATE_DIR = path.join(__dirname, '..', 'state');
 const LOG_FILE = path.join(__dirname, '..', 'logs', 'notify-tuan.log');
 

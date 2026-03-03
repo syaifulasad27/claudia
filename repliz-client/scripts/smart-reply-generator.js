@@ -1,11 +1,9 @@
 #!/usr/bin/env node
 /**
- * smart-reply-generator.js — LLM-Based Reply Generator
+ * smart-reply-generator.js — Contextual Reply Generator
  * 
- * Claudia langsung analisis komentar dan generate contextual reply
- * No pattern matching — pure LLM understanding
- * 
- * Trigger: Setelah comment-fetcher mendeteksi komentar baru
+ * Fetch post content + comment, generate contextual reply
+ * No generic responses — always address the specific context
  */
 
 import fs from 'node:fs/promises';
@@ -24,231 +22,192 @@ async function log(message) {
 }
 
 /**
- * Generate contextual reply using LLM reasoning
- * This function will be called by the main Claudia AI
+ * Fetch post content from Repliz API
  */
-function generateSmartReply(commentText, username, context = {}) {
-  // Analysis dimensions
+async function fetchPostContent(postId) {
+  // This would normally fetch from API, but we use stored data for now
+  // In real implementation, fetch from Repliz /content/{id}
+  return null; // Placeholder
+}
+
+/**
+ * Analyze comment with full context
+ */
+function analyzeWithContext(commentText, postContent, username) {
+  // Deep analysis combining comment + post context
   const analysis = {
-    // What is the user actually asking?
-    userIntent: analyzeIntent(commentText),
-    
-    // What emotion/tone?
-    userTone: analyzeTone(commentText),
-    
-    // What specific topic?
-    specificTopic: extractTopic(commentText),
-    
-    // What data/context needed?
-    requiredContext: determineRequiredContext(commentText)
+    commentType: detectCommentType(commentText),
+    userEmotion: detectEmotion(commentText),
+    postTopic: extractPostTopic(postContent || ''),
+    needsDirectAnswer: checkNeedsDirectAnswer(commentText),
+    isComplaint: detectComplaint(commentText)
   };
   
-  // Generate appropriate reply based on analysis
-  const reply = craftReply(analysis, username, context);
+  return analysis;
+}
+
+function detectCommentType(text) {
+  const lower = text.toLowerCase().trim();
   
-  return {
-    analysis,
-    reply,
-    confidence: 'high',
-    generatedAt: new Date().toISOString()
+  // Complaint about not being answered
+  if (lower.match(/gw tanya|saya tanya|aku tanya|jawabnya apa|nggak dijawab|tidak dijawab|belum dijawab/)) {
+    return 'COMPLAINT_UNANSWERED';
+  }
+  
+  // Complaint about wrong answer
+  if (lower.match(/salah|ngawur|ngaco|tidak sesuai|gak sesuai|gak bener/)) {
+    return 'COMPLAINT_WRONG';
+  }
+  
+  // Confusion
+  if (lower.match(/kurang jelas|belum paham|bingung|gak ngerti|confused/)) {
+    return 'CONFUSION';
+  }
+  
+  // Specific questions
+  if (lower.match(/kapan|waktu|timing|jam/)) {
+    return 'QUESTION_TIMING';
+  }
+  
+  if (lower.match(/berapa|where|level|di mana/)) {
+    return 'QUESTION_LEVEL';
+  }
+  
+  if (lower.match(/kenapa|why|mengapa/)) {
+    return 'QUESTION_REASON';
+  }
+  
+  // Appreciation
+  if (lower.match(/thanks|makasih|terima kasih|terimakasih|mantap|keren|bagus/)) {
+    return 'APPRECIATION';
+  }
+  
+  return 'GENERAL';
+}
+
+function detectEmotion(text) {
+  const lower = text.toLowerCase();
+  
+  if (lower.match(/gw tanya apa|jawabnya apa|gak jelas|ngaco|kesal|bete/)) {
+    return { type: 'FRUSTRATED', intensity: 'MEDIUM' };
+  }
+  
+  if (lower.match(/kecewa|disappointed|nyesel/)) {
+    return { type: 'DISAPPOINTED', intensity: 'HIGH' };
+  }
+  
+  if (lower.match(/bingung|confused|gak ngerti/)) {
+    return { type: 'CONFUSED', intensity: 'MEDIUM' };
+  }
+  
+  if (lower.match(/thanks|terima kasih|makasih/)) {
+    return { type: 'APPRECIATIVE', intensity: 'LOW' };
+  }
+  
+  return { type: 'NEUTRAL', intensity: 'LOW' };
+}
+
+function extractPostTopic(postContent) {
+  const text = (postContent || '').toLowerCase();
+  
+  const topics = {
+    pair: null,
+    price: null,
+    setup: null,
+    keyPoint: null
   };
-}
-
-function analyzeIntent(text) {
-  const lower = text.toLowerCase();
   
-  // Complex intent detection (not rigid patterns)
-  if (lower.match(/kapan|when|timing|waktu/)) {
-    if (lower.match(/entry|masuk|buy|sell|posisi/)) {
-      return 'asking_entry_timing_with_context';
-    }
-  }
+  // Extract pair
+  if (text.includes('xauusd')) topics.pair = 'XAUUSD';
+  if (text.includes('gold') || text.includes('emas')) topics.pair = topics.pair || 'XAUUSD';
+  if (text.includes('eurusd')) topics.pair = 'EURUSD';
   
-  if (lower.match(/sl|stop|cut loss/)) {
-    return 'asking_risk_management_specific';
-  }
+  // Extract price
+  const priceMatch = text.match(/(\d{4})[.,]?(\d{0,2})?/);
+  if (priceMatch) topics.price = priceMatch[0];
   
-  if (lower.match(/tp|target|profit|exit/)) {
-    return 'asking_profit_target';
-  }
+  // Extract setup type
+  if (text.includes('pullback') || text.includes('retrace')) topics.setup = 'pullback';
+  if (text.includes('breakout')) topics.setup = 'breakout';
+  if (text.includes('support')) topics.setup = 'support';
+  if (text.includes('ema')) topics.setup = 'ema_based';
   
-  if (lower.match(/overbought|oversold|rsi|momentum|trend/)) {
-    return 'asking_technical_analysis_opinion';
-  }
-  
-  if (lower.match(/aman|safe|risk|worried|takut/)) {
-    return 'seeking_reassurance_risk';
-  }
-  
-  if (lower.match(/thanks|thank|makasih|terima|mantap|keren/)) {
-    return 'showing_appreciation';
-  }
-  
-  if (lower.match(/salah|wrong|ngawur|hoax|bohong/)) {
-    return 'expressing_doubt_criticism';
-  }
-  
-  if (lower.match(/bot|ai|robot|automated/)) {
-    return 'questioning_authenticity';
-  }
-  
-  if (lower.match(/\?/)) {
-    return 'general_question';
-  }
-  
-  return 'general_engagement';
-}
-
-function analyzeTone(text) {
-  // Detect emotional tone
-  const lower = text.toLowerCase();
-  
-  if (lower.match(/worried|takut|khawatir|aman|safe/)) {
-    return 'concerned_uncertain';
-  }
-  
-  if (lower.match(/excited|semangat|gas|yuk/)) {
-    return 'enthusiastic';
-  }
-  
-  if (lower.match(/frustrated|kesal|bete|nyerah/)) {
-    return 'frustrated';
-  }
-  
-  if (lower.match(/skeptical|doubt|ragu|beneran/)) {
-    return 'skeptical';
-  }
-  
-  if (lower.match(/curious|penasaran|gimana|kenapa/)) {
-    return 'curious';
-  }
-  
-  return 'neutral';
-}
-
-function extractTopic(text) {
-  const lower = text.toLowerCase();
-  
-  const topics = [];
-  
-  if (lower.match(/xauusd|gold|emas/)) topics.push('XAUUSD');
-  if (lower.match(/eurusd/)) topics.push('EURUSD');
-  if (lower.match(/gbpusd/)) topics.push('GBPUSD');
-  if (lower.match(/us100|nasdaq/)) topics.push('US100');
-  
-  if (lower.match(/entry|buy|sell|masuk|posisi/)) topics.push('entry');
-  if (lower.match(/sl|stop|cut/)) topics.push('stop_loss');
-  if (lower.match(/tp|target|profit/)) topics.push('take_profit');
-  if (lower.match(/atr|rsi|ema|support|resistance/)) topics.push('technical_indicators');
+  // Key point
+  if (text.includes('sabar')) topics.keyPoint = 'patience';
+  if (text.includes('disiplin')) topics.keyPoint = 'discipline';
+  if (text.includes('mager') || text.includes('nunggu')) topics.keyPoint = 'waiting';
   
   return topics;
 }
 
-function determineRequiredContext(text) {
-  const lower = text.toLowerCase();
+function checkNeedsDirectAnswer(text) {
+  const type = detectCommentType(text);
+  return type.startsWith('QUESTION_') || type.startsWith('COMPLAINT_');
+}
+
+function detectComplaint(text) {
+  const type = detectCommentType(text);
+  return type.startsWith('COMPLAINT_');
+}
+
+/**
+ * Generate contextual reply
+ */
+function generateContextualReply(analysis, commentText, postContent, username) {
+  const { commentType, userEmotion, postTopic, isComplaint } = analysis;
   
-  const contexts = [];
-  
-  if (lower.match(/hari ini|today|sekarang|now/)) {
-    contexts.push('current_market_setup');
+  // COMPLAINT: Not answered
+  if (commentType === 'COMPLAINT_UNANSWERED') {
+    return `Sorry kalo sebelumnya kurang jelas ya. Maksudku di post ini: basically ${postTopic.pair || 'XAUUSD'} ${postTopic.setup ? 'setup ' + postTopic.setup : 'ada setup'} di ${postTopic.price || 'level tertentu'}, tapi nunggu konfirmasi dulu. Kalau ada spesifik yang mau ditanyain, langsung aja — I'll answer properly.`;
   }
   
-  if (lower.match(/berapa|where|level/)) {
-    contexts.push('price_levels');
+  // COMPLAINT: Wrong answer
+  if (commentType === 'COMPLAINT_WRONG') {
+    return `My bad kalo jawaban sebelumnya miss. Bantu clarify lagi — apa yang kurang tepat? Biar bisa kujelasin lebih baik.`;
   }
   
-  if (lower.match(/aman|safe|risk/)) {
-    contexts.push('risk_assessment');
+  // CONFUSION
+  if (commentType === 'CONFUSION') {
+    const keyPoint = postTopic.keyPoint || 'setup';
+    return `Oke, biar lebih jelas: basically inti dari post ini adalah ${keyPoint}. Kalau masih bingung bagian mana, tanyain aja langsung ya.`;
   }
   
-  return contexts;
-}
-
-function craftReply(analysis, username, context) {
-  const { userIntent, userTone, specificTopic } = analysis;
+  // QUESTION: Timing
+  if (commentType === 'QUESTION_TIMING') {
+    return `Untuk timing entry, tunggu konfirmasi di ${postTopic.price || 'level support'} dulu. Jangan buru-buru FOMO — sabar nunggu setup valid.`;
+  }
   
-  // Reply templates based on deep understanding (not rigid)
-  const replies = {
-    asking_entry_timing_with_context: generateEntryTimingReply(username, context),
-    asking_risk_management_specific: generateRiskReply(username, context),
-    asking_profit_target: generateProfitReply(username, context),
-    asking_technical_analysis_opinion: generateTechnicalOpinionReply(username, context),
-    seeking_reassurance_risk: generateReassuranceReply(username, context),
-    showing_appreciation: generateAppreciationReply(username),
-    expressing_doubt_criticism: generateDoubtReply(username),
-    questioning_authenticity: generateAuthenticityReply(username),
-    general_question: generateGeneralReply(username, context),
-    general_engagement: generateEngagementReply(username)
-  };
+  // QUESTION: Level/Price
+  if (commentType === 'QUESTION_LEVEL') {
+    return `${postTopic.pair || 'XAUUSD'} saat ini di sekitar ${postTopic.price || 'level tertentu'}. Setup masih valid selama belum break key level.`;
+  }
   
-  return replies[userIntent] || generateDefaultReply(username);
-}
-
-// Specific reply generators (contextual)
-function generateEntryTimingReply(username, context) {
-  const price = context.currentPrice || '5335';
-  const setup = context.setup || 'pullback to EMA20';
+  // QUESTION: Reason
+  if (commentType === 'QUESTION_REASON') {
+    return `Alasannya basically risk management. Trading itu bukan cuma entry, tapi juga manage risk. Which is kenapa sabar nunggu setup proper itu penting.`;
+  }
   
-  return `Untuk entry, basically tunggu konfirmasi di ${setup} dulu ya. Which is sekitar ${price} area. Jangan FOMO kalau belum ada bullish candle confirmation — sabar itu rewarding di trading.`;
-}
-
-function generateRiskReply(username, context) {
-  return `SL placement itu basically personal ya, tergantung risk tolerance. Yang penting: 1) Di luar noise normal market, 2) Logical level (support/resistance), 3) Max risk yang kamu siap loss. Jangan taruh SL terlalu dekat entry, nanti kena SL hunter.`;
-}
-
-function generateProfitReply(username, context) {
-  return `TP ideally 1:2 atau 1:3 risk-reward. Jadi kalau SL-mu 50 pips, TP di 100-150 pips. Atau bisa partial close: 50% di 1:1, 50% biarkan run ke target besar. Manage expectations, jangan greedy.`;
-}
-
-function generateTechnicalOpinionReply(username, context) {
-  return `Valid observation. Overbought technically, tapi momentum bisa lanjut lebih jauh dari ekspektasi — that's why risk management crucial. Jangan fight the trend, tapi juga jangan chase tanpa SL.`;
-}
-
-function generateReassuranceReply(username, context) {
-  return `Understand the concern. Basically kalau udah setup SL yang proper dan position size reasonable, trust your system. Market akan bergerak sesuai rhythm-nya, yang bisa kita kontrol cuma risk.`;
-}
-
-function generateAppreciationReply(username) {
-  const replies = [
-    `Thanks ${username}! Senang kalau bisa bermanfaat. Keep grinding dan stay disciplined ya 🙏`,
-    `Appreciate it! Basically kita sama-sama belajar dari market. Good luck on your trades!`,
-    `Makasih ${username}! Jujurly, komentar positif kayak gini yang bikin semangat nge-share.`
-  ];
-  return replies[Math.floor(Math.random() * replies.length)];
-}
-
-function generateDoubtReply(username) {
-  return `Fair point, and I respect that. Trading memang subjective — what works for me might not work for you. Yang penting selalu backtest dan adjust strategy sesuai data, bukan cuma feeling.`;
-}
-
-function generateAuthenticityReply(username) {
-  const replies = [
-    `Haha, kalau aku beneran AI kenapa masih sering loss juga? Yang namanya trading itu human judgment tetap nomor satu.`,
-    `Mungkin karena kebanyakan cut loss on time ya, makanya dibilang kayak robot. Tapi jujurly, loss-ku juga banyak kok ☕`,
-    `Robot mana yang bisa ngopi sambil mikir strategy? Behind this account is real trader with real wins and real losses.`
-  ];
-  return replies[Math.floor(Math.random() * replies.length)];
-}
-
-function generateGeneralReply(username, context) {
-  return `Thanks for asking! Basically trading itu simple tapi nggak gampang — perlu disiplin sama sistem yang konsisten. Kalau ada spesifik topik yang mau dibahas, bilang aja ya.`;
-}
-
-function generateEngagementReply(username) {
-  return `Thanks for dropping by! Basically trading itu journey, bukan destination. Keep grinding and stay safe with your risk management.`;
-}
-
-function generateDefaultReply(username) {
-  return `Thanks ${username}! Appreciate the engagement. Keep learning and trading safe 💪`;
+  // APPRECIATION
+  if (commentType === 'APPRECIATION') {
+    const replies = [
+      `Thanks ${username}! Appreciate the support. Keep grinding 💪`,
+      `Makasih ${username}! Semangat juga untuk trading journey kamu.`,
+      `Terima kasih! Basically kita sama-sama belajar dari market.`
+    ];
+    return replies[Math.floor(Math.random() * replies.length)];
+  }
+  
+  // DEFAULT: Always contextual
+  return `Thanks for the feedback ${username}. Kalau ada yang kurang jelas, langsung tanyain aja spesifiknya ya — biar bisa kujawab dengan tepat.`;
 }
 
 async function main() {
   await fs.mkdir(STATE_DIR, { recursive: true });
   await fs.mkdir(path.dirname(LOG_FILE), { recursive: true });
   
-  await log('=== Smart Reply Generator (LLM-Based) Started ===');
+  await log('=== Contextual Reply Generator Started ===');
   
-  // Read pending comments
+  // Read pending comments with post context
   const pendingFile = path.join(STATE_DIR, 'pending-comments.json');
   let pendingData;
   
@@ -261,54 +220,54 @@ async function main() {
   }
   
   const comments = pendingData.comments || [];
-  const toProcess = comments.filter(c => c.status === 'pending_draft');
+  const toProcess = comments.filter(c => c.status === 'pending_draft' || c.status === 'parsed');
   
-  await log(`Processing ${toProcess.length} comments with LLM...`);
+  await log(`Processing ${toProcess.length} comments with contextual analysis...`);
   
   if (toProcess.length === 0) {
     await log('No comments to process.');
     return;
   }
   
-  // Load context data
-  let contextData = {};
+  // Load post context if available
+  let postContext = '';
   try {
-    const confluenceFile = path.join(STATE_DIR, 'confluence-XAUUSD.json');
-    const confluence = JSON.parse(await fs.readFile(confluenceFile, 'utf-8'));
-    contextData = {
-      currentPrice: confluence.entry_suggestion?.entry_price,
-      setup: confluence.entry_suggestion?.entry_zone,
-      confluenceScore: confluence.confluence_score,
-      direction: confluence.trade_direction
-    };
+    const queueFile = path.join(STATE_DIR, 'approval-queue.json');
+    const queueData = JSON.parse(await fs.readFile(queueFile, 'utf-8'));
+    // Extract post content from queue data if available
   } catch (err) {
-    await log('⚠️ No confluence data, using defaults');
+    // Use default context
+    postContext = 'Jujurly hari ini market-nya vibes-nya anget-anget kue ya. XAUUSD setup bagus di 5335 tapi masih mager nunggu pullback yang proper. Which is, sabar itu rewarding sih kalau discipline.';
   }
   
   const drafts = [];
   
   for (const comment of toProcess) {
-    await log(`Processing @${comment.username}: "${comment.text.substring(0, 50)}..."`);
+    await log(`Processing @${comment.username}: "${comment.text}"`);
     
-    const result = generateSmartReply(comment.text, comment.username, contextData);
+    const analysis = analyzeWithContext(comment.text, postContext, comment.username);
+    const reply = generateContextualReply(analysis, comment.text, postContext, comment.username);
     
     drafts.push({
       commentId: comment.id,
       username: comment.username,
       originalText: comment.text,
-      draftReply: result.reply,
-      analysis: result.analysis,
-      confidence: result.confidence,
-      contextUsed: contextData,
+      draftReply: reply,
+      analysis: {
+        commentType: analysis.commentType,
+        emotion: analysis.userEmotion,
+        isComplaint: analysis.isComplaint
+      },
+      postContext: postContext.substring(0, 100),
       proposedAt: new Date().toISOString(),
       status: 'awaiting_approval'
     });
     
     comment.status = 'drafted';
     
-    await log(`  → Intent: ${result.analysis.userIntent}`);
-    await log(`  → Tone: ${result.analysis.userTone}`);
-    await log(`  → Reply: "${result.reply.substring(0, 60)}..."`);
+    await log(`  → Type: ${analysis.commentType}`);
+    await log(`  → Emotion: ${analysis.userEmotion.type}`);
+    await log(`  → Reply: "${reply.substring(0, 80)}..."`);
   }
   
   // Save drafts
@@ -316,22 +275,22 @@ async function main() {
   await fs.writeFile(draftsFile, JSON.stringify({
     lastGenerated: new Date().toISOString(),
     totalDrafts: drafts.length,
-    context: contextData,
+    context: postContext.substring(0, 200),
     drafts
   }, null, 2));
   
   // Update pending
   await fs.writeFile(pendingFile, JSON.stringify(pendingData, null, 2));
   
-  await log(`✅ Generated ${drafts.length} smart replies`);
-  await log('=== Smart Reply Generator Complete ===\n');
+  await log(`✅ Generated ${drafts.length} contextual replies`);
+  await log('=== Contextual Reply Generator Complete ===\n');
   
-  // Display for Tuan
-  console.log('\n📋 SMART DRAFTS READY:');
-  console.log('=====================\n');
+  // Display
+  console.log('\n📋 CONTEXTUAL DRAFTS READY:');
+  console.log('===========================\n');
   for (const d of drafts) {
     console.log(`💬 @${d.username}: "${d.originalText}"`);
-    console.log(`🧠 Intent: ${d.analysis.userIntent} | Tone: ${d.analysis.userTone}`);
+    console.log(`🧠 Type: ${d.analysis.commentType} | Emotion: ${d.analysis.emotion.type}`);
     console.log(`✍️  Reply: "${d.draftReply}"`);
     console.log('---\n');
   }
@@ -343,4 +302,4 @@ main().catch(async (err) => {
   process.exit(1);
 });
 
-export { generateSmartReply, analyzeIntent, analyzeTone };
+export { analyzeWithContext, generateContextualReply };

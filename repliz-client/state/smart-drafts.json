@@ -1,22 +1,23 @@
 {
-  "lastGenerated": "2026-03-03T10:30:02.806Z",
+  "lastGenerated": "2026-03-03T11:21:16.920Z",
   "totalDrafts": 1,
-  "context": {},
+  "context": "",
   "drafts": [
     {
       "commentId": "69a6b0da4c63adf0837d75ff",
       "username": "syaifulasad.js",
       "originalText": "Gw tanya apa jawabnya apa",
-      "draftReply": "Thanks for dropping by! Basically trading itu journey, bukan destination. Keep grinding and stay safe with your risk management.",
+      "draftReply": "Sorry kalo sebelumnya kurang jelas ya. Maksudku di post ini: basically XAUUSD ada setup di level tertentu, tapi nunggu konfirmasi dulu. Kalau ada spesifik yang mau ditanyain, langsung aja — I'll answer properly.",
       "analysis": {
-        "userIntent": "general_engagement",
-        "userTone": "neutral",
-        "specificTopic": [],
-        "requiredContext": []
+        "commentType": "COMPLAINT_UNANSWERED",
+        "emotion": {
+          "type": "FRUSTRATED",
+          "intensity": "MEDIUM"
+        },
+        "isComplaint": true
       },
-      "confidence": "high",
-      "contextUsed": {},
-      "proposedAt": "2026-03-03T10:30:02.805Z",
+      "postContext": "",
+      "proposedAt": "2026-03-03T11:21:16.919Z",
       "status": "awaiting_approval"
     }
   ]

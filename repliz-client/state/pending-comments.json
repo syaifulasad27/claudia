@@ -1,19 +1,7 @@
 {
-  "lastFetch": "2026-03-03T10:30:02.436Z",
-  "totalFetched": 1,
-  "validComments": 1,
+  "lastFetch": "2026-03-03T12:01:40.714Z",
+  "totalFetched": 0,
+  "validComments": 0,
   "skippedComments": 0,
-  "comments": [
-    {
-      "id": "69a6b0da4c63adf0837d75ff",
-      "username": "syaifulasad.js",
-      "text": "Gw tanya apa jawabnya apa",
-      "postId": "18068384495637626",
-      "timestamp": "2026-03-03T09:58:34.000Z",
-      "category": "general",
-      "priority": "low",
-      "status": "drafted",
-      "fetchedAt": "2026-03-03T10:30:02.436Z"
-    }
-  ]
+  "comments": []
 }

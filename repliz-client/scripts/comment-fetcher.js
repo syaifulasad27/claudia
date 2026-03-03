@@ -124,10 +124,13 @@ async function main() {
   const processedComments = [];
   const skippedComments = [];
   
-  for (const comment of rawComments) {
-    const text = comment.text || comment.description || '';
-    const id = comment._id || comment.id;
-    const username = comment.username || comment.user?.username || 'unknown';
+  for (const item of rawComments) {
+    // Handle nested structure from Repliz API
+    const commentData = item.comment || item;
+    const text = commentData.text || commentData.description || '';
+    const id = item._id || item.id;
+    const username = commentData.owner?.name || commentData.owner?.username || commentData.username || 'unknown';
+    const postId = item.content?.id || item.postId || 'unknown';
     
     // Filter checks
     if (containsForeignChars(text)) {
@@ -153,8 +156,8 @@ async function main() {
       id,
       username,
       text,
-      postId: comment.postId || comment.post,
-      timestamp: comment.createdAt || new Date().toISOString(),
+      postId,
+      timestamp: commentData.createdAt || item.createdAt || new Date().toISOString(),
       category,
       priority,
       status: 'pending_draft',

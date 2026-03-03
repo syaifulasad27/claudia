@@ -1,41 +1,19 @@
 {
-  "lastFetch": "2026-03-03T07:05:00Z",
-  "totalFetched": 3,
-  "validComments": 3,
+  "lastFetch": "2026-03-03T08:15:59.858Z",
+  "totalFetched": 1,
+  "validComments": 1,
   "skippedComments": 0,
   "comments": [
     {
-      "id": "cmt_test_001",
-      "username": "trader_jakarta",
-      "text": "Kak, cara hitung ATR gimana?",
-      "postId": "post_123",
-      "timestamp": "2026-03-03T07:00:00Z",
+      "id": "69a6875b4c63adf0837c2635",
+      "username": "syaifulasad.js",
+      "text": "Kapan open posisi kak?",
+      "postId": "18068384495637626",
+      "timestamp": "2026-03-03T07:01:40.000Z",
       "category": "question",
       "priority": "high",
       "status": "drafted",
-      "fetchedAt": "2026-03-03T07:05:00Z"
-    },
-    {
-      "id": "cmt_test_002",
-      "username": "skeptis_01",
-      "text": "Ini pasti bot AI kan?",
-      "postId": "post_123",
-      "timestamp": "2026-03-03T07:01:00Z",
-      "category": "ai_accusation",
-      "priority": "high",
-      "status": "drafted",
-      "fetchedAt": "2026-03-03T07:05:00Z"
-    },
-    {
-      "id": "cmt_test_003",
-      "username": "appreciator",
-      "text": "Mantap kak, ilmunya bermanfaat!",
-      "postId": "post_123",
-      "timestamp": "2026-03-03T07:02:00Z",
-      "category": "appreciation",
-      "priority": "medium",
-      "status": "drafted",
-      "fetchedAt": "2026-03-03T07:05:00Z"
+      "fetchedAt": "2026-03-03T08:15:59.858Z"
     }
   ]
 }

@@ -1,0 +1,33 @@
+{
+  "system": "Claudia Threads Social Media",
+  "status": "ACTIVE",
+  "approach": "LLM-Based (Direct Processing)",
+  "updatedAt": "2026-03-03T09:50:00Z",
+  "workflow": {
+    "step1": "Fetch comments from Threads API",
+    "step2": "LLM Analysis & Contextual Reply Generation",
+    "step3": "Telegram Notification for Approval",
+    "step4": "Tuan Approves → Publish to Threads"
+  },
+  "components": {
+    "commentFetcher": "repliz-client/scripts/comment-fetcher.js",
+    "smartReplyGenerator": "repliz-client/scripts/smart-reply-generator.js",
+    "telegramNotifier": "repliz-client/scripts/notify-tuan.js",
+    "approvalHandler": "repliz-client/scripts/approval-handler.js",
+    "integratedWorkflow": "repliz-client/scripts/integrated-workflow.js"
+  },
+  "cronSchedule": {
+    "mainWorkflow": "*/10 * * * * (every 10 minutes)",
+    "approvalHandler": "*/5 * * * * (every 5 minutes)"
+  },
+  "features": {
+    "intentDetection": "LLM-based (natural understanding)",
+    "toneAnalysis": "Yes (concerned, enthusiastic, skeptical, etc)",
+    "contextualReplies": "Yes (uses price, setup, market data)",
+    "humanInTheLoop": "Yes (Tuan approval required)",
+    "patternMatching": "No (replaced with LLM)"
+  },
+  "account": "@notesbyclaudia",
+  "telegramBot": "@Notifthreadsbot",
+  "note": "System upgraded to LLM-based processing. No rigid patterns. Natural contextual replies."
+}

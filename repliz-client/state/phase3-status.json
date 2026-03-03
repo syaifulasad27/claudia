@@ -8,8 +8,11 @@
   ],
   "workflow": "Draft → Telegram Notif → Tuan Approves → Publish",
   "telegram": {
-    "status": "pending_config",
-    "note": "Set TELEGRAM_BOT_TOKEN in .env to enable notifications"
+    "status": "configured",
+    "bot_username": "@Notifthreadsbot",
+    "bot_name": "Notify Threads",
+    "chat_id": "380556058",
+    "note": "User needs to start chat with @Notifthreadsbot before notifications work"
   },
   "cron": {
     "notifier": "5,35 * * * * (every 30 min offset)",
@@ -21,5 +24,5 @@
     "❌ Reject - Skip this comment",
     "⏭️ Skip - Defer to later"
   ],
-  "note": "Phase 3 active. Waiting for comments to test approval workflow."
+  "note": "Phase 3 active. Bot configured. Waiting for user to start chat with @Notifthreadsbot."
 }

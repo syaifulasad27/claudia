@@ -1,0 +1,30 @@
+{
+  "breakeven": {
+    "trigger_risk_multiple": 1.0,
+    "buffer_pips": 2,
+    "description": "Move SL to entry + buffer when profit >= 1x risk"
+  },
+  "trailing": [
+    {
+      "trigger_risk_multiple": 1.5,
+      "sl_lock_risk_multiple": 0.5,
+      "description": "Trail SL to 0.5x risk above entry when profit >= 1.5x risk"
+    },
+    {
+      "trigger_risk_multiple": 2.0,
+      "sl_lock_risk_multiple": 1.0,
+      "description": "Trail SL to 1x risk above entry when profit >= 2x risk"
+    }
+  ],
+  "partial_close": {
+    "trigger_risk_multiple": 2.5,
+    "close_percentage": 0.5,
+    "min_volume": 0.02,
+    "description": "Close 50% volume when profit >= 2.5x risk"
+  },
+  "stale_position": {
+    "max_hours": 4,
+    "min_rr": 1.0,
+    "description": "Evaluate close if > 4 hours and current RR < 1:1"
+  }
+}

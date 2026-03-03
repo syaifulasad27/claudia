@@ -1,0 +1,23 @@
+{
+  "ema_fast": 20,
+  "ema_slow": 50,
+  "atr_period": 14,
+  "atr_multiplier": 1.5,
+  "rsi_period": 14,
+  "rsi_overbought": 70,
+  "rsi_oversold": 30,
+  "risk_reward": 2.0,
+  "risk_per_trade_pct": 0.75,
+  "initial_equity": 100000,
+  "entry_rule": "ema_pullback",
+  "entry_description": "Enter when price touches EMA-fast in trend direction with RSI filter",
+  "trailing": {
+    "breakeven_at": 1.0,
+    "trail_1_at": 1.5,
+    "trail_1_lock": 0.5,
+    "trail_2_at": 2.0,
+    "trail_2_lock": 1.0,
+    "partial_close_at": 2.5,
+    "partial_close_pct": 0.5
+  }
+}

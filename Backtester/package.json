@@ -1,0 +1,10 @@
+{
+  "name": "backtester-skill",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "backtest": "node scripts/run-backtest.js",
+    "optimize": "node scripts/optimize-params.js"
+  }
+}

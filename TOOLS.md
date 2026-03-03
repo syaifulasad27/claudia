@@ -1,10 +1,10 @@
-# TOOLS.md — Bridge API Reference & Tools
+# TOOLS.md — Bridge API Reference & Tools (v2.0)
 
 _Referensi lengkap semua tools yang tersedia untuk Claudia._
 
 ---
 
-## Bridge API — MT5 Execution Gateway
+## Bridge API — MT5 Execution Gateway (v2.0)
 
 ### Connection Configuration
 
@@ -14,6 +14,7 @@ _Referensi lengkap semua tools yang tersedia untuk Claudia._
 | **Authentication** | Header: `X-API-Key: [API_KEY]` |
 | **Protocol** | HTTPS (via Ngrok tunnel) |
 | **Availability** | TIDAK selalu online — hanya saat dijalankan manual |
+| **Version** | 2.0.0 |
 
 ### Runtime Variable
 
@@ -42,6 +43,7 @@ GET {BRIDGE_BASE_URL}/health
 {
   "status": "ok | error",
   "mt5_connected": true | false,
+  "trade_allowed": true | false,
   "terminal_info": { ... } | null,
   "account_balance": 10000.00 | null,
   "server_time": "2026-03-01T04:00:00+00:00"
@@ -57,6 +59,7 @@ GET {BRIDGE_BASE_URL}/health
 - Jika `status: "error"` → MT5 tidak terkoneksi, JANGAN trading
 - Jika request timeout → Bridge API offline, JANGAN trading
 - Jika `mt5_connected: false` → MT5 terminal belum login
+- Jika `trade_allowed: false` → MT5 terminal belum siap trading
 
 ---
 
@@ -139,7 +142,55 @@ POST {BRIDGE_BASE_URL}/market-data
 
 ---
 
-### 4. Positions
+### 4. Symbol Info (BARU v2.0)
+
+```
+GET {BRIDGE_BASE_URL}/symbol-info/{symbol}
+```
+
+**Purpose:** Mendapatkan metadata detail simbol untuk kalkulasi trading
+
+**Response:**
+```json
+{
+  "symbol": "XAUUSD",
+  "description": "Gold vs US Dollar",
+  "point": 0.01,
+  "digits": 2,
+  "spread": 15,
+  "trade_mode": 4,
+  "trade_mode_description": "FULL",
+  "volume_min": 0.01,
+  "volume_max": 100.0,
+  "volume_step": 0.01,
+  "trade_contract_size": 100.0,
+  "currency_base": "XAU",
+  "currency_profit": "USD",
+  "currency_margin": "USD",
+  "bid": 5350.50,
+  "ask": 5350.65,
+  "swap_long": -25.50,
+  "swap_short": 12.30,
+  "session_open": null,
+  "session_close": null
+}
+```
+
+**Kapan digunakan:**
+- ✅ **Sebelum kalkulasi position size** — ambil `point`, `trade_contract_size`
+- ✅ **Validasi volume** — cek `volume_min`, `volume_max`, `volume_step`
+- ✅ **Cek spread real-time** — `spread` field
+- ✅ **Cek bid/ask terkini** — tanpa perlu panggil `/market-data`
+- ✅ **Lihat swap rates** — penting untuk posisi overnight
+
+**CRITICAL:** Panggil endpoint ini sebelum place order untuk memastikan:
+1. `trade_mode_description` = "FULL" (trading allowed)
+2. Volume sesuai `volume_step`
+3. Spread dalam batas wajar
+
+---
+
+### 5. Positions
 
 ```
 GET {BRIDGE_BASE_URL}/positions
@@ -160,7 +211,9 @@ GET {BRIDGE_BASE_URL}/positions
     "sl": 2640.00,
     "tp": 2670.00,
     "profit": 45.00,
-    "time": "2026-03-01T08:30:00"
+    "swap": -2.50,
+    "time": "2026-03-01T08:30:00+00:00",
+    "comment": "Claudia-XAUUSD-H1-BUY-001"
   }
 ]
 ```
@@ -169,23 +222,24 @@ GET {BRIDGE_BASE_URL}/positions
 - ✅ Monitoring posisi terbuka
 - ✅ Kill Switch check — apakah ada posisi aktif saat koneksi lost
 - ✅ Evaluasi total exposure
-- ✅ Keputusan untuk menutup posisi
+- ✅ Keputusan trailing stop / breakeven
+- ✅ Source validation — cek `comment` field apakah prefix `Claudia-*`
 
 ---
 
-### 5. Place Order
+### 6. Place Market Order
 
 ```
 POST {BRIDGE_BASE_URL}/order
 ```
 
-**Purpose:** Eksekusi market order (BUY atau SELL)
+**Purpose:** Eksekusi market order (BUY atau SELL) secara instan
 
 **Request Body:**
 ```json
 {
   "symbol": "XAUUSD",
-  "order_type": "BUY",
+  "type": "BUY",
   "volume": 0.10,
   "sl": 2640.00,
   "tp": 2670.00,
@@ -195,39 +249,129 @@ POST {BRIDGE_BASE_URL}/order
 ```
 
 **Kapan digunakan:**
-- ✅ HANYA setelah analisis lengkap (multi-timeframe + macro)
-- ✅ HANYA jika risk/reward acceptable
-- ✅ HANYA jika margin sufficient
+- ✅ HANYA jika EMA20 sangat dekat (< 5 pips) dari current price
+- ✅ HANYA setelah analisis lengkap + checklist terpenuhi
+- ✅ Fallback jika limit order tidak praktis
 
 **CRITICAL RULES:**
 - ⚠️ **SELALU gunakan `idempotency_key`** → Mencegah order duplikat
 - ⚠️ **SELALU set `sl` (Stop Loss)** → Tidak ada trade tanpa SL
 - ⚠️ **Comment harus descriptif** → Format: `Claudia-{SYMBOL}-{TF}-{TYPE}-{SEQ}`
 - ⚠️ **Verifikasi via `/positions`** setelah order untuk konfirmasi
-
-**Pre-Execution Checklist:**
-```
-□ Health check passed?
-□ Account margin sufficient?
-□ Spread acceptable?
-□ Multi-timeframe analysis done?
-□ Risk per trade calculated?
-□ Drawdown will NOT exceed limit?
-□ No revenge trading?
-□ Setup is valid per strategy?
-□ Idempotency key set?
-□ SL and TP defined?
-```
+- ⚠️ **Prefer `/order/pending`** di atas market order untuk entry yang lebih baik
 
 ---
 
-### 6. Close Position
+### 7. Place Pending Order (BARU v2.0)
+
+```
+POST {BRIDGE_BASE_URL}/order/pending
+```
+
+**Purpose:** Memasang pending/limit order yang akan trigger saat harga mencapai level tertentu
+
+**Request Body:**
+```json
+{
+  "symbol": "XAUUSD",
+  "type": "BUY_LIMIT",
+  "volume": 0.10,
+  "price": 5320.00,
+  "sl": 5280.00,
+  "tp": 5400.00,
+  "comment": "Claudia-XAUUSD-H1-BUYLIMIT-001",
+  "expiration": "2026-03-04T00:00:00+00:00",
+  "idempotency_key": "claudia-pending-20260303-001"
+}
+```
+
+**Order Types:**
+| Type | Triggered When | Use Case |
+|------|---------------|----------|
+| `BUY_LIMIT` | Price turun ke level → buy | Pullback entry (PRIMARY) |
+| `SELL_LIMIT` | Price naik ke level → sell | Pullback entry (PRIMARY) |
+| `BUY_STOP` | Price naik melewati level → buy | Breakout entry |
+| `SELL_STOP` | Price turun melewati level → sell | Breakout entry |
+
+**Kapan digunakan:**
+- ✅ **PRIMARY entry method** — lebih baik dari market order
+- ✅ Entry di EMA20/EMA50 pullback zone (BUY_LIMIT / SELL_LIMIT)
+- ✅ Breakout entry (BUY_STOP / SELL_STOP)
+- ✅ Entry saat off-hours (pasang limit, trigger otomatis saat sesi aktif)
+
+**Best Practice:**
+- Set `expiration` → Cancel otomatis jika tidak trigger dalam 2-4 jam
+- Jika sudah trigger → Cek `/positions` untuk konfirmasi posisi terbuka
+- Jika setup berubah → Cancel via `DELETE /order/pending/{ticket}`
+- Gunakan `idempotency_key` untuk mencegah duplikasi
+
+---
+
+### 8. List Pending Orders (BARU v2.0)
+
+```
+GET {BRIDGE_BASE_URL}/orders/pending
+```
+
+**Purpose:** Mendapatkan daftar semua pending order yang masih aktif
+
+**Response:**
+```json
+[
+  {
+    "ticket": 11223344,
+    "symbol": "XAUUSD",
+    "type": "BUY_LIMIT",
+    "volume": 0.10,
+    "price_open": 5320.00,
+    "sl": 5280.00,
+    "tp": 5400.00,
+    "time_setup": "2026-03-03T12:00:00+00:00",
+    "expiration": "2026-03-04T00:00:00+00:00",
+    "comment": "Claudia-XAUUSD-H1-BUYLIMIT-001"
+  }
+]
+```
+
+**Kapan digunakan:**
+- ✅ Review pending orders sebelum memasang yang baru
+- ✅ Cek apakah pending order masih valid dengan kondisi market terkini
+- ✅ Housekeeping — cancel pending yang sudah tidak relevan
+
+---
+
+### 9. Cancel Pending Order (BARU v2.0)
+
+```
+DELETE {BRIDGE_BASE_URL}/order/pending/{ticket}
+```
+
+**Purpose:** Membatalkan pending order yang masih aktif
+
+**Response:**
+```json
+{
+  "status": "cancelled",
+  "ticket": 11223344,
+  "message": "Pending order 11223344 cancelled"
+}
+```
+
+**Kapan digunakan:**
+- ✅ Setup sudah tidak valid (market structure berubah)
+- ✅ Pending order sudah lebih dari 2 jam tanpa trigger
+- ✅ Kondisi news/macro berubah → cancel pending
+- ✅ Ganti level entry → cancel lama, pasang baru
+
+---
+
+### 10. Close Position
 
 ```
 POST {BRIDGE_BASE_URL}/close
 ```
 
-**Purpose:** Menutup posisi berdasarkan ticket number
+**Purpose:** Menutup posisi berdasarkan ticket number (full close)
 
 **Request Body:**
 ```json
@@ -244,7 +388,46 @@ POST {BRIDGE_BASE_URL}/close
 
 ---
 
-### 7. Modify Position SL/TP
+### 11. Partial Close Position (BARU v2.0)
+
+```
+POST {BRIDGE_BASE_URL}/close/partial
+```
+
+**Purpose:** Menutup sebagian volume posisi, sisanya tetap running
+
+**Request Body:**
+```json
+{
+  "ticket": 12345678,
+  "volume": 0.05
+}
+```
+
+**Response:**
+```json
+{
+  "status": "partial_closed",
+  "ticket": 12345678,
+  "volume_closed": 0.05,
+  "volume_remaining": 0.05,
+  "message": "Partially closed 0.05 lots, 0.05 remaining"
+}
+```
+
+**Kapan digunakan:**
+- ✅ Lock sebagian profit saat trade sudah ≥2.5× risk
+- ✅ Reduce exposure saat mendekati high-impact news
+- ✅ Scale out bertahap saat profit running
+
+**Best Practice:**
+- Close 50% saat profit ≥ 2.5× risk → trail SL sisa
+- Pastikan `volume` sesuai dengan `volume_step` dari `/symbol-info`
+- Setelah partial close → cek `/positions` untuk verifikasi sisa volume
+
+---
+
+### 12. Modify Position SL/TP
 
 ```
 PATCH {BRIDGE_BASE_URL}/order/{ticket}
@@ -261,14 +444,64 @@ PATCH {BRIDGE_BASE_URL}/order/{ticket}
 ```
 
 **Kapan digunakan:**
-- ✅ Update SL saat trailing stop diperlukan
+- ✅ **Trailing stop** — move SL ke break-even atau sesuai profit
 - ✅ Adjust TP berdasarkan perubahan kondisi market
-- ✅ Emergency risk management — menambahkan SL pada posisi yang belum memiliki SL
+- ✅ Emergency risk management — menambahkan SL pada posisi tanpa SL
+- ✅ Part of Active Trade Management Protocol (lihat trading-config.md)
 
 **CRITICAL NOTES:**
 - ⚠️ **Fallback jika modify gagal:** Close posisi existing + buka posisi baru dengan SL/TP yang benar
 - ⚠️ **JANGAN biarkan posisi tanpa SL** — ini adalah uncontrolled risk
 - ⚠️ **Validasi comment field** sebelum modify — hanya posisi dengan prefix `Claudia-*` yang di-manage
+
+---
+
+### 13. Order History (BARU v2.0)
+
+```
+GET {BRIDGE_BASE_URL}/orders/history?days=30
+```
+
+**Purpose:** Mengambil riwayat trade yang sudah ditutup
+
+**Query Parameters:**
+| Parameter | Default | Range | Description |
+|-----------|---------|-------|-------------|
+| `days` | 30 | 1-365 | Jumlah hari ke belakang |
+
+**Response:**
+```json
+{
+  "total": 5,
+  "deals": [
+    {
+      "ticket": 99887766,
+      "order": 12345678,
+      "symbol": "XAUUSD",
+      "type": "BUY",
+      "volume": 0.10,
+      "price": 5350.00,
+      "profit": 150.00,
+      "swap": -5.20,
+      "commission": -0.50,
+      "fee": 0.0,
+      "time": "2026-03-01T14:30:00+00:00",
+      "comment": "Claudia-XAUUSD-H1-BUY-001"
+    }
+  ]
+}
+```
+
+**Kapan digunakan:**
+- ✅ **Post-trade analysis** — review profit/loss detail
+- ✅ **Performance tracking** — update `performance-stats.md`
+- ✅ **Pattern recognition** — identifikasi setup paling profitable
+- ✅ **Swap/commission tracking** — faktor biaya total
+
+**Best Practice:**
+- Panggil `?days=7` untuk weekly review
+- Filter berdasarkan `comment` prefix `Claudia-*` untuk hanya lihat trade sistem
+- Gunakan data ini untuk update `memory/trade-journal.md` dan `memory/performance-stats.md`
 
 ---
 
@@ -305,8 +538,8 @@ Karena Bridge API TIDAK menyediakan endpoint berita, Claudia harus menggunakan k
 
 ### Idempotent Requests
 
-- Setiap order WAJIB menyertakan `idempotency_key` unik
-- Format: `claudia-{YYYYMMDD}-{sequence_number}`
+- Setiap order (market dan pending) WAJIB menyertakan `idempotency_key` unik
+- Format: `claudia-{YYYYMMDD}-{sequence_number}` (market) atau `claudia-pending-{YYYYMMDD}-{sequence_number}` (pending)
 - Ini mencegah duplikasi order jika terjadi network retry
 
 ### Connection Validation
@@ -320,7 +553,10 @@ Karena Bridge API TIDAK menyediakan endpoint berita, Claudia harus menggunakan k
 Semua endpoint mengembalikan structured JSON. Jika menerima:
 - `status: "error"` → Log error, jangan retry operasi yang sama
 - HTTP 400 → Request tidak valid, cek parameter
+- HTTP 404 → Resource tidak ditemukan (symbol, ticket)
+- HTTP 429 → Rate limited, tunggu sebelum retry
 - HTTP 500 → Server error, Bridge API mungkin bermasalah
+- HTTP 503 → MT5 tidak terkoneksi
 - Timeout → API mungkin offline, trigger koneksi lost procedure
 
 ---
@@ -338,7 +574,7 @@ Semua endpoint mengembalikan structured JSON. Jika menerima:
 
 ### Pair-Specific Notes
 
-- **XAUUSD:** High volatility, spread bisa melebar saat news. Cek spread sebelum entry.
+- **XAUUSD:** High volatility, spread bisa melebar saat news. Cek spread via `/symbol-info/XAUUSD` sebelum entry.
 - **EURUSD:** Pair paling liquid. Spread biasanya ketat.
 - **GBPUSD:** Volatile terutama saat London session dan BOE events.
 - **US100:** Index — perhatikan corporate earnings dan Fed announcements.

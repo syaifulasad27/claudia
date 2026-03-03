@@ -1,0 +1,10 @@
+{
+  "daily_loss_limit_pct": 5,
+  "weekly_loss_limit_pct": 10,
+  "max_consecutive_losses": 3,
+  "cooldown_hours": 24,
+  "max_drawdown_pct": 20,
+  "emergency_drawdown_pct": 50,
+  "max_concurrent_positions": 1,
+  "initial_equity": 100000
+}

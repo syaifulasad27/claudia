@@ -1,0 +1,42 @@
+{
+  "signals": {
+    "d1_trend": {
+      "weight": 3,
+      "description": "D1 EMA alignment (EMA20 > EMA50 > EMA200 = bullish)"
+    },
+    "h4_structure": {
+      "weight": 2,
+      "description": "H4 price above/below key EMA levels"
+    },
+    "h1_ema_alignment": {
+      "weight": 2,
+      "description": "H1 EMA20/50 aligned with trend direction"
+    },
+    "m15_momentum": {
+      "weight": 1,
+      "description": "M15 momentum candle confirms direction"
+    },
+    "volume_confirmation": {
+      "weight": 1,
+      "description": "Volume above 20-period average"
+    },
+    "rsi_filter": {
+      "weight": 1,
+      "description": "RSI 30-70 (not extreme, aligned with direction)"
+    },
+    "macro_sentiment": {
+      "weight": 2,
+      "description": "MarketIntelligence macro score alignment"
+    }
+  },
+  "thresholds": {
+    "high_confidence": 8,
+    "medium_confidence": 5,
+    "no_trade": 4
+  },
+  "size_multipliers": {
+    "high": 1.0,
+    "medium": 0.5,
+    "low": 0
+  }
+}

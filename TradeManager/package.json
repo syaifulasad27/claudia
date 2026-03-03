@@ -1,0 +1,11 @@
+{
+  "name": "trade-manager-skill",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "manage": "node scripts/manage-positions.js",
+    "risk": "node scripts/check-risk.js",
+    "stats": "node scripts/update-stats.js"
+  }
+}

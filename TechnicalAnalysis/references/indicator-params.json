@@ -1,0 +1,29 @@
+{
+  "ema": {
+    "periods": [20, 50, 200]
+  },
+  "atr": {
+    "period": 14
+  },
+  "rsi": {
+    "period": 14,
+    "overbought": 70,
+    "oversold": 30
+  },
+  "macd": {
+    "fast": 12,
+    "slow": 26,
+    "signal": 9
+  },
+  "bollinger": {
+    "period": 20,
+    "stddev": 2
+  },
+  "pivot": {
+    "type": "standard"
+  },
+  "fibonacci": {
+    "levels": [0.236, 0.382, 0.5, 0.618, 0.786],
+    "lookback_bars": 100
+  }
+}

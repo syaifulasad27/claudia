@@ -1,0 +1,11 @@
+{
+  "name": "technical-analysis-skill",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "indicators": "node scripts/compute-indicators.js",
+    "confluence": "node scripts/compute-confluence.js",
+    "levels": "node scripts/detect-levels.js"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "phase": "1",
+  "status": "active",
+  "feature": "comment-fetcher",
+  "activatedAt": "2026-03-03T06:54:00Z",
+  "cronExpression": "*/30 * * * *",
+  "schedule": "Every 30 minutes",
+  "output": "state/pending-comments.json",
+  "log": "logs/comment-fetcher.log",
+  "filters": [
+    "foreign_chars",
+    "spam_keywords",
+    "excessive_emoji"
+  ],
+  "note": "Phase 1: Fetch only, no reply yet. Waiting for Phase 2 (draft generator)"
+}

@@ -104,7 +104,7 @@ class ReplizClient {
     console.log('Repliz Client initializing...');
     
     // Fetch Accounts to find the Correct Account ID
-    const res = await this.request('GET', '/account');
+    const res = await this.request('GET', '/account?page=1&limit=10');
     
     if (!res.ok) {
       console.error('Failed to fetch accounts:', res.error);
@@ -112,13 +112,21 @@ class ReplizClient {
     }
 
     // Assuming the API returns an array or object of accounts
-    const accounts = Array.isArray(res.data) ? res.data : (res.data.accounts || res.data.data || Object.values(res.data));
+    const accounts = Array.isArray(res.data) ? res.data : 
+                     (res.data.docs || res.data.accounts || res.data.data || Object.values(res.data));
     
     if (accounts && accounts.length > 0) {
-      // Find account matching username, or just pick the first one
-      const targetAcc = accounts.find(a => a.username === this.username || a.name === this.username) || accounts[0];
+      // Filter out null/undefined entries and find matching account
+      const validAccounts = accounts.filter(a => a && (a._id || a.id));
+      const targetAcc = validAccounts.find(a => a.username === this.username || a.name === this.username) || validAccounts[0];
+      
+      if (!targetAcc) {
+        console.warn('⚠️ No valid accounts found in response.');
+        return { ok: false, error: 'No valid accounts found' };
+      }
+      
       this.accountId = targetAcc._id || targetAcc.id;
-      console.log(`✅ Connected to account: ${targetAcc.username || targetAcc.name || 'Unknown'} (ID: ${this.accountId})`);
+      console.log(`✅ Connected to account: ${targetAcc.username || targetAcc.name || targetAcc._id || 'Unknown'} (ID: ${this.accountId})`);
     } else {
       console.warn('⚠️ No accounts found connected to this API key.');
       return { ok: false, error: 'No accounts found' };
@@ -190,7 +198,10 @@ class ReplizClient {
       status: options.status || 'pending'
     });
     
-    if (this.accountId) params.append('accountIds', this.accountId);
+    if (this.accountId) {
+      // Send as array format: accountIds[]=id
+      params.append('accountIds[]', this.accountId);
+    }
 
     return await this.request('GET', `/queue?${params.toString()}`);
   }

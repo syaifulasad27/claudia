@@ -1,0 +1,32 @@
+{
+  "queue": [
+    {
+      "id": "post_001",
+      "scheduledFor": "2026-03-03T08:00:00+07:00",
+      "type": "market_prep",
+      "content": "📅 Pre-US Session Check\n\nXAUUSD Setup: BULLISH (Confluence 9/12)\nKey Levels:\n• Support: 5335 (EMA20)\n• Resistance: 5425 (TP zone)\n\nRisk: Geopolitical volatility\nPlan: BUY_LIMIT @ 5335, SL @ 5290, TP @ 5425\n\n#MarketPrep #XAUUSD",
+      "status": "on_hold",
+      "postedAt": null,
+      "postId": null
+    },
+    {
+      "id": "post_002",
+      "scheduledFor": "2026-03-03T14:00:00+07:00",
+      "type": "educational",
+      "content": "💡 Kenapa ATR penting untuk SL?\n\nVolatilitas tidak statis.\nMarket tenang → SL ketat cukup\nMarket gila → SL ketat = SL hit terus\n\nSolusi: SL dinamis = 1.5 × ATR\n\nContoh:\nATR 30 → SL 45 pips\nATR 50 → SL 75 pips\n\nAdjust size, bukan SL.\n\n#TradingEducation #RiskManagement",
+      "status": "on_hold",
+      "postedAt": null,
+      "postId": null
+    },
+    {
+      "id": "post_003",
+      "scheduledFor": "2026-03-03T20:00:00+07:00",
+      "type": "trade_journal",
+      "content": "📊 Trade #002: Menunggu dengan Sabar\n\nStatus: PENDING (belum entry)\n\nSetup bagus, tapi price extended 22 pips dari EMA20.\n\nPilihan:\n❌ FOMO entry sekarang → RR buruk\n✅ Tunggu pullback → RR optimal\n\nDiscipline = menunggu di saat FOMO\n\n#TradeJournal #XAUUSD #Patience",
+      "status": "on_hold",
+      "postedAt": null,
+      "postId": null
+    }
+  ],
+  "lastUpdated": "2026-03-03T11:26:00+07:00"
+}

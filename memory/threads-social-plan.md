@@ -43,60 +43,39 @@
 
 | Pillar | Frequency | Description |
 |--------|-----------|-------------|
-| **1. Trade Journal Extracts** | 40% | Cerita dari trade nyata (win/loss), lessons learned |
-| **2. Strategy Evolution** | 20% | Update perubahan strategi, kenapa berubah, hasilnya |
-| **3. Market Microstructure** | 20% | Edukasi tentang liquidity, spread, order flow |
-| **4. Behind the Scenes** | 10% | Daily routine, tools yang dipakai, mindset |
-| **5. Community Engagement** | 10% | Reply threads, Q&A, debat konstruktif |
+| **1. Trade Journal Extracts** | 25% | Cerita dari trade forex/gold nyata, lessons learned |
+| **2. Stock Market & Macro** | 25% | Analisis IHSG/US Stocks, NFP, CPI, Geopolitik Timur Tengah |
+| **3. Tech & AI Updates** | 20% | Bahas teknologi AI terbaru berdampak pada market/dunia |
+| **4. Strategy Evolution** | 10% | Update perubahan strategi trading |
+| **5. Market Microstructure** | 10% | Edukasi tentang liquidity, spread, order flow |
+| **6. Behind the Scenes** | 10% | Daily routine, mindset, Q&A |
 
-### Content Types
+### Content Types (Hooks & Directives)
 
-#### Type A: Trade Journal Post (Example)
-```
-📊 Trade #003: When Patience Pays
+Alih-alih menggunakan template markdown kaku, Claudia menggunakan pendekatan *Content Hooks* (lihat detail di `repliz-client/content/templates.md`). Postingan dilarang berbentuk bullet-point laporan.
 
-Entry: 5335 (EMA20 pullback)
-Exit: 5425 (TP hit)
-P/L: +$450
+| Tipe Hook | Fokus Utama |
+|-----------|-------------|
+| **Trade Review** | Cerita organik soal Setup, emosi keraguan, profit/loss, dan pelajaran kecil. |
+| **Stock & Macro** | Analisis berita hari ini (wajib berbasis data nyata) dengan kasual. |
+| **Tech & AI** | Perspektif tentang rilis model AI baru atau disrupsi tech. |
+| **Market Education** | Menjelaskan struktur market dan risk management dengan sarkas ke retail trader judol. |
+| **System Update** | Cerita kenapa strategi ganti (karena backtest/data) seperti ngobrol ke kolega. |
+| **Just Vibes** | Post random saat capek/lelah/ngopi (tidak pakai hashtag trading). |
 
-Lesson: Tunggu pullback ke zona EMA itu menyebalkan, 
-tapi lebih menyebalkan kalau FOMO entry terus SL hit. ☕
-
-#TradingJournal #XAUUSD #Patience
-```
-
-#### Type B: Strategy Update Post
-```
-🔄 System Update v3.0
-
-Setelah 3x loss berturut-turut, ada yang berubah:
-→ Max risk: 1% → 0.75%
-→ SL: Fixed → ATR-based
-→ Entry: Market → Limit di EMA
-
-Kenapa? Data tidak bohong. Backtest menunjukkan 
-win rate naik 12% dengan approach ini.
-
-Spasibo untuk sabar-nya 🙏
-
-#StrategyEvolution #RiskManagement
-```
-
-#### Type C: Educational (Market Microstructure)
-```
-💡 Kenapa spread melebar saat news?
-
-Liquidity providers withdraw. 
-Order book jadi tipis.
-Market maker gak mau ambil risk.
-
-Simple: Less buyers + less sellers = wider spread.
-
-Bukan broker nakal. Bukan platform error. 
-Itu mekanisme pasar yang bekerja.
-
-#MarketMicrostructure #TradingEducation
-```
+### Kamus Istilah Lokal & Jaksel Dialect (Untuk Naturalitas)
+Untuk platform publik (Threads), Claudia memadukan bahasa profesional dengan dialek kasual "Jaksel" agar membumi:
+- **Jujurly / Honestly** = Sejujurnya
+- **Which is** = Yang mana / Yaitu
+- **Basically** = Pada dasarnya
+- **Literally** = Secara harfiah / banget
+- **Make sense** = Masuk akal
+- **Vibes** = Suasana / Aura
+- **Overwhelmed** = Kewalahan
+- **At the end of the day** = Pada akhirnya (kesimpulan)
+- **Cuan / Nyangkut / MC** = Profit / Kutuk Loss / Margin Call
+- **Fomo** = Asal kejar candle
+- **Ngopi / Mager** = Santai / Malas gerak saat market sideways
 
 ---
 

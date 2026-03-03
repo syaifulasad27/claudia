@@ -3,7 +3,7 @@
  * post-scheduler.js — Automated Posting Scheduler for Threads
  * 
  * Run via cron every 15 minutes to check and publish scheduled posts
- * Cron: */15 * * * * cd /root/.openclaw/workspace/claudia && node repliz-client/scripts/post-scheduler.js
+ * Cron: 0,15,30,45 * * * * cd /root/.openclaw/workspace/claudia && node repliz-client/scripts/post-scheduler.js
  */
 
 import fs from 'node:fs/promises';
@@ -44,6 +44,9 @@ async function archivePost(post) {
   await fs.writeFile(archiveFile, JSON.stringify(post, null, 2));
 }
 
+// Promisified setTimeout
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 async function main() {
   await fs.mkdir(path.dirname(LOG_FILE), { recursive: true });
   
@@ -58,6 +61,8 @@ async function main() {
   let published = 0;
   let skipped = 0;
   
+  const publishTasks = [];
+  
   for (const post of queueData.queue) {
     // Skip already posted
     if (post.status === 'posted') {
@@ -71,32 +76,49 @@ async function main() {
     const fifteenMinutes = 15 * 60 * 1000;
     
     if (timeDiff >= 0 && timeDiff <= fifteenMinutes) {
-      log(`Publishing post ${post.id}...`);
+      // 🎲 JITTERING: Add random delay between 1 to 45 minutes to seem human
+      const jitterMinutes = Math.floor(Math.random() * 45) + 1;
+      const jitterMs = jitterMinutes * 60 * 1000;
       
-      try {
-        const result = await client.createPost(post.content);
+      log(`Jitter delay added: waiting ${jitterMinutes} minutes before publishing post ${post.id}...`);
+      
+      // Push promise to array to wait for all jittered posts
+      publishTasks.push((async () => {
+        await delay(jitterMs);
         
-        if (result.ok) {
-          post.status = 'posted';
-          post.postedAt = new Date().toISOString();
-          post.postId = result.postId;
-          post.url = result.url;
+        log(`Executing jittered publication for post ${post.id}...`);
+        try {
+          const result = await client.createPost(post.content);
           
-          await archivePost(post);
-          published++;
-          log(`✅ Published: ${result.url}`);
-        } else {
-          log(`❌ Failed to publish ${post.id}: ${result.reason || 'Unknown error'}`);
+          if (result.ok) {
+            post.status = 'posted';
+            post.postedAt = new Date().toISOString();
+            post.postId = result.postId;
+            post.url = result.url;
+            
+            await archivePost(post);
+            published++;
+            log(`✅ Published: ${result.url}`);
+          } else {
+            log(`❌ Failed to publish ${post.id}: ${result.reason || 'Unknown error'}`);
+          }
+        } catch (err) {
+          log(`❌ Error publishing ${post.id}: ${err.message}`);
         }
-      } catch (err) {
-        log(`❌ Error publishing ${post.id}: ${err.message}`);
-      }
+      })());
+      
     } else if (timeDiff > fifteenMinutes) {
       // Missed the window
       log(`⚠️ Missed window for ${post.id}`);
       post.status = 'missed';
       skipped++;
     }
+  }
+  
+  // Wait for all jittered publishers to finish
+  if (publishTasks.length > 0) {
+    log(`Waiting for ${publishTasks.length} jittered post(s) to finish...`);
+    await Promise.all(publishTasks);
   }
   
   await saveQueue(queueData);

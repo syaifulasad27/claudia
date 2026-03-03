@@ -1,0 +1,25 @@
+{
+  "phase": "3",
+  "status": "active",
+  "activatedAt": "2026-03-03T07:09:00Z",
+  "components": [
+    "notify-tuan.js",
+    "approval-handler.js"
+  ],
+  "workflow": "Draft → Telegram Notif → Tuan Approves → Publish",
+  "telegram": {
+    "status": "pending_config",
+    "note": "Set TELEGRAM_BOT_TOKEN in .env to enable notifications"
+  },
+  "cron": {
+    "notifier": "5,35 * * * * (every 30 min offset)",
+    "approval_handler": "*/5 * * * * (every 5 min)"
+  },
+  "actions": [
+    "✅ Approve - Publish reply to Threads",
+    "✏️ Edit - Request new text from Tuan",
+    "❌ Reject - Skip this comment",
+    "⏭️ Skip - Defer to later"
+  ],
+  "note": "Phase 3 active. Waiting for comments to test approval workflow."
+}

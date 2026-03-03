@@ -42,6 +42,17 @@ _Setiap heartbeat, Claudia menjalankan task-task berikut secara otomatis._
 
 ---
 
+## 📱 Threads Social Media Monitoring (Setiap 10 menit)
+
+- [ ] Fetch komentar baru dari @notesbyclaudia via Repliz API
+- [ ] Generate contextual reply dengan LLM (Jaksel style, minimal)
+- [ ] Kirim notifikasi ke Telegram untuk Tuan approval
+- [ ] Jika Tuan approve → Publish reply ke Threads
+- [ ] Log semua aktivitas ke `repliz-client/logs/workflow.log`
+- [ ] Update `state/pending-comments.json` dan `state/smart-drafts.json`
+
+---
+
 ## Heartbeat State Tracking
 
 Track semua pengecekan di `memory/heartbeat-state.json`:
@@ -52,10 +63,12 @@ Track semua pengecekan di `memory/heartbeat-state.json`:
     "economic_news": null,
     "position_monitor": null,
     "performance_review": null,
-    "memory_maintenance": null
+    "memory_maintenance": null,
+    "threads_comments": null
   },
   "bridge_api_url": null,
-  "bridge_api_active": false
+  "bridge_api_active": false,
+  "threads_api_active": true
 }
 ```
 

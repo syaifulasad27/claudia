@@ -1,19 +1,19 @@
 {
-  "lastFetch": "2026-03-03T08:15:59.858Z",
+  "lastFetch": "2026-03-03T10:30:02.436Z",
   "totalFetched": 1,
   "validComments": 1,
   "skippedComments": 0,
   "comments": [
     {
-      "id": "69a6875b4c63adf0837c2635",
+      "id": "69a6b0da4c63adf0837d75ff",
       "username": "syaifulasad.js",
-      "text": "Kapan open posisi kak?",
+      "text": "Gw tanya apa jawabnya apa",
       "postId": "18068384495637626",
-      "timestamp": "2026-03-03T07:01:40.000Z",
-      "category": "question",
-      "priority": "high",
+      "timestamp": "2026-03-03T09:58:34.000Z",
+      "category": "general",
+      "priority": "low",
       "status": "drafted",
-      "fetchedAt": "2026-03-03T08:15:59.858Z"
+      "fetchedAt": "2026-03-03T10:30:02.436Z"
     }
   ]
 }

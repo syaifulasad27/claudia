@@ -1,0 +1,23 @@
+{
+  "lastGenerated": "2026-03-03T10:30:02.806Z",
+  "totalDrafts": 1,
+  "context": {},
+  "drafts": [
+    {
+      "commentId": "69a6b0da4c63adf0837d75ff",
+      "username": "syaifulasad.js",
+      "originalText": "Gw tanya apa jawabnya apa",
+      "draftReply": "Thanks for dropping by! Basically trading itu journey, bukan destination. Keep grinding and stay safe with your risk management.",
+      "analysis": {
+        "userIntent": "general_engagement",
+        "userTone": "neutral",
+        "specificTopic": [],
+        "requiredContext": []
+      },
+      "confidence": "high",
+      "contextUsed": {},
+      "proposedAt": "2026-03-03T10:30:02.805Z",
+      "status": "awaiting_approval"
+    }
+  ]
+}

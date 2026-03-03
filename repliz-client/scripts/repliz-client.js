@@ -13,9 +13,9 @@ import dotenv from 'dotenv';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Load environment variables from root .env.repliz
+// Load environment variables from root .env
 const rootDir = path.join(__dirname, '..', '..');
-const envPath = path.join(rootDir, '.env.repliz');
+const envPath = path.join(rootDir, '.env');
 dotenv.config({ path: envPath });
 
 class ReplizClient {

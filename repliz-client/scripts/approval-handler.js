@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 /**
- * approval-handler.js — Phase 3: Handle Tuan's Approval Actions
+ * approval-handler.js — Handle Deep Link Approvals from Telegram
  * 
- * Listen for Telegram callback queries (button clicks)
- * Process: Approve, Edit, Reject
- * Publish reply if approved
+ * Process /start commands with approval parameters
+ * Format: /start approve_COMMENTID or /start edit_COMMENTID etc.
  * 
  * Run: Continuously or cron every 5 minutes
  */
@@ -34,9 +33,7 @@ async function log(message) {
 }
 
 async function getUpdates(offset = 0) {
-  if (!BOT_TOKEN || BOT_TOKEN === 'your_bot_token_here') {
-    return [];
-  }
+  if (!BOT_TOKEN) return [];
 
   const url = `https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${offset}&limit=100`;
   
@@ -79,15 +76,14 @@ async function answerCallbackQuery(callbackQueryId, text = null) {
   }
 }
 
-async function editMessage(chatId, messageId, newText) {
+async function sendMessage(chatId, text) {
   if (!BOT_TOKEN) return;
 
-  const url = `https://api.telegram.org/bot${BOT_TOKEN}/editMessageText`;
+  const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
   
   const payload = {
     chat_id: chatId,
-    message_id: messageId,
-    text: newText,
+    text: text,
     parse_mode: 'HTML'
   };
 
@@ -98,7 +94,7 @@ async function editMessage(chatId, messageId, newText) {
       body: JSON.stringify(payload)
     });
   } catch (err) {
-    await log(`❌ Failed to edit message: ${err.message}`);
+    await log(`❌ Failed to send message: ${err.message}`);
   }
 }
 
@@ -119,7 +115,7 @@ async function saveApprovalQueue(queue) {
 }
 
 async function updateDraftStatus(commentId, status, note = '') {
-  const draftsFile = path.join(STATE_DIR, 'draft-replies.json');
+  const draftsFile = path.join(STATE_DIR, 'smart-drafts.json');
   
   try {
     const content = await fs.readFile(draftsFile, 'utf-8');
@@ -138,7 +134,7 @@ async function updateDraftStatus(commentId, status, note = '') {
   }
 }
 
-async function processApproval(action, commentId, chatId, messageId, callbackQueryId) {
+async function processApproval(action, commentId, chatId) {
   await log(`Processing ${action} for comment ${commentId}`);
   
   const client = new ReplizClient();
@@ -148,59 +144,40 @@ async function processApproval(action, commentId, chatId, messageId, callbackQue
   const item = queue.pendingApprovals.find(a => a.commentId === commentId);
   
   if (!item) {
-    await answerCallbackQuery(callbackQueryId, 'Item not found in queue');
+    await sendMessage(chatId, `❌ Item tidak ditemukan atau sudah diproses sebelumnya.`);
     return;
   }
   
   switch (action) {
     case 'approve':
-      // Publish reply to Threads
       await log(`Publishing reply for ${commentId}...`);
       
       const result = await client.replyToComment(commentId, item.draftReply);
       
       if (result.ok) {
         await updateDraftStatus(commentId, 'approved_published', 'Published to Threads');
-        await editMessage(chatId, messageId, 
-          `✅ <b>APPROVED & PUBLISHED</b>\n\nReply to @${item.username} has been posted.`
-        );
-        await answerCallbackQuery(callbackQueryId, 'Reply published successfully!');
+        await sendMessage(chatId, `✅ <b>REPLY PUBLISHED!</b>\n\nReply to @${item.username} telah terkirim ke Threads.\n\n📝 Draft:\n"${item.draftReply.substring(0, 100)}..."`);
         await log(`✅ Published reply for ${commentId}`);
       } else {
-        await answerCallbackQuery(callbackQueryId, `Failed to publish: ${result.error}`);
+        await sendMessage(chatId, `❌ Failed to publish: ${result.error}`);
         await log(`❌ Failed to publish: ${result.error}`);
       }
       break;
       
     case 'edit':
-      // Mark as needs edit - Tuan will send new text
       await updateDraftStatus(commentId, 'needs_edit', 'Waiting for Tuan edit');
-      await editMessage(chatId, messageId,
-        `✏️ <b>EDIT REQUESTED</b>\n\nPlease reply with the new text for @${item.username}.\n\nOriginal draft:\n"${item.draftReply}"`
-      );
-      await answerCallbackQuery(callbackQueryId, 'Please send the edited reply text');
+      await sendMessage(chatId, `✏️ <b>EDIT REQUESTED</b>\n\nSilakan reply dengan draft baru untuk @${item.username}.\n\nOriginal draft:\n"${item.draftReply}"`);
       await log(`✏️ Edit requested for ${commentId}`);
       break;
       
     case 'reject':
-      // Skip this comment
       await updateDraftStatus(commentId, 'rejected', 'Rejected by Tuan');
-      await editMessage(chatId, messageId,
-        `❌ <b>REJECTED</b>\n\nReply to @${item.username} has been skipped.`
-      );
-      await answerCallbackQuery(callbackQueryId, 'Reply rejected');
+      await sendMessage(chatId, `❌ <b>REJECTED</b>\n\nReply to @${item.username} telah di-skip.`);
       await log(`❌ Rejected ${commentId}`);
       break;
       
-    case 'skip':
-      // Defer to later
-      await updateDraftStatus(commentId, 'deferred', 'Skipped for now');
-      await answerCallbackQuery(callbackQueryId, 'Skipped. Will check again later.');
-      await log(`⏭️ Skipped ${commentId}`);
-      break;
-      
     default:
-      await answerCallbackQuery(callbackQueryId, 'Unknown action');
+      await sendMessage(chatId, `❌ Unknown action: ${action}`);
   }
   
   // Remove from queue
@@ -211,59 +188,70 @@ async function processApproval(action, commentId, chatId, messageId, callbackQue
 async function main() {
   await fs.mkdir(STATE_DIR, { recursive: true });
   
-  await log('=== Approval Handler (Phase 3) Started ===');
+  await log('=== Approval Handler (Deep Link) Started ===');
   
-  if (!BOT_TOKEN || BOT_TOKEN === 'your_bot_token_here') {
-    await log('⚠️ TELEGRAM_BOT_TOKEN not set. Running in simulation mode.');
-    await log('   Set bot token to enable approval handling.');
+  if (!BOT_TOKEN) {
+    await log('⚠️ TELEGRAM_BOT_TOKEN not set. Cannot process approvals.');
+    return;
   }
   
   let lastUpdateId = 0;
+  let processedStartCommands = new Set(); // Track processed commands to avoid duplicates
   
-  // For cron mode: just check once
-  // For daemon mode: loop continuously
-  const isDaemon = process.argv.includes('--daemon');
+  // Load last processed ID from file if exists
+  const stateFile = path.join(STATE_DIR, 'approval-handler-state.json');
+  try {
+    const state = JSON.parse(await fs.readFile(stateFile, 'utf-8'));
+    lastUpdateId = state.lastUpdateId || 0;
+    processedStartCommands = new Set(state.processedCommands || []);
+  } catch (err) {
+    // No state file yet
+  }
   
-  do {
-    const updates = await getUpdates(lastUpdateId + 1);
+  const updates = await getUpdates(lastUpdateId + 1);
+  
+  for (const update of updates) {
+    lastUpdateId = update.update_id;
     
-    for (const update of updates) {
-      lastUpdateId = update.update_id;
+    // Handle /start commands with parameters (deep links)
+    if (update.message && update.message.text) {
+      const text = update.message.text;
+      const chatId = update.message.chat.id;
       
-      // Handle callback queries (button clicks)
-      if (update.callback_query) {
-        const callback = update.callback_query;
-        const data = callback.data;
-        const chatId = callback.message?.chat?.id;
-        const messageId = callback.message?.message_id;
-        const callbackQueryId = callback.id;
+      // Check if it's a /start command with parameters
+      if (text.startsWith('/start ')) {
+        const param = text.substring(7).trim(); // Remove '/start '
         
-        // Parse action:commentId
-        const [action, commentId] = data.split(':');
+        // Check if already processed (duplicate prevention)
+        const commandKey = `${chatId}_${param}_${update.update_id}`;
+        if (processedStartCommands.has(commandKey)) {
+          await log(`Skipping duplicate command: ${param}`);
+          continue;
+        }
+        processedStartCommands.add(commandKey);
         
-        if (action && commentId) {
-          await processApproval(action, commentId, chatId, messageId, callbackQueryId);
+        // Parse action and commentId from parameter
+        // Format: action_commentId (e.g., "approve_123abc" or "edit_123abc")
+        const match = param.match(/^(approve|edit|reject|skip)_(.+)$/);
+        
+        if (match) {
+          const action = match[1];
+          const commentId = match[2];
+          
+          await log(`Received deep link: ${action} for ${commentId}`);
+          await processApproval(action, commentId, chatId);
         } else {
-          await answerCallbackQuery(callbackQueryId, 'Invalid action');
+          await sendMessage(chatId, '❌ Format perintah tidak dikenal. Gunakan link dari notifikasi.');
         }
       }
-      
-      // Handle edited replies (if Tuan sends new text after clicking Edit)
-      if (update.message && update.message.reply_to_message) {
-        // Check if this is a reply to an edit request
-        const text = update.message.text;
-        const chatId = update.message.chat.id;
-        
-        await log(`Received potential edit from Tuan: ${text.substring(0, 50)}...`);
-        // TODO: Implement edit workflow - save new text and ask for confirmation
-      }
     }
-    
-    if (isDaemon) {
-      await new Promise(resolve => setTimeout(resolve, 5000)); // 5 second polling
-    }
-    
-  } while (isDaemon);
+  }
+  
+  // Save state
+  await fs.writeFile(stateFile, JSON.stringify({
+    lastUpdateId,
+    processedCommands: Array.from(processedStartCommands).slice(-100) // Keep last 100
+  }, null, 2));
   
   await log('=== Approval Handler Complete ===');
 }

@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * notify-tuan.js — Phase 3: Telegram Notifier for Reply Approval
+ * notify-tuan.js — Phase 3: Telegram Notifier with Deep Link Approval
  * 
- * Send draft replies to Tuan via Telegram for approval
- * Format: Comment + Draft + Action Buttons
+ * Send draft replies to Tuan via Telegram with deep link approval
+ * Format: Comment + Draft + Deep Links (replacement for inline buttons)
  * 
  * Run after reply-drafter
  */
@@ -24,6 +24,7 @@ const LOG_FILE = path.join(__dirname, '..', 'logs', 'notify-tuan.log');
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const BOT_USERNAME = 'Notifthreadsbot'; // Bot username for deep links
 
 async function log(message) {
   const timestamp = new Date().toISOString();
@@ -32,7 +33,7 @@ async function log(message) {
   await fs.appendFile(LOG_FILE, line).catch(() => {});
 }
 
-async function sendTelegramMessage(text, buttons = null) {
+async function sendTelegramMessage(text) {
   if (!BOT_TOKEN || !CHAT_ID || BOT_TOKEN === 'your_bot_token_here') {
     await log('⚠️ Telegram not configured. Skipping notification.');
     await log('   Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in .env');
@@ -47,12 +48,6 @@ async function sendTelegramMessage(text, buttons = null) {
     parse_mode: 'HTML',
     disable_web_page_preview: true
   };
-
-  if (buttons) {
-    payload.reply_markup = {
-      inline_keyboard: [buttons]
-    };
-  }
 
   try {
     const response = await fetch(url, {
@@ -76,11 +71,16 @@ async function sendTelegramMessage(text, buttons = null) {
   }
 }
 
-function formatNotification(draft) {
-  const { username, originalText, draftReply, priority, category } = draft;
+function formatNotificationWithDeepLinks(draft) {
+  const { username, originalText, draftReply, priority, category, commentId } = draft;
   
   const priorityEmoji = priority === 'high' ? '🔴' : priority === 'medium' ? '🟡' : '🟢';
   const categoryLabel = category.replace('_', ' ').toUpperCase();
+  
+  // Deep link format: https://t.me/BOT_USERNAME?start=ACTION_COMMENTID
+  const approveLink = `https://t.me/${BOT_USERNAME}?start=approve_${commentId}`;
+  const editLink = `https://t.me/${BOT_USERNAME}?start=edit_${commentId}`;
+  const rejectLink = `https://t.me/${BOT_USERNAME}?start=reject_${commentId}`;
   
   return `${priorityEmoji} <b>Reply Approval Needed</b>
 
@@ -90,38 +90,46 @@ function formatNotification(draft) {
 ✍️ <b>Claudia's Draft Reply:</b>
 "${draftReply}"
 
-<i>Category: ${categoryLabel} | Priority: ${priority.toUpperCase()}</i>`;
+<i>Category: ${categoryLabel} | Priority: ${priority.toUpperCase()}</i>
+
+━━━━━━━━━━━━━━━━━━━━━
+<b>👉 Pilih Aksi:</b>
+
+✅ <a href="${approveLink}">APPROVE</a> — Publish reply
+✏️ <a href="${editLink}">EDIT</a> — Request changes  
+❌ <a href="${rejectLink}">REJECT</a> — Skip this comment
+
+<i>Klik link di atas untuk approve/reject. Jika tidak ada aksi dalam 10 menit, saya akan follow up.</i>`;
 }
 
 async function main() {
   await fs.mkdir(STATE_DIR, { recursive: true });
   
-  await log('=== Notify Tuan (Phase 3) Started ===');
+  await log('=== Notify Tuan (Phase 3 - Deep Link) Started ===');
   
   // Check if Telegram is configured
   if (!BOT_TOKEN || BOT_TOKEN === 'your_bot_token_here') {
     await log('⚠️ TELEGRAM_BOT_TOKEN not set in .env');
     await log('   Please set it to enable Telegram notifications');
     
-    // Still process drafts but log to file only
     console.log('\n📋 DRAFTS READY (Telegram not configured):');
     console.log('=========================================\n');
   }
   
   // Read draft replies
-  const draftsFile = path.join(STATE_DIR, 'draft-replies.json');
+  const draftsFile = path.join(STATE_DIR, 'smart-drafts.json');
   let draftsData;
   
   try {
     const content = await fs.readFile(draftsFile, 'utf-8');
     draftsData = JSON.parse(content);
   } catch (err) {
-    await log('⚠️ No draft replies found. Run reply-drafter first.');
+    await log('⚠️ No draft replies found. Exiting.');
     return;
   }
   
   const drafts = draftsData.drafts || [];
-  const pendingDrafts = drafts.filter(d => d.status === 'awaiting_approval');
+  const pendingDrafts = drafts.filter(d => d.status === 'awaiting_approval' || d.status === 'drafted');
   
   await log(`Found ${pendingDrafts.length} drafts awaiting approval`);
   
@@ -133,17 +141,9 @@ async function main() {
   let sentCount = 0;
   
   for (const draft of pendingDrafts) {
-    const message = formatNotification(draft);
+    const message = formatNotificationWithDeepLinks(draft);
     
-    // Action buttons
-    const buttons = [
-      { text: '✅ Approve', callback_data: `approve:${draft.commentId}` },
-      { text: '✏️ Edit', callback_data: `edit:${draft.commentId}` },
-      { text: '❌ Reject', callback_data: `reject:${draft.commentId}` },
-      { text: '⏭️ Skip', callback_data: `skip:${draft.commentId}` }
-    ];
-    
-    const result = await sendTelegramMessage(message, buttons);
+    const result = await sendTelegramMessage(message);
     
     if (result.ok) {
       draft.status = 'notified';
@@ -155,7 +155,6 @@ async function main() {
     } else {
       // If Telegram fails, still show in console
       console.log('\n' + message);
-      console.log('Actions: [Approve] [Edit] [Reject] [Skip]');
       console.log('---');
     }
     
@@ -166,7 +165,7 @@ async function main() {
   // Update drafts file
   await fs.writeFile(draftsFile, JSON.stringify(draftsData, null, 2));
   
-  await log(`✅ Sent ${sentCount} notifications`);
+  await log(`✅ Sent ${sentCount} notifications with deep links`);
   await log('=== Notify Tuan Complete ===\n');
   
   // Save to approval queue for handler

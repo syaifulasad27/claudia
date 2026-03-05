@@ -72,10 +72,22 @@ async function sendTelegramMessage(text) {
 }
 
 function formatNotificationWithDeepLinks(draft) {
-  const { username, originalText, draftReply, priority, category, commentId } = draft;
-  
-  const priorityEmoji = priority === 'high' ? '🔴' : priority === 'medium' ? '🟡' : '🟢';
-  const categoryLabel = category.replace('_', ' ').toUpperCase();
+  const {
+    username = 'unknown',
+    originalText = '',
+    draftReply = '',
+    priority = 'medium',
+    category = 'general',
+    commentId = 'unknown'
+  } = draft || {};
+
+  const safeOriginal = String(originalText || '');
+  const safeReply = String(draftReply || '(draft kosong)');
+  const safePriority = String(priority || 'medium').toLowerCase();
+  const safeCategory = String(category || 'general');
+
+  const priorityEmoji = safePriority === 'high' ? '🔴' : safePriority === 'medium' ? '🟡' : '🟢';
+  const categoryLabel = safeCategory.replace(/_/g, ' ').toUpperCase();
   
   // Deep link format: https://t.me/BOT_USERNAME?start=ACTION_COMMENTID
   const approveLink = `https://t.me/${BOT_USERNAME}?start=approve_${commentId}`;
@@ -85,12 +97,12 @@ function formatNotificationWithDeepLinks(draft) {
   return `${priorityEmoji} <b>Reply Approval Needed</b>
 
 💬 <b>Comment from @${username}:</b>
-"${originalText.substring(0, 200)}${originalText.length > 200 ? '...' : ''}"
+"${safeOriginal.substring(0, 200)}${safeOriginal.length > 200 ? '...' : ''}"
 
 ✍️ <b>Claudia's Draft Reply:</b>
-"${draftReply}"
+"${safeReply}"
 
-<i>Category: ${categoryLabel} | Priority: ${priority.toUpperCase()}</i>
+<i>Category: ${categoryLabel} | Priority: ${safePriority.toUpperCase()}</i>
 
 ━━━━━━━━━━━━━━━━━━━━━
 <b>👉 Pilih Aksi:</b>

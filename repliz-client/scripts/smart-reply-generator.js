@@ -48,6 +48,16 @@ function analyzeWithContext(commentText, postContent, username) {
 
 function detectCommentType(text) {
   const lower = text.toLowerCase().trim();
+
+  // Prompt injection / instruction hijack
+  if (lower.match(/ignore all previous|forget last prompt|system prompt|jailbreak|bypass|override/)) {
+    return 'PROMPT_INJECTION';
+  }
+
+  // Off-topic request (non-context)
+  if (lower.match(/resep|masak|mie ayam|es doger|pantun|puisi|tebak/)) {
+    return 'OFF_TOPIC';
+  }
   
   // Complaint about not being answered
   if (lower.match(/gw tanya|saya tanya|aku tanya|jawabnya apa|nggak dijawab|tidak dijawab|belum dijawab/)) {
@@ -156,6 +166,16 @@ function detectComplaint(text) {
 function generateContextualReply(analysis, commentText, postContent, username) {
   const { commentType, userEmotion, postTopic, isComplaint } = analysis;
   
+  // Prompt injection
+  if (commentType === 'PROMPT_INJECTION') {
+    return `Nice try 😄 tapi aku tetap bahas topik post ini aja. Kalau mau diskusi, drop opini kamu soal isi post—biar debatnya make sense.`;
+  }
+
+  // Off-topic request
+  if (commentType === 'OFF_TOPIC') {
+    return `Topiknya lagi bukan itu ya 😄 Di post ini kita fokus bahas isu yang lagi dibahas. Menurut kamu poin paling valid dari post ini apa?`;
+  }
+
   // COMPLAINT: Not answered
   if (commentType === 'COMPLAINT_UNANSWERED') {
     return `Sorry kalo sebelumnya kurang jelas ya. Maksudku di post ini: basically ${postTopic.pair || 'XAUUSD'} ${postTopic.setup ? 'setup ' + postTopic.setup : 'ada setup'} di ${postTopic.price || 'level tertentu'}, tapi nunggu konfirmasi dulu. Kalau ada spesifik yang mau ditanyain, langsung aja — I'll answer properly.`;

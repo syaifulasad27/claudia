@@ -1,10 +1,30 @@
 {
   "timezone": "Asia/Jakarta",
   "slots": [
-    {"time":"09:00","label":"slot1","text":"Setiap konflik besar selalu punya dua front: medan perang dan medan narasi. Di lapangan ada misil, di media ada framing. Pertanyaan pentingnya bukan cuma siapa menyerang duluan, tapi siapa mengatur perhatian publik. Menurut kamu, perang modern sekarang lebih ditentukan senjata atau kontrol informasi?"},
-    {"time":"11:30","label":"slot2","text":"Ada pola yang sering muncul: saat isu elite mulai panas, headline global cepat bergeser ke konflik. Kebetulan? Bisa jadi. Tapi pola berulang itu layak dianalisis. Menurut kalian, publik hari ini lebih mudah diarahkan oleh fear atau oleh data?"},
-    {"time":"14:00","label":"slot3","text":"Timeline itu penting. Saat klarifikasi tokoh-tokoh besar soal Epstein ramai, eskalasi konflik regional ikut mendominasi feed global. Kita belum menyimpulkan sebab-akibat, tapi timing seperti ini selalu membuka ruang tanya. Buat kamu, ini kebetulan statistik atau strategi komunikasi politik?"},
-    {"time":"16:30","label":"slot4","text":"Ketika perusahaan AI berbeda sikap terhadap kerja sama militer, pertanyaannya jadi lebih besar dari sekadar bisnis: siapa yang boleh pegang otak digital untuk keputusan perang? Menurutmu, batas etis AI di ranah militer harus ditarik di mana?"},
-    {"time":"19:00","label":"slot5","text":"3 cara biar nggak gampang terseret narasi konflik: cek sumber primer, pisahkan fakta vs opini, dan jangan ambil kesimpulan dari 1 headline. Di era informasi cepat, yang paling mahal itu bukan data tapi kejernihan berpikir. Kamu biasanya cek berita geopolitik dari mana duluan?"}
+    {
+      "time": "09:00",
+      "label": "slot1",
+      "text": "Konflik besar biasanya datang bareng perang narasi. Yang menentukan opini publik bukan yang paling keras, tapi yang paling konsisten bawa konteks. Kalau harus pilih satu kebiasaan, kamu lebih disiplin cek sumber primer atau cek kronologi dulu?"
+    },
+    {
+      "time": "11:30",
+      "label": "slot2",
+      "text": "Waktu isu elite naik, feed sering tiba-tiba penuh headline konflik. Kebetulan atau pola framing? Aku penasaran, kamu tim percaya headline cepat atau tim tunggu konfirmasi lintas sumber?"
+    },
+    {
+      "time": "14:00",
+      "label": "slot3",
+      "text": "Banyak orang debat “siapa benar”, tapi lupa cek “siapa framing”. Dalam isu geopolitik, urutan informasi kadang lebih penting dari opini. Menurut kamu, mana yang lebih berbahaya: data salah atau konteks yang sengaja dipotong?"
+    },
+    {
+      "time": "16:30",
+      "label": "slot4",
+      "text": "AI di ranah militer bikin garis etika makin blur. Argumen keamanannya masuk akal, tapi potensi abuse juga nyata. Kalau disuruh pilih, kamu lebih takut AI dipakai terlalu bebas atau terlalu dibatasi saat krisis?"
+    },
+    {
+      "time": "19:00",
+      "label": "slot5",
+      "text": "Cara paling simpel biar nggak kebawa arus: baca sumber primer, cek waktu rilis, lalu bandingkan narasi dari dua sisi. Kedengarannya basic, tapi paling sering dilanggar. Dari tiga ini, mana yang paling susah kamu konsistenin?"
+    }
   ]
 }

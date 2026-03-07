@@ -11,6 +11,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -144,7 +145,16 @@ function generateContextualReply(analysis, commentText, postContent, username) {
   if (commentType === 'QUESTION_REASON') return `Alasannya terkait konteks post ini: ${postSummary}. Kalau mau, aku bisa breakdown alasan utamanya poin per poin.`;
   if (commentType === 'APPRECIATION') return `Thanks ${username || 'bro'}! Appreciate banget. Kalau mau, drop opini kamu juga soal poin utama di post ini.`;
 
-  return `Thanks feedback-nya. Supaya presisi, aku akan tetap jawab sesuai konteks post ini: ${postSummary}.`;
+  if (postDomain === 'tech') {
+    return 'Setuju banget. Justru eksplor lintas bidang bikin kita ngerti alur bisnis end-to-end, bukan cuma ngoding fiturnya doang.';
+  }
+  if (postDomain === 'geopolitics') {
+    return 'Setuju, lihat dari beberapa sudut itu penting biar nggak kejebak satu narasi aja.';
+  }
+  if (postDomain === 'trading') {
+    return 'Setuju. Lihat konteks yang lebih luas memang bikin keputusan trading lebih matang.';
+  }
+  return 'Setuju, poin kamu valid. Makasih sudah nambah perspektif.';
 }
 
 async function readReplyHistory() {
@@ -163,6 +173,12 @@ async function writeReplyHistory(entries) {
     total: bounded.length,
     entries: bounded
   }, null, 2));
+}
+
+function logLearning(kind, title, body) {
+  try {
+    execSync(`node /root/.openclaw/workspace/claudia/repliz-client/scripts/log-learning.js ${kind} ${JSON.stringify(title)} ${JSON.stringify(body)}`, { stdio: 'ignore' });
+  } catch {}
 }
 
 async function main() {
@@ -206,6 +222,7 @@ async function main() {
       });
       comment.status = 'needs_context';
       await log(`@${comment.username} -> needs_context (blocked)`);
+      logLearning('error', 'Missing post context for comment reply', `commentId=${comment.id} user=@${comment.username} status=needs_context`);
       continue;
     }
 
@@ -237,6 +254,7 @@ async function main() {
       status = 'needs_review_low_relevance';
       blockedReason = 'low_relevance';
       reply = 'Aku tangkap pertanyaanmu, tapi biar nggak salah konteks, boleh sebut bagian post yang kamu maksud?';
+      logLearning('learning', 'Low relevance draft blocked', `commentId=${comment.id} user=@${comment.username} relevance=${finalRel} domain=${analysis.postDomain}`);
     }
 
     const draft = {

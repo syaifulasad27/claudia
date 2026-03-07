@@ -9,6 +9,10 @@ function run(cmd, allowFail = false) {
   try {
     return execSync(cmd, { stdio: 'pipe', encoding: 'utf-8' });
   } catch (e) {
+    const msg = (e.stdout || e.stderr || e.message || '').replace(/\n/g, ' ').slice(0, 400);
+    try {
+      execSync(`node /root/.openclaw/workspace/claudia/repliz-client/scripts/log-learning.js error ${JSON.stringify('monitor-only command failure')} ${JSON.stringify(msg)}`, { stdio: 'ignore' });
+    } catch {}
     if (allowFail) return e.stdout || e.message || '';
     throw e;
   }

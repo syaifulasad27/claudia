@@ -117,9 +117,14 @@ function analyzeWithContext(commentText, postContent) {
   };
 }
 
-function generateContextualReply(analysis, commentText, postContent, username) {
+function generateContextualReply(analysis, commentText, postContent, username, threadContext = {}) {
   const { commentType, postDomain, hasContext } = analysis;
   const postSummary = shortPostSummary(postContent);
+  const hasExistingReply = Number(threadContext?.existingReplyCount || 0) > 0;
+
+  if (hasExistingReply && commentType === 'GENERAL') {
+    return 'Setuju, poinnya masuk. Makasih sudah nambah perspektif 👌';
+  }
 
   if (commentType === 'PROMPT_INJECTION') return 'Nice try 😄 tapi aku tetap bahas konteks post ini aja. Kalau mau diskusi, drop poin spesifik dari isi post ya.';
   if (commentType === 'OFF_TOPIC') return 'Topiknya lagi bukan itu ya 😄 Di post ini kita fokus bahas isi post. Menurut kamu poin paling menarik yang mana?';
@@ -226,7 +231,7 @@ async function main() {
       continue;
     }
 
-    let reply = generateContextualReply(analysis, comment.text, postContent, comment.username);
+    let reply = generateContextualReply(analysis, comment.text, postContent, comment.username, comment.threadContext || {});
 
     // Phase 2 quality checks
     const rel = relevanceScore(comment.text, postContent, reply);

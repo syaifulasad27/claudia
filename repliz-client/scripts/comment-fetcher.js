@@ -69,8 +69,9 @@ function hasExcessiveEmoji(text) {
 
 function categorizeComment(text) {
   const lower = text.toLowerCase();
-  
-  if (lower.includes('bot') || lower.includes('ai') || lower.includes('robot')) {
+
+  // Strict AI accusation detector (avoid false positives on words like "baik")
+  if (/\b(bot|robot|ai\s+banget|kamu\s+ai|lu\s+ai|anda\s+ai|akun\s+ai|ini\s+ai|bukan\s+manusia)\b/.test(lower)) {
     return 'ai_accusation';
   }
   if (lower.includes('?') || lower.includes('bagaimana') || lower.includes('gimana') || lower.includes('cara')) {
@@ -133,6 +134,8 @@ async function main() {
     const postId = item.content?.id || item.content?._id || item.postId || 'unknown';
     const postText = item.content?.description || item.content?.text || item.post?.description || item.post?.text || '';
     const postTitle = item.content?.title || item.post?.title || '';
+    const postUrl = item.content?.url || item.post?.url || '';
+    const existingReplies = Array.isArray(commentData.replies) ? commentData.replies : [];
     
     // Filter checks
     if (containsForeignChars(text)) {
@@ -162,7 +165,13 @@ async function main() {
       postContext: {
         title: postTitle,
         text: postText,
+        url: postUrl,
         preview: String(postText || postTitle || '').slice(0, 180)
+      },
+      threadContext: {
+        existingReplyCount: existingReplies.length,
+        latestReplyText: existingReplies.length ? String(existingReplies[existingReplies.length - 1].text || '').slice(0, 180) : '',
+        latestReplyAt: existingReplies.length ? (existingReplies[existingReplies.length - 1].createdAt || '') : ''
       },
       timestamp: commentData.createdAt || item.createdAt || new Date().toISOString(),
       category,

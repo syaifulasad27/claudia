@@ -78,7 +78,8 @@ function formatNotificationWithDeepLinks(draft) {
     draftReply = '',
     priority = 'medium',
     category = 'general',
-    commentId = 'unknown'
+    commentId = 'unknown',
+    quality = {}
   } = draft || {};
 
   const safeOriginal = String(originalText || '');
@@ -94,6 +95,10 @@ function formatNotificationWithDeepLinks(draft) {
   const editLink = `https://t.me/${BOT_USERNAME}?start=edit_${commentId}`;
   const rejectLink = `https://t.me/${BOT_USERNAME}?start=reject_${commentId}`;
   
+  const rel = typeof quality?.relevanceScore === 'number' ? quality.relevanceScore : 'n/a';
+  const dup = typeof quality?.duplicateScore === 'number' ? quality.duplicateScore : 'n/a';
+  const risk = quality?.blockedReason ? ` | Risk: ${quality.blockedReason}` : '';
+
   return `${priorityEmoji} <b>Reply Approval Needed</b>
 
 💬 <b>Comment from @${username}:</b>
@@ -102,7 +107,7 @@ function formatNotificationWithDeepLinks(draft) {
 ✍️ <b>Claudia's Draft Reply:</b>
 "${safeReply}"
 
-<i>Category: ${categoryLabel} | Priority: ${safePriority.toUpperCase()}</i>
+<i>Category: ${categoryLabel} | Priority: ${safePriority.toUpperCase()} | Relevance: ${rel} | DupScore: ${dup}${risk}</i>
 
 ━━━━━━━━━━━━━━━━━━━━━
 <b>👉 Pilih Aksi:</b>

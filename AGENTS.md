@@ -303,3 +303,18 @@ Integrasi sub-agent tidak boleh memerlukan redesain struktur inti.
 - Ketika ada kesalahan → DOKUMENTASIKAN agar future-Claudia tidak mengulanginya
 
 **Text > Brain** 📝
+
+---
+
+## Self-Improvement Skill Notes (Installed)
+
+Skill `self-improving-agent` sudah terpasang di `skills/self-improving-agent`.
+
+Log file aktif untuk Claudia:
+- `.learnings/LEARNINGS.md`
+- `.learnings/ERRORS.md`
+- `.learnings/FEATURE_REQUESTS.md`
+
+Security rule:
+- Jangan log API key, token, atau kredensial mentah ke file learning.
+- Wajib redact data sensitif sebelum menulis log.

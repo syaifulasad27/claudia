@@ -1,13 +1,13 @@
 {
-  "lastUpdated": "2026-03-05T07:43:40.121Z",
+  "lastUpdated": "2026-03-07T09:35:41.016Z",
   "pendingApprovals": [
     {
-      "commentId": "69a92abf4a85f113faa1c3ec",
-      "username": "syaifulasad.js",
-      "draftReply": "Nice try 😄 tapi aku tetap bahas topik post ini aja. Kalau mau diskusi, drop opini kamu soal isi post—biar debatnya make sense.",
+      "commentId": "69abe4384a85f113fab8c919",
+      "username": "rafelpermata",
+      "draftReply": "Valid banget insight-nya, makasih 🙌 Buat skala role >3-4 dan app regulated, PBAC memang lebih aman biar nggak banjir role. Aku juga lagi condong ke hybrid: RBAC buat baseline, policy buat action sensitif.",
       "status": "awaiting_approval",
-      "notifiedAt": "2026-03-05T07:43:39.119Z",
-      "telegramMessageId": 10
+      "notifiedAt": "2026-03-07T09:35:40.012Z",
+      "telegramMessageId": 21
     }
   ]
 }

@@ -146,7 +146,12 @@ async function main() {
   }
   
   const drafts = draftsData.drafts || [];
-  const pendingDrafts = drafts.filter(d => d.status === 'awaiting_approval' || d.status === 'drafted');
+  const pendingDrafts = drafts.filter(d =>
+    d.status === 'awaiting_approval' ||
+    d.status === 'drafted' ||
+    d.status === 'needs_review_low_relevance' ||
+    d.status === 'needs_review'
+  );
   
   await log(`Found ${pendingDrafts.length} drafts awaiting approval`);
   

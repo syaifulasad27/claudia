@@ -149,9 +149,8 @@ async function processApproval(action, commentId, chatId) {
   }
   
   switch (action) {
-    case 'approve':
+    case 'approve': {
       await log(`Publishing reply for ${commentId}...`);
-      
       const result = await client.replyToComment(commentId, item.draftReply);
       
       if (result.ok) {
@@ -163,12 +162,13 @@ async function processApproval(action, commentId, chatId) {
         await log(`❌ Failed to publish: ${result.error}`);
       }
       break;
+    }
       
     case 'edit':
       await updateDraftStatus(commentId, 'needs_edit', 'Waiting for Tuan edit');
-      await sendMessage(chatId, `✏️ <b>EDIT REQUESTED</b>\n\nSilakan reply dengan draft baru untuk @${item.username}.\n\nOriginal draft:\n"${item.draftReply}"`);
+      await sendMessage(chatId, `✏️ <b>EDIT REQUESTED</b>\n\nSilakan kirim command:\n<code>/override ${commentId} | teks balasan baru</code>\n\nOriginal draft:\n"${item.draftReply}"`);
       await log(`✏️ Edit requested for ${commentId}`);
-      break;
+      return;
       
     case 'reject':
       await updateDraftStatus(commentId, 'rejected', 'Rejected by Tuan');
@@ -183,6 +183,32 @@ async function processApproval(action, commentId, chatId) {
   // Remove from queue
   queue.pendingApprovals = queue.pendingApprovals.filter(a => a.commentId !== commentId);
   await saveApprovalQueue(queue);
+}
+
+async function processOverride(commentId, replyText, chatId) {
+  const text = String(replyText || '').trim();
+  if (!commentId || !text) {
+    await sendMessage(chatId, '❌ Format override salah. Gunakan: /override <commentId> | <teks balasan>');
+    return;
+  }
+
+  const client = new ReplizClient();
+  await client.init();
+  const result = await client.replyToComment(commentId, text);
+
+  if (result.ok) {
+    await updateDraftStatus(commentId, 'approved_published', 'Published via manual override');
+
+    const queue = await loadApprovalQueue();
+    queue.pendingApprovals = (queue.pendingApprovals || []).filter(a => a.commentId !== commentId);
+    await saveApprovalQueue(queue);
+
+    await sendMessage(chatId, `✅ <b>OVERRIDE PUBLISHED</b>\n\nComment ID: <code>${commentId}</code>\nBalasan override berhasil dipost.`);
+    await log(`✅ Override published for ${commentId}`);
+  } else {
+    await sendMessage(chatId, `❌ Override gagal: ${result.error || 'unknown error'}`);
+    await log(`❌ Override failed for ${commentId}: ${result.error || 'unknown error'}`);
+  }
 }
 
 async function main() {
@@ -218,6 +244,21 @@ async function main() {
       const text = update.message.text;
       const chatId = update.message.chat.id;
       
+      // Command: /override <commentId> | <new reply text>
+      if (text.startsWith('/override ')) {
+        const body = text.substring('/override '.length).trim();
+        const sep = body.indexOf('|');
+        if (sep === -1) {
+          await sendMessage(chatId, '❌ Format override salah. Gunakan: /override <commentId> | <teks balasan>');
+          continue;
+        }
+        const commentId = body.substring(0, sep).trim();
+        const replyText = body.substring(sep + 1).trim();
+        await log(`Received override for ${commentId}`);
+        await processOverride(commentId, replyText, chatId);
+        continue;
+      }
+
       // Check if it's a /start command with parameters
       if (text.startsWith('/start ')) {
         const param = text.substring(7).trim(); // Remove '/start '

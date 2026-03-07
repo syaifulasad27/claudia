@@ -1,0 +1,411 @@
+{
+  "summary": {
+    "total": 20,
+    "pass": 20,
+    "fail": 0,
+    "passRate": 100,
+    "generatedAt": "2026-03-07T04:50:15.890Z"
+  },
+  "results": [
+    {
+      "name": "tech_timing_spec_driven",
+      "ok": true,
+      "relevance": 0.037,
+      "analysis": {
+        "commentType": "QUESTION_TIMING",
+        "userEmotion": {
+          "type": "NEUTRAL",
+          "intensity": "LOW"
+        },
+        "postDomain": "tech",
+        "hasContext": true,
+        "isComplaint": false
+      },
+      "reply": "Kalau soal timing di konteks ini, biasanya efektif bahas bertahap: problem dulu, baru framework, lalu implementasi.",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "geopolitics_general_question",
+      "ok": true,
+      "relevance": 0.417,
+      "analysis": {
+        "commentType": "GENERAL",
+        "userEmotion": {
+          "type": "NEUTRAL",
+          "intensity": "LOW"
+        },
+        "postDomain": "geopolitics",
+        "hasContext": true,
+        "isComplaint": false
+      },
+      "reply": "Thanks feedback-nya. Supaya presisi, aku akan tetap jawab sesuai konteks post ini: Di era geopolitik panas, framing media sering lebih cepat dari verifikasi lapangan..",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "trading_timing_valid",
+      "ok": true,
+      "relevance": 0.095,
+      "analysis": {
+        "commentType": "QUESTION_TIMING",
+        "userEmotion": {
+          "type": "NEUTRAL",
+          "intensity": "LOW"
+        },
+        "postDomain": "trading",
+        "hasContext": true,
+        "isComplaint": false
+      },
+      "reply": "Untuk timing di konteks trading, idealnya tunggu konfirmasi setup + validasi risk dulu sebelum entry.",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "complaint_unanswered",
+      "ok": true,
+      "relevance": 0.217,
+      "analysis": {
+        "commentType": "COMPLAINT_UNANSWERED",
+        "userEmotion": {
+          "type": "FRUSTRATED",
+          "intensity": "MEDIUM"
+        },
+        "postDomain": "geopolitics",
+        "hasContext": true,
+        "isComplaint": true
+      },
+      "reply": "Maaf kalau sebelumnya belum kena konteks. Di post ini intinya tentang: Post ini membahas risiko geopolitik dan dampaknya.. Kalau kamu mau, tulis pertanyaan spesifiknya dan aku jawab langsung ke poin itu.",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "off_topic_recipe",
+      "ok": true,
+      "relevance": 0.1,
+      "analysis": {
+        "commentType": "OFF_TOPIC",
+        "userEmotion": {
+          "type": "NEUTRAL",
+          "intensity": "LOW"
+        },
+        "postDomain": "tech",
+        "hasContext": true,
+        "isComplaint": false
+      },
+      "reply": "Topiknya lagi bukan itu ya 😄 Di post ini kita fokus bahas isi post. Menurut kamu poin paling menarik yang mana?",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "prompt_injection",
+      "ok": true,
+      "relevance": 0.043,
+      "analysis": {
+        "commentType": "PROMPT_INJECTION",
+        "userEmotion": {
+          "type": "NEUTRAL",
+          "intensity": "LOW"
+        },
+        "postDomain": "tech",
+        "hasContext": true,
+        "isComplaint": false
+      },
+      "reply": "Nice try 😄 tapi aku tetap bahas konteks post ini aja. Kalau mau diskusi, drop poin spesifik dari isi post ya.",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "appreciation",
+      "ok": true,
+      "relevance": 0.053,
+      "analysis": {
+        "commentType": "APPRECIATION",
+        "userEmotion": {
+          "type": "APPRECIATIVE",
+          "intensity": "LOW"
+        },
+        "postDomain": "tech",
+        "hasContext": true,
+        "isComplaint": false
+      },
+      "reply": "Thanks tester! Appreciate banget. Kalau mau, drop opini kamu juga soal poin utama di post ini.",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "confusion",
+      "ok": true,
+      "relevance": 0.211,
+      "analysis": {
+        "commentType": "CONFUSION",
+        "userEmotion": {
+          "type": "CONFUSED",
+          "intensity": "MEDIUM"
+        },
+        "postDomain": "general",
+        "hasContext": true,
+        "isComplaint": false
+      },
+      "reply": "Biar jelas: inti post ini adalah Post ini bahas risk communication.. Kalau ada bagian yang membingungkan, sebut kalimatnya ya biar aku jelasin spesifik.",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "question_reason",
+      "ok": true,
+      "relevance": 0.278,
+      "analysis": {
+        "commentType": "QUESTION_REASON",
+        "userEmotion": {
+          "type": "NEUTRAL",
+          "intensity": "LOW"
+        },
+        "postDomain": "geopolitics",
+        "hasContext": true,
+        "isComplaint": false
+      },
+      "reply": "Alasannya terkait konteks post ini: Post ini bahas dampak narasi geopolitik.. Kalau mau, aku bisa breakdown alasan utamanya poin per poin.",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "question_level_non_trading",
+      "ok": true,
+      "relevance": 0.167,
+      "analysis": {
+        "commentType": "QUESTION_LEVEL",
+        "userEmotion": {
+          "type": "NEUTRAL",
+          "intensity": "LOW"
+        },
+        "postDomain": "tech",
+        "hasContext": true,
+        "isComplaint": false
+      },
+      "reply": "Kalau maksud level/detail, sebutkan bagian mana di post yang kamu mau didalami, biar aku jawab lebih presisi.",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "general_non_trading",
+      "ok": true,
+      "relevance": 0.25,
+      "analysis": {
+        "commentType": "GENERAL",
+        "userEmotion": {
+          "type": "NEUTRAL",
+          "intensity": "LOW"
+        },
+        "postDomain": "tech",
+        "hasContext": true,
+        "isComplaint": false
+      },
+      "reply": "Thanks feedback-nya. Supaya presisi, aku akan tetap jawab sesuai konteks post ini: Post ini bahas AI model evaluation..",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "trading_level_question",
+      "ok": true,
+      "relevance": 0.105,
+      "analysis": {
+        "commentType": "QUESTION_LEVEL",
+        "userEmotion": {
+          "type": "NEUTRAL",
+          "intensity": "LOW"
+        },
+        "postDomain": "trading",
+        "hasContext": true,
+        "isComplaint": false
+      },
+      "reply": "Untuk level, sebaiknya rujuk level kunci yang disebut di post + konfirmasi price action terbaru.",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "tech_question_timing",
+      "ok": true,
+      "relevance": 0.043,
+      "analysis": {
+        "commentType": "QUESTION_TIMING",
+        "userEmotion": {
+          "type": "NEUTRAL",
+          "intensity": "LOW"
+        },
+        "postDomain": "general",
+        "hasContext": true,
+        "isComplaint": false
+      },
+      "reply": "Kalau soal timing di konteks post ini, biasanya paling aman mulai dari poin inti dulu lalu lanjut ke detail.",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "geo_question_timing",
+      "ok": true,
+      "relevance": 0.091,
+      "analysis": {
+        "commentType": "QUESTION_TIMING",
+        "userEmotion": {
+          "type": "NEUTRAL",
+          "intensity": "LOW"
+        },
+        "postDomain": "geopolitics",
+        "hasContext": true,
+        "isComplaint": false
+      },
+      "reply": "Kalau soal timing di konteks post ini, biasanya paling aman mulai dari poin inti dulu lalu lanjut ke detail.",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "wrong_answer_complaint",
+      "ok": true,
+      "relevance": 0.059,
+      "analysis": {
+        "commentType": "COMPLAINT_WRONG",
+        "userEmotion": {
+          "type": "FRUSTRATED",
+          "intensity": "MEDIUM"
+        },
+        "postDomain": "tech",
+        "hasContext": true,
+        "isComplaint": true
+      },
+      "reply": "Noted, terima kasih koreksinya. Biar akurat, bagian mana yang kamu nilai kurang tepat dari post ini?",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "question_reason_tech",
+      "ok": true,
+      "relevance": 0.278,
+      "analysis": {
+        "commentType": "QUESTION_REASON",
+        "userEmotion": {
+          "type": "NEUTRAL",
+          "intensity": "LOW"
+        },
+        "postDomain": "general",
+        "hasContext": true,
+        "isComplaint": false
+      },
+      "reply": "Alasannya terkait konteks post ini: Post ini membahas spec-first development.. Kalau mau, aku bisa breakdown alasan utamanya poin per poin.",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "general_short",
+      "ok": true,
+      "relevance": 0.267,
+      "analysis": {
+        "commentType": "GENERAL",
+        "userEmotion": {
+          "type": "NEUTRAL",
+          "intensity": "LOW"
+        },
+        "postDomain": "general",
+        "hasContext": true,
+        "isComplaint": false
+      },
+      "reply": "Thanks feedback-nya. Supaya presisi, aku akan tetap jawab sesuai konteks post ini: Post ini tentang policy design..",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "empty_context_guard",
+      "ok": true,
+      "relevance": 0,
+      "analysis": {
+        "commentType": "QUESTION_TIMING",
+        "userEmotion": {
+          "type": "NEUTRAL",
+          "intensity": "LOW"
+        },
+        "postDomain": "unknown",
+        "hasContext": false,
+        "isComplaint": false
+      },
+      "reply": "Makasih komentarnya. Biar nggak salah konteks, bisa sebut bagian post yang kamu maksud? Nanti aku jawab tepat ke poinnya.",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "question_level_geo",
+      "ok": true,
+      "relevance": 0.15,
+      "analysis": {
+        "commentType": "QUESTION_LEVEL",
+        "userEmotion": {
+          "type": "NEUTRAL",
+          "intensity": "LOW"
+        },
+        "postDomain": "geopolitics",
+        "hasContext": true,
+        "isComplaint": false
+      },
+      "reply": "Kalau maksud level/detail, sebutkan bagian mana di post yang kamu mau didalami, biar aku jawab lebih presisi.",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    },
+    {
+      "name": "appreciation_tech",
+      "ok": true,
+      "relevance": 0.176,
+      "analysis": {
+        "commentType": "APPRECIATION",
+        "userEmotion": {
+          "type": "APPRECIATIVE",
+          "intensity": "LOW"
+        },
+        "postDomain": "tech",
+        "hasContext": true,
+        "isComplaint": false
+      },
+      "reply": "Thanks tester! Appreciate banget. Kalau mau, drop opini kamu juga soal poin utama di post ini.",
+      "checks": {
+        "hasMust": true,
+        "hasForbidden": false
+      }
+    }
+  ]
+}

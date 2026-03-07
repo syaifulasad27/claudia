@@ -27,15 +27,15 @@ function run(cmd, allowFail = false) {
   const comments = pending.comments || [];
   const valid = comments.filter(c => c.status === 'pending_draft').length;
 
-  // 3) Only when needed -> generate contextual draft + auto publish
-  let autoPublish = 'na';
+  // 3) Only when needed -> generate contextual draft + notify Tuan (manual approval)
+  let notified = 'na';
   if (valid > 0) {
     run('cd /root/.openclaw/workspace/claudia && node repliz-client/scripts/smart-reply-generator.js');
-    const out = run('cd /root/.openclaw/workspace/claudia && node repliz-client/scripts/auto-reply-publisher.js', true);
-    autoPublish = /Auto-publish complete ok=/.test(out) ? 'true' : 'false';
+    const out = run('cd /root/.openclaw/workspace/claudia && node repliz-client/scripts/notify-tuan.js', true);
+    notified = /Telegram notification sent|Saved .*approval-queue/.test(out) ? 'true' : 'false';
   }
 
-  const line = `${new Date().toISOString()} monitor-only fetched=${comments.length} valid=${valid} autopublish=${autoPublish}\n`;
+  const line = `${new Date().toISOString()} monitor-only fetched=${comments.length} valid=${valid} notified=${notified} mode=manual_approval\n`;
   await fs.appendFile(`${base}/logs/monitor-only.log`, line);
   process.stdout.write(line);
 })();

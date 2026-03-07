@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 /**
- * smart-reply-generator.js — Contextual Reply Generator
- * 
- * Fetch post content + comment, generate contextual reply
- * No generic responses — always address the specific context
+ * smart-reply-generator.js — Contextual Reply Generator (fixed)
+ *
+ * Key fixes:
+ * - Use per-comment post context from pending-comments.json
+ * - No trading fallback when context missing
+ * - Topic-aware replies (trading/tech/geopolitics/general)
  */
 
 import fs from 'node:fs/promises';
@@ -21,253 +23,171 @@ async function log(message) {
   await fs.appendFile(LOG_FILE, line).catch(() => {});
 }
 
-/**
- * Fetch post content from Repliz API
- */
-async function fetchPostContent(postId) {
-  // This would normally fetch from API, but we use stored data for now
-  // In real implementation, fetch from Repliz /content/{id}
-  return null; // Placeholder
-}
-
-/**
- * Analyze comment with full context
- */
-function analyzeWithContext(commentText, postContent, username) {
-  // Deep analysis combining comment + post context
-  const analysis = {
-    commentType: detectCommentType(commentText),
-    userEmotion: detectEmotion(commentText),
-    postTopic: extractPostTopic(postContent || ''),
-    needsDirectAnswer: checkNeedsDirectAnswer(commentText),
-    isComplaint: detectComplaint(commentText)
-  };
-  
-  return analysis;
-}
-
 function detectCommentType(text) {
-  const lower = text.toLowerCase().trim();
+  const lower = String(text || '').toLowerCase().trim();
 
-  // Prompt injection / instruction hijack
-  if (lower.match(/ignore all previous|forget last prompt|system prompt|jailbreak|bypass|override/)) {
-    return 'PROMPT_INJECTION';
-  }
-
-  // Off-topic request (non-context)
-  if (lower.match(/resep|masak|mie ayam|es doger|pantun|puisi|tebak/)) {
-    return 'OFF_TOPIC';
-  }
-  
-  // Complaint about not being answered
-  if (lower.match(/gw tanya|saya tanya|aku tanya|jawabnya apa|nggak dijawab|tidak dijawab|belum dijawab/)) {
-    return 'COMPLAINT_UNANSWERED';
-  }
-  
-  // Complaint about wrong answer
-  if (lower.match(/salah|ngawur|ngaco|tidak sesuai|gak sesuai|gak bener/)) {
-    return 'COMPLAINT_WRONG';
-  }
-  
-  // Confusion
-  if (lower.match(/kurang jelas|belum paham|bingung|gak ngerti|confused/)) {
-    return 'CONFUSION';
-  }
-  
-  // Specific questions
-  if (lower.match(/kapan|waktu|timing|jam/)) {
-    return 'QUESTION_TIMING';
-  }
-  
-  if (lower.match(/berapa|where|level|di mana/)) {
-    return 'QUESTION_LEVEL';
-  }
-  
-  if (lower.match(/kenapa|why|mengapa/)) {
-    return 'QUESTION_REASON';
-  }
-  
-  // Appreciation
-  if (lower.match(/thanks|makasih|terima kasih|terimakasih|mantap|keren|bagus/)) {
-    return 'APPRECIATION';
-  }
-  
+  if (lower.match(/ignore all previous|forget last prompt|system prompt|jailbreak|bypass|override/)) return 'PROMPT_INJECTION';
+  if (lower.match(/resep|masak|mie ayam|es doger|pantun|puisi|tebak/)) return 'OFF_TOPIC';
+  if (lower.match(/gw tanya|saya tanya|aku tanya|jawabnya apa|nggak dijawab|tidak dijawab|belum dijawab/)) return 'COMPLAINT_UNANSWERED';
+  if (lower.match(/salah|ngawur|ngaco|tidak sesuai|gak sesuai|gak bener/)) return 'COMPLAINT_WRONG';
+  if (lower.match(/kurang jelas|belum paham|bingung|gak ngerti|confused/)) return 'CONFUSION';
+  if (lower.match(/kapan|waktu|timing|jam/)) return 'QUESTION_TIMING';
+  if (lower.match(/berapa|where|level|di mana/)) return 'QUESTION_LEVEL';
+  if (lower.match(/kenapa|why|mengapa/)) return 'QUESTION_REASON';
+  if (lower.match(/thanks|makasih|terima kasih|terimakasih|mantap|keren|bagus/)) return 'APPRECIATION';
   return 'GENERAL';
 }
 
 function detectEmotion(text) {
-  const lower = text.toLowerCase();
-  
-  if (lower.match(/gw tanya apa|jawabnya apa|gak jelas|ngaco|kesal|bete/)) {
-    return { type: 'FRUSTRATED', intensity: 'MEDIUM' };
-  }
-  
-  if (lower.match(/kecewa|disappointed|nyesel/)) {
-    return { type: 'DISAPPOINTED', intensity: 'HIGH' };
-  }
-  
-  if (lower.match(/bingung|confused|gak ngerti/)) {
-    return { type: 'CONFUSED', intensity: 'MEDIUM' };
-  }
-  
-  if (lower.match(/thanks|terima kasih|makasih/)) {
-    return { type: 'APPRECIATIVE', intensity: 'LOW' };
-  }
-  
+  const lower = String(text || '').toLowerCase();
+  if (lower.match(/gw tanya apa|jawabnya apa|gak jelas|ngaco|kesal|bete/)) return { type: 'FRUSTRATED', intensity: 'MEDIUM' };
+  if (lower.match(/kecewa|disappointed|nyesel/)) return { type: 'DISAPPOINTED', intensity: 'HIGH' };
+  if (lower.match(/bingung|confused|gak ngerti/)) return { type: 'CONFUSED', intensity: 'MEDIUM' };
+  if (lower.match(/thanks|terima kasih|makasih/)) return { type: 'APPRECIATIVE', intensity: 'LOW' };
   return { type: 'NEUTRAL', intensity: 'LOW' };
 }
 
-function extractPostTopic(postContent) {
-  const text = (postContent || '').toLowerCase();
-  
-  const topics = {
-    pair: null,
-    price: null,
-    setup: null,
-    keyPoint: null
+function detectPostDomain(postContent) {
+  const t = String(postContent || '').toLowerCase();
+  if (!t.trim()) return 'unknown';
+
+  const trading = /(xauusd|eurusd|nasdaq|gold|emas|entry|sl\b|tp\b|lot|pullback|breakout|support|resistance|fomo|trading|setup|risk management)/;
+  const tech = /(ai|llm|model|coding|developer|spec driven|api|automation|tech|software|product)/;
+  const geo = /(geopolitik|geopolitical|israel|iran|war|konflik|narasi|headline|militer|timur tengah)/;
+
+  if (trading.test(t)) return 'trading';
+  if (tech.test(t)) return 'tech';
+  if (geo.test(t)) return 'geopolitics';
+  return 'general';
+}
+
+function shortPostSummary(postContent) {
+  const s = String(postContent || '').replace(/\s+/g, ' ').trim();
+  if (!s) return 'topik post ini';
+  return s.slice(0, 90);
+}
+
+function analyzeWithContext(commentText, postContent) {
+  const commentType = detectCommentType(commentText);
+  return {
+    commentType,
+    userEmotion: detectEmotion(commentText),
+    postDomain: detectPostDomain(postContent),
+    hasContext: !!String(postContent || '').trim(),
+    isComplaint: commentType.startsWith('COMPLAINT_')
   };
-  
-  // Extract pair
-  if (text.includes('xauusd')) topics.pair = 'XAUUSD';
-  if (text.includes('gold') || text.includes('emas')) topics.pair = topics.pair || 'XAUUSD';
-  if (text.includes('eurusd')) topics.pair = 'EURUSD';
-  
-  // Extract price
-  const priceMatch = text.match(/(\d{4})[.,]?(\d{0,2})?/);
-  if (priceMatch) topics.price = priceMatch[0];
-  
-  // Extract setup type
-  if (text.includes('pullback') || text.includes('retrace')) topics.setup = 'pullback';
-  if (text.includes('breakout')) topics.setup = 'breakout';
-  if (text.includes('support')) topics.setup = 'support';
-  if (text.includes('ema')) topics.setup = 'ema_based';
-  
-  // Key point
-  if (text.includes('sabar')) topics.keyPoint = 'patience';
-  if (text.includes('disiplin')) topics.keyPoint = 'discipline';
-  if (text.includes('mager') || text.includes('nunggu')) topics.keyPoint = 'waiting';
-  
-  return topics;
 }
 
-function checkNeedsDirectAnswer(text) {
-  const type = detectCommentType(text);
-  return type.startsWith('QUESTION_') || type.startsWith('COMPLAINT_');
-}
-
-function detectComplaint(text) {
-  const type = detectCommentType(text);
-  return type.startsWith('COMPLAINT_');
-}
-
-/**
- * Generate contextual reply
- */
 function generateContextualReply(analysis, commentText, postContent, username) {
-  const { commentType, userEmotion, postTopic, isComplaint } = analysis;
-  
-  // Prompt injection
+  const { commentType, postDomain, hasContext } = analysis;
+  const postSummary = shortPostSummary(postContent);
+
   if (commentType === 'PROMPT_INJECTION') {
-    return `Nice try 😄 tapi aku tetap bahas topik post ini aja. Kalau mau diskusi, drop opini kamu soal isi post—biar debatnya make sense.`;
+    return 'Nice try 😄 tapi aku tetap bahas konteks post ini aja. Kalau mau diskusi, drop poin spesifik dari isi post ya.';
   }
 
-  // Off-topic request
   if (commentType === 'OFF_TOPIC') {
-    return `Topiknya lagi bukan itu ya 😄 Di post ini kita fokus bahas isu yang lagi dibahas. Menurut kamu poin paling valid dari post ini apa?`;
+    return 'Topiknya lagi bukan itu ya 😄 Di post ini kita fokus bahas isi post. Menurut kamu poin paling menarik yang mana?';
   }
 
-  // COMPLAINT: Not answered
+  if (!hasContext) {
+    return 'Makasih komentarnya. Biar nggak salah konteks, bisa sebut bagian post yang kamu maksud? Nanti aku jawab tepat ke poinnya.';
+  }
+
   if (commentType === 'COMPLAINT_UNANSWERED') {
-    return `Sorry kalo sebelumnya kurang jelas ya. Maksudku di post ini: basically ${postTopic.pair || 'XAUUSD'} ${postTopic.setup ? 'setup ' + postTopic.setup : 'ada setup'} di ${postTopic.price || 'level tertentu'}, tapi nunggu konfirmasi dulu. Kalau ada spesifik yang mau ditanyain, langsung aja — I'll answer properly.`;
+    return `Maaf kalau sebelumnya belum kena konteks. Di post ini intinya tentang: ${postSummary}. Kalau kamu mau, tulis pertanyaan spesifiknya dan aku jawab langsung ke poin itu.`;
   }
-  
-  // COMPLAINT: Wrong answer
+
   if (commentType === 'COMPLAINT_WRONG') {
-    return `My bad kalo jawaban sebelumnya miss. Bantu clarify lagi — apa yang kurang tepat? Biar bisa kujelasin lebih baik.`;
+    return `Noted, terima kasih koreksinya. Biar akurat, bagian mana yang kamu nilai kurang tepat dari post ini?`;
   }
-  
-  // CONFUSION
+
   if (commentType === 'CONFUSION') {
-    const keyPoint = postTopic.keyPoint || 'setup';
-    return `Oke, biar lebih jelas: basically inti dari post ini adalah ${keyPoint}. Kalau masih bingung bagian mana, tanyain aja langsung ya.`;
+    return `Biar jelas: inti post ini adalah ${postSummary}. Kalau ada bagian yang membingungkan, sebut kalimatnya ya biar aku jelasin spesifik.`;
   }
-  
-  // QUESTION: Timing
+
   if (commentType === 'QUESTION_TIMING') {
-    return `Untuk timing entry, tunggu konfirmasi di ${postTopic.price || 'level support'} dulu. Jangan buru-buru FOMO — sabar nunggu setup valid.`;
+    if (postDomain === 'trading') {
+      return 'Untuk timing di konteks trading, idealnya tunggu konfirmasi setup + validasi risk dulu sebelum entry.';
+    }
+    if (postDomain === 'tech') {
+      return 'Kalau soal timing di konteks ini, biasanya efektif bahas bertahap: problem dulu, baru framework, lalu implementasi.';
+    }
+    return 'Kalau soal timing di konteks post ini, biasanya paling aman mulai dari poin inti dulu lalu lanjut ke detail.';
   }
-  
-  // QUESTION: Level/Price
+
   if (commentType === 'QUESTION_LEVEL') {
-    return `${postTopic.pair || 'XAUUSD'} saat ini di sekitar ${postTopic.price || 'level tertentu'}. Setup masih valid selama belum break key level.`;
+    if (postDomain === 'trading') return 'Untuk level, sebaiknya rujuk level kunci yang disebut di post + konfirmasi price action terbaru.';
+    return 'Kalau maksud level/detail, sebutkan bagian mana di post yang kamu mau didalami, biar aku jawab lebih presisi.';
   }
-  
-  // QUESTION: Reason
+
   if (commentType === 'QUESTION_REASON') {
-    return `Alasannya basically risk management. Trading itu bukan cuma entry, tapi juga manage risk. Which is kenapa sabar nunggu setup proper itu penting.`;
+    return `Alasannya terkait konteks post ini: ${postSummary}. Kalau mau, aku bisa breakdown alasan utamanya poin per poin.`;
   }
-  
-  // APPRECIATION
+
   if (commentType === 'APPRECIATION') {
-    const replies = [
-      `Thanks ${username}! Appreciate the support. Keep grinding 💪`,
-      `Makasih ${username}! Semangat juga untuk trading journey kamu.`,
-      `Terima kasih! Basically kita sama-sama belajar dari market.`
-    ];
-    return replies[Math.floor(Math.random() * replies.length)];
+    const who = username || 'bro';
+    return `Thanks ${who}! Appreciate banget. Kalau mau, drop opini kamu juga soal poin utama di post ini.`;
   }
-  
-  // DEFAULT: Always contextual
-  return `Thanks for the feedback ${username}. Kalau ada yang kurang jelas, langsung tanyain aja spesifiknya ya — biar bisa kujawab dengan tepat.`;
+
+  return `Thanks feedback-nya. Supaya presisi, aku akan tetap jawab sesuai konteks post ini: ${postSummary}.`;
 }
 
 async function main() {
   await fs.mkdir(STATE_DIR, { recursive: true });
   await fs.mkdir(path.dirname(LOG_FILE), { recursive: true });
-  
+
   await log('=== Contextual Reply Generator Started ===');
-  
-  // Read pending comments with post context
+
   const pendingFile = path.join(STATE_DIR, 'pending-comments.json');
   let pendingData;
-  
   try {
-    const content = await fs.readFile(pendingFile, 'utf-8');
-    pendingData = JSON.parse(content);
-  } catch (err) {
+    pendingData = JSON.parse(await fs.readFile(pendingFile, 'utf-8'));
+  } catch {
     await log('⚠️ No pending comments. Exiting.');
     return;
   }
-  
+
   const comments = pendingData.comments || [];
   const toProcess = comments.filter(c => c.status === 'pending_draft' || c.status === 'parsed');
-  
   await log(`Processing ${toProcess.length} comments with contextual analysis...`);
-  
+
   if (toProcess.length === 0) {
     await log('No comments to process.');
     return;
   }
-  
-  // Load post context if available
-  let postContext = '';
-  try {
-    const queueFile = path.join(STATE_DIR, 'approval-queue.json');
-    const queueData = JSON.parse(await fs.readFile(queueFile, 'utf-8'));
-    // Extract post content from queue data if available
-  } catch (err) {
-    // Use default context
-    postContext = 'Jujurly hari ini market-nya vibes-nya anget-anget kue ya. XAUUSD setup bagus di 5335 tapi masih mager nunggu pullback yang proper. Which is, sabar itu rewarding sih kalau discipline.';
-  }
-  
+
   const drafts = [];
-  
+
   for (const comment of toProcess) {
-    await log(`Processing @${comment.username}: "${comment.text}"`);
-    
-    const analysis = analyzeWithContext(comment.text, postContext, comment.username);
-    const reply = generateContextualReply(analysis, comment.text, postContext, comment.username);
-    
+    const postContent = String(comment?.postContext?.text || comment?.postContext?.title || '').trim();
+    const analysis = analyzeWithContext(comment.text, postContent);
+
+    // Hard guard: if no context, do not auto-publish candidate.
+    if (!analysis.hasContext) {
+      drafts.push({
+        commentId: comment.id,
+        username: comment.username,
+        originalText: comment.text,
+        draftReply: 'Konteks post tidak tersedia. Mohon review manual sebelum balas.',
+        analysis: {
+          commentType: analysis.commentType,
+          emotion: analysis.userEmotion,
+          postDomain: analysis.postDomain,
+          hasContext: false,
+          isComplaint: analysis.isComplaint
+        },
+        postContext: '',
+        proposedAt: new Date().toISOString(),
+        status: 'needs_context'
+      });
+      comment.status = 'needs_context';
+      await log(`@${comment.username} -> needs_context (blocked)`);
+      continue;
+    }
+
+    const reply = generateContextualReply(analysis, comment.text, postContent, comment.username);
+
     drafts.push({
       commentId: comment.id,
       username: comment.username,
@@ -276,44 +196,30 @@ async function main() {
       analysis: {
         commentType: analysis.commentType,
         emotion: analysis.userEmotion,
+        postDomain: analysis.postDomain,
+        hasContext: true,
         isComplaint: analysis.isComplaint
       },
-      postContext: postContext.substring(0, 100),
+      postContext: postContent.slice(0, 160),
       proposedAt: new Date().toISOString(),
       status: 'awaiting_approval'
     });
-    
+
     comment.status = 'drafted';
-    
-    await log(`  → Type: ${analysis.commentType}`);
-    await log(`  → Emotion: ${analysis.userEmotion.type}`);
-    await log(`  → Reply: "${reply.substring(0, 80)}..."`);
+    await log(`@${comment.username} type=${analysis.commentType} domain=${analysis.postDomain}`);
   }
-  
-  // Save drafts
+
   const draftsFile = path.join(STATE_DIR, 'smart-drafts.json');
   await fs.writeFile(draftsFile, JSON.stringify({
     lastGenerated: new Date().toISOString(),
     totalDrafts: drafts.length,
-    context: postContext.substring(0, 200),
     drafts
   }, null, 2));
-  
-  // Update pending
+
   await fs.writeFile(pendingFile, JSON.stringify(pendingData, null, 2));
-  
-  await log(`✅ Generated ${drafts.length} contextual replies`);
+
+  await log(`✅ Generated ${drafts.length} replies (context-safe)`);
   await log('=== Contextual Reply Generator Complete ===\n');
-  
-  // Display
-  console.log('\n📋 CONTEXTUAL DRAFTS READY:');
-  console.log('===========================\n');
-  for (const d of drafts) {
-    console.log(`💬 @${d.username}: "${d.originalText}"`);
-    console.log(`🧠 Type: ${d.analysis.commentType} | Emotion: ${d.analysis.emotion.type}`);
-    console.log(`✍️  Reply: "${d.draftReply}"`);
-    console.log('---\n');
-  }
 }
 
 main().catch(async (err) => {

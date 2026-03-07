@@ -17,6 +17,12 @@ async function log(msg) {
 async function main() {
   await fs.mkdir(STATE_DIR, { recursive: true });
 
+  const enabled = String(process.env.AUTO_PUBLISH_REPLIES || '').toLowerCase() === 'true';
+  if (!enabled) {
+    await log('Auto-publish disabled (AUTO_PUBLISH_REPLIES != true). Exiting safely.');
+    return;
+  }
+
   const draftsFile = path.join(STATE_DIR, 'smart-drafts.json');
   let data;
   try {

@@ -130,7 +130,9 @@ async function main() {
     const text = commentData.text || commentData.description || '';
     const id = item._id || item.id;
     const username = commentData.owner?.name || commentData.owner?.username || commentData.username || 'unknown';
-    const postId = item.content?.id || item.postId || 'unknown';
+    const postId = item.content?.id || item.content?._id || item.postId || 'unknown';
+    const postText = item.content?.description || item.content?.text || item.post?.description || item.post?.text || '';
+    const postTitle = item.content?.title || item.post?.title || '';
     
     // Filter checks
     if (containsForeignChars(text)) {
@@ -157,6 +159,11 @@ async function main() {
       username,
       text,
       postId,
+      postContext: {
+        title: postTitle,
+        text: postText,
+        preview: String(postText || postTitle || '').slice(0, 180)
+      },
       timestamp: commentData.createdAt || item.createdAt || new Date().toISOString(),
       category,
       priority,

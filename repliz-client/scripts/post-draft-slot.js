@@ -57,7 +57,7 @@ function makeFallback(slotLabel, dateKey) {
 
   const i = dayIndexWIB() % hooks.length;
   const base = `${hooks[i]} ${angles[slotLabel] || angles.slot5}`;
-  return `${base} (${dateKey})`.slice(0, 500);
+  return `${base}`.slice(0, 500);
 }
 
 (async () => {

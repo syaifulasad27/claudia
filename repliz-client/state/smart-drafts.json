@@ -25,9 +25,11 @@
         "blockedReason": "low_relevance"
       },
       "proposedAt": "2026-03-07T09:30:03.842Z",
-      "status": "notified",
+      "status": "approved_published",
       "notificationSentAt": "2026-03-07T09:35:40.012Z",
-      "telegramMessageId": 21
+      "telegramMessageId": 21,
+      "processedAt": "2026-03-07T09:40:20.920Z",
+      "processNote": "Published to Threads"
     }
   ]
 }

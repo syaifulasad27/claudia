@@ -2,7 +2,53 @@
   "byDate": {
     "2026-03-05": {
       "postedSlots": [
-        "slot1"
+        "slot1",
+        "slot2",
+        "slot3",
+        "slot4",
+        "slot5"
+      ]
+    },
+    "2026-03-06": {
+      "postedSlots": [
+        "slot1",
+        "slot2",
+        "slot3",
+        "slot4",
+        "slot5"
+      ]
+    },
+    "2026-03-07": {
+      "postedSlots": [
+        "slot1",
+        "slot2",
+        "slot3",
+        "slot4",
+        "slot5"
+      ]
+    },
+    "2026-03-08": {
+      "postedSlots": [
+        "slot1",
+        "slot2",
+        "slot3",
+        "slot4",
+        "slot5"
+      ]
+    },
+    "2026-03-09": {
+      "postedSlots": [
+        "slot1",
+        "slot2",
+        "slot3",
+        "slot4",
+        "slot5"
+      ]
+    },
+    "2026-03-10": {
+      "postedSlots": [
+        "slot1",
+        "slot2"
       ]
     }
   }

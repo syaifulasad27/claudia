@@ -43,3 +43,33 @@ Self-improvement auto-log pipeline aktif untuk reply/monitor events
 - Validation run:
   - comment-fetcher: success (no runtime error)
   - smart-reply-generator: success (no runtime error)
+
+## 2026-03-11 — User Feedback: Fresh != Engaging
+- Correction from Tuan: replacing with new text is not enough; content still not attractive.
+- Required behavior update:
+  1) Prioritize engagement strength (hook conflict + personal stakes + forced opinion) over mere non-duplication.
+  2) Drafts must be tested against “comment trigger” criteria before scheduling.
+  3) If engagement risk is high, propose stronger alternatives before posting.
+
+## 2026-03-11 — Real-time Learning Mandate (User Directive)
+- Instruction from Tuan: learning must happen continuously in real-time.
+- Enforcement rule:
+  1) Every correction/error/missing-feature event must be logged immediately (not batched).
+  2) Before sending operational replies, check latest relevant `.learnings` entries.
+  3) Treat repeated mistakes as escalation-level failures and report root cause + prevention update.
+
+## 2026-03-12 — Core Behavior Mandate from Tuan
+- Tuan menetapkan 4 core behavior permanen: skill-vetter, ontology, self-improving-agent, proactive-agent.
+- Prioritas konflik yang wajib diikuti:
+  1) instruksi user
+  2) skill-vetter/keamanan
+  3) objective tugas
+  4) ontology
+  5) self-improving-agent
+  6) proactive-agent
+- Operational mapping di workspace saat ini:
+  - skill-vetter -> pre-check risiko sebelum perubahan sistem/cron/repo/otomasi
+  - ontology -> MEMORY.md + memory/*.md (fakta stabil/pola terverifikasi)
+  - self-improving-agent -> .learnings/* real-time per event
+  - proactive-agent -> usulan next-step bernilai, non-intrusif, tanpa override user
+- Rule enforcement: aktif langsung untuk semua tugas berikutnya.

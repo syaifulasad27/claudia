@@ -1,0 +1,35 @@
+{
+  "generatedAt": "2026-03-15T23:07:49.017Z",
+  "insights": [
+    {
+      "theme": "AI automation",
+      "opportunityScore": 9,
+      "rationale": "Permintaan konten implementatif dan workflow automation masih tinggi. Sentiment pain count: 0.",
+      "suggestedAngles": [
+        "AI automation tutorial",
+        "AI automation mistakes to avoid",
+        "AI automation practical framework"
+      ]
+    },
+    {
+      "theme": "career advice",
+      "opportunityScore": 7,
+      "rationale": "Audiens sering bertanya soal portfolio, positioning, dan job search. Sentiment pain count: 0.",
+      "suggestedAngles": [
+        "career advice tutorial",
+        "career advice mistakes to avoid",
+        "career advice practical framework"
+      ]
+    },
+    {
+      "theme": "digital marketing",
+      "opportunityScore": 8,
+      "rationale": "Topik funnel, hooks, dan CTA tetap relevan untuk conversion. Sentiment pain count: 0.",
+      "suggestedAngles": [
+        "digital marketing tutorial",
+        "digital marketing mistakes to avoid",
+        "digital marketing practical framework"
+      ]
+    }
+  ]
+}

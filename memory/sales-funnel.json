@@ -1,0 +1,14 @@
+{
+  "generatedAt": "2026-03-15T23:07:52.021Z",
+  "stages": {
+    "AWARENESS": [],
+    "INTEREST": [],
+    "CONSIDERATION": [],
+    "PURCHASE": []
+  },
+  "metrics": {
+    "total_leads": 0,
+    "conversion_rate": 0,
+    "follow_up_pending": 0
+  }
+}

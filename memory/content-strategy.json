@@ -1,0 +1,27 @@
+{
+  "core_topics": [
+    "AI automation",
+    "career advice",
+    "digital marketing"
+  ],
+  "content_mix": {
+    "education": 60,
+    "storytelling": 20,
+    "promotion": 20
+  },
+  "posting_frequency": "daily",
+  "preferred_format": [
+    "short_post",
+    "carousel"
+  ],
+  "cta_priority": [
+    "comment prompt",
+    "save this post"
+  ],
+  "persona_priority": [
+    "junior developer",
+    "small business owner",
+    "marketing beginner"
+  ],
+  "lastUpdated": "2026-03-15T23:07:53.009Z"
+}

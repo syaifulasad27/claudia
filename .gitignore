@@ -35,19 +35,23 @@ Thumbs.db
 # Node modules (if using node scripts)
 node_modules/
 
-# MarketIntelligence runtime state/cache
-MarketIntelligence/state/*.json
-MarketIntelligence/state/*.md
-MarketIntelligence/state/*.txt
-!MarketIntelligence/state/.gitkeep
-
-# Accidental relative output path guard
-MarketIntelligence/memory/
-
-# smart-search runtime state/cache
+# Legacy and active runtime state/cache
+legacy/MarketIntelligence/state/*.json
+legacy/MarketIntelligence/state/*.md
+legacy/MarketIntelligence/state/*.txt
+!legacy/MarketIntelligence/state/.gitkeep
 smart-search/state/*.json
 smart-search/state/*.jsonl
 !smart-search/state/.gitkeep
+MarketingIntelligence/state/*.json
+AudienceIntelligence/state/*.json
+ContentPerformanceAnalysis/state/*.json
+ContentLearning/state/*.json
+ContentEngine/state/*.json
+SalesManager/state/*.json
+AgentPlanner/state/*.json
+ContentExperimentEngine/state/*.json
+apps/digital-marketing-agent/state/*.json
 
 # Memory short-term state
 memory/active-session-bias.md

@@ -1,0 +1,50 @@
+{
+  "generatedAt": "2026-03-15T23:07:53.565Z",
+  "experiments": [
+    {
+      "id": "hook-1773616073158",
+      "type": "hook_test",
+      "winner": "problem-first hook",
+      "compared": [
+        "problem-first hook",
+        "story hook"
+      ],
+      "observedLift": 0.12,
+      "createdAt": "2026-03-15T23:07:53.158Z"
+    },
+    {
+      "id": "cta-1773616073293",
+      "type": "cta_test",
+      "winner": "DM invitation",
+      "compared": [
+        "comment prompt",
+        "DM invitation"
+      ],
+      "observedLift": 0.18,
+      "createdAt": "2026-03-15T23:07:53.293Z"
+    },
+    {
+      "id": "time-1773616073429",
+      "type": "posting_time_test",
+      "winner": "19:00 WIB",
+      "compared": [
+        "08:00 WIB",
+        "12:30 WIB",
+        "19:00 WIB"
+      ],
+      "observedLift": 0.09,
+      "createdAt": "2026-03-15T23:07:53.429Z"
+    },
+    {
+      "id": "format-1773616073564",
+      "type": "format_test",
+      "winner": "carousel",
+      "compared": [
+        "short_post",
+        "carousel"
+      ],
+      "observedLift": 0.11,
+      "createdAt": "2026-03-15T23:07:53.564Z"
+    }
+  ]
+}

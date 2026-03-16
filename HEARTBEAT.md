@@ -1,83 +1,133 @@
-# HEARTBEAT.md — Periodic Task Checklist
+# Claudia Heartbeat
 
-_Setiap heartbeat, Claudia menjalankan task-task berikut secara otomatis._
+Setiap heartbeat, Claudia beroperasi mengikuti model resmi OpenClaw:
 
----
+`heartbeat -> HEARTBEAT.md -> agent reasoning -> skill usage`
 
-## 📰 Economic News Monitoring (Minimum setiap 1 jam)
+Tidak ada daemon tambahan, tidak ada runtime otonom pengganti. Semua tindakan harus diputuskan dari heartbeat ini.
 
-- [ ] Cek berita ekonomi terbaru via web browsing
-- [ ] Identifikasi high-impact events (NFP, CPI, FOMC, ECB, dll)
-- [ ] Evaluasi dampak terhadap pair utama: **XAUUSD**, EURUSD, GBPUSD, US100
-- [ ] Update `memory/macro-insights.md` jika ada insight baru
-- [ ] Jika ada event kritis dalam 30 menit → Notifikasi ke Tuan
+## Global Decision Policy
 
----
+1. Selalu inspect memory sebelum memanggil skill.
+2. Reuse hasil yang masih segar sebelum melakukan analisis atau generasi ulang.
+3. Hindari duplicate heavy operations dalam window singkat atau dalam cycle yang sama.
+4. Prefer update atau extend data yang sudah ada, bukan recreate dari nol.
+5. Jangan ulangi action yang sudah gagal berulang di cycle yang sama.
+6. Jika tidak ada task relevan setelah semua pengecekan, balas `HEARTBEAT_OK`.
 
-## 📊 Position Monitoring (Jika Bridge API aktif)
+## Heartbeat Safety Guard
 
-- [ ] `GET {BRIDGE_BASE_URL}/health` — Cek koneksi masih hidup
-- [ ] `GET {BRIDGE_BASE_URL}/positions` — Cek posisi terbuka
-- [ ] Evaluasi floating P/L terhadap risk limits
-- [ ] Jika drawdown mendekati limit → Alert ke Tuan
-- [ ] Jika koneksi gagal + ada posisi terbuka → **TRIGGER KILL SWITCH** (lihat AGENTS.md)
+- Jangan rerun analisis berat jika hasil terbaru masih cukup segar dan belum dikalahkan sinyal baru.
+- Jika recent result sudah ada di memory atau state, gunakan dulu hasil itu untuk reasoning.
+- Hanya recompute jika data stale, missing, invalid, atau contradicted oleh sinyal yang lebih baru.
+- Jangan menjalankan skill mahal dua kali dalam satu cycle kecuali hasil pertama invalid, incomplete, atau gagal ditulis ke memory.
 
----
+## 1. Situation Awareness
 
-## 📈 Performance Review (Setiap 4-6 jam)
+- Cek `memory/marketing-insights.json` sebelum memanggil `MarketingIntelligence`.
+- Jika insight terbaru masih relevan, reuse insight tersebut dan hanya extend bila ada trend baru.
+- Cek `memory/audience-personas.json` dan `memory/audience-signals.json` sebelum memanggil `AudienceIntelligence`.
+- Jika persona dan signal belum berubah signifikan, hindari clustering atau analisis ulang yang berat.
+- Fokus identifikasi:
+  - emerging trends
+  - perubahan minat audience
+  - persona yang paling dominan
+  - topik atau pain point yang mulai naik
+- Jika skill dipakai pada fase ini, log usage dengan phase `Situation Awareness`.
 
-- [ ] Review `memory/performance-stats.md`
-- [ ] Cek apakah masih dalam koridor risk yang acceptable
-- [ ] Evaluasi win rate dan risk/reward ratio trending
-- [ ] Jika ada degradasi performa → Laporkan ke Tuan
+## 2. Marketing Operations
 
----
+- Cek `memory/content-strategy.json`, `memory/content-learning.json`, dan `memory/content-drafts/` sebelum memanggil `ContentEngine`.
+- Cek `memory/content-performance.json` sebelum memanggil `ContentPerformanceAnalysis`.
+- Jika draft yang ada masih cukup dan masih sesuai strategy, prefer refine, extend, atau schedule draft yang ada.
+- Jangan generate draft baru jika backlog draft masih sehat dan belum dievaluasi.
+- Gunakan `AgentPlanner` bila perlu menentukan apakah objective cycle saat ini adalah awareness, engagement recovery, lead generation, atau conversion follow-up.
+- Jika skill dipakai pada fase ini, log usage dengan phase `Marketing Operations`.
 
-## 🧠 Memory Maintenance (Setiap 24 jam)
+## 3. Social Interaction
 
-- [ ] Review `memory/YYYY-MM-DD.md` files terbaru
-- [ ] Distil insight penting ke `MEMORY.md`
-- [ ] Cleanup data yang sudah expired dari `macro-insights.md`
-- [ ] Review `mistake-prevention.md` — ada pattern baru?
+- Cek queue komentar dan state sosial yang sudah ada sebelum fetch atau klasifikasi ulang.
+- Jika sudah ada draft reply yang masih valid, prefer update draft tersebut daripada generate ulang dari nol.
+- Gunakan `repliz-client` hanya untuk komentar, pertanyaan, complaint, atau lead signal yang benar-benar actionable.
+- Gunakan context dari `memory/audience-personas.json`, `memory/audience-signals.json`, dan `memory/leads.json` agar reply persona-aware dan conversion-aware.
+- Hindari memproses komentar yang sama berulang dalam satu cycle kecuali status sebelumnya incomplete.
+- Jika skill dipakai pada fase ini, log usage dengan phase `Social Interaction`.
 
----
+## 4. Sales Monitoring
 
-## 📱 Threads Social Media Monitoring (Setiap 10 menit)
+- Cek `memory/leads.json` dan `memory/sales-funnel.json` sebelum memanggil `SalesManager`.
+- Jika funnel belum berubah dan tidak ada lead baru, jangan rerun update funnel yang berat.
+- Prioritaskan:
+  - lead baru
+  - lead yang stalled
+  - pertanyaan produk yang berpotensi purchase intent
+  - follow-up yang tertunda
+- Prefer extend record lead yang ada daripada membuat entri duplikat.
+- Jika skill dipakai pada fase ini, log usage dengan phase `Sales Monitoring`.
 
-- [ ] Fetch komentar baru dari @notesbyclaudia via Repliz API
-- [ ] Generate contextual reply dengan LLM (Jaksel style, minimal)
-- [ ] Kirim notifikasi ke Telegram untuk Tuan approval
-- [ ] Jika Tuan approve → Publish reply ke Threads
-- [ ] Log semua aktivitas ke `repliz-client/logs/workflow.log`
-- [ ] Update `state/pending-comments.json` dan `state/smart-drafts.json`
+## 5. Learning & Reflection
 
----
+- Cek `memory/content-learning.json` sebelum memanggil `ContentLearning`.
+- Review `memory/skill-reflections.md` sebelum mengulangi workflow yang pernah gagal.
+- Review `memory/self-improvements.md` untuk improvement yang sudah diusulkan tetapi belum diterapkan.
+- Review pola penggunaan skill dari `memory/skill-usage.json` atau ringkas dengan `node scripts/skill-health-report.js` bila perlu.
+- Gunakan meta-skill berikut secara kondisional:
+  - `self-improving-agent` ketika ada repeated errors, weak outputs, atau workflow friction
+  - `proactive-agent` ketika tidak ada urgensi tetapi Claudia masih bisa mendorong goal
+  - `ontology` ketika memory perlu dirapikan atau dihubungkan secara lebih terstruktur
+- Jika engagement turun atau output melemah, prioritaskan diagnosis penyebab sebelum generate lebih banyak aksi.
+- Jika skill dipakai pada fase ini, log usage dengan phase `Learning & Reflection`.
+
+## 6. System Health
+
+- Cek apakah ada workflow yang gagal, partial, atau menghasilkan data yang tidak konsisten.
+- First failure:
+  - log event kegagalan
+  - lanjut aman bila memungkinkan
+- Repeated failure dalam cycle yang sama:
+  - stop mengulangi action yang sama
+  - tandai bahwa retry buta dilarang untuk cycle ini
+- Repeated failure antar-cycle:
+  - buat entri di `memory/skill-reflections.md`
+  - sertakan skill terdampak, action gagal, pattern, impact, dan usulan perubahan workflow atau konfigurasi
+- Gunakan `skill-vetter` sebelum mengadopsi skill eksternal atau integrasi baru.
+- Jika skill dipakai pada fase ini, log usage dengan phase `System Health`.
+
+## Reflection Rules
+
+- Selalu inspect existing memory sebelum memanggil skill.
+- Prefer updating atau extending hasil yang sudah ada daripada recreate.
+- Jika sebuah skill gagal berulang, jangan ulangi tanpa perubahan input, context, atau workflow.
+- Jika sebuah skill underused karena trigger heartbeat buruk, catat masalahnya di `memory/skill-reflections.md`.
+- Jika pattern error atau quality issue berulang, usulkan improvement yang jelas di `memory/self-improvements.md`.
 
 ## Heartbeat State Tracking
 
-Track semua pengecekan di `memory/heartbeat-state.json`:
+Jika perlu menyimpan ringkasan heartbeat, gunakan `memory/heartbeat-state.json` dengan bentuk minimal seperti:
 
 ```json
 {
-  "lastChecks": {
-    "economic_news": null,
-    "position_monitor": null,
-    "performance_review": null,
-    "memory_maintenance": null,
-    "threads_comments": null
-  },
-  "bridge_api_url": null,
-  "bridge_api_active": false,
+  "last_cycle_id": null,
+  "last_summary": null,
+  "last_skill_report_at": null,
   "threads_api_active": true
 }
 ```
 
----
+## Logging Reminder
 
-## Rules
+Saat skill dipakai, catat ke `memory/skill-usage.json` dengan field:
 
-1. **Jika tidak ada task yang relevan** → reply `HEARTBEAT_OK`
-2. **Jangan check berita di jam 23:00-07:00 WIB** kecuali ada posisi terbuka
-3. **Jangan spam Tuan** — batch notifications jika ada multiple updates
-4. **News monitoring adalah CRITICAL** — ini satu-satunya cara Claudia dapat data makroekonomi karena Bridge API tidak menyediakan endpoint berita
-5. **Desain modular** — ketika News Sub-Agent tersedia di masa depan, task monitoring berita akan dipindahkan ke sub-agent tersebut
+- `cycle_id`
+- `phase`
+- `skill`
+- `action`
+- `timestamp`
+- `context`
+- `metadata`
+
+Gunakan helper:
+
+```bash
+node scripts/record-skill-usage.js --skill ContentEngine --action generate_post --phase "Marketing Operations" --cycle-id "2026-03-16T09:00" --context heartbeat --metadata "{\"drafts\":3}"
+```

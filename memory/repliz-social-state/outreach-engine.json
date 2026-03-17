@@ -1,0 +1,57 @@
+{
+  "history": [
+    {
+      "date": "2026-03-17",
+      "targetRelevantPosts": 15,
+      "targetReplies": 10,
+      "executedReplies": 0,
+      "monitoredWindows": [
+        "12:30 WIB",
+        "19:00 WIB"
+      ],
+      "sourceClusters": [
+        "AI automation",
+        "digital marketing",
+        "career advice"
+      ],
+      "rules": {
+        "postAgeHoursMax": 24,
+        "requireVisibleDiscussion": true,
+        "requireTopicMatch": true
+      },
+      "templateClasses": {
+        "problemReframer": "Bukan cuma soal tools. Biasanya bottleneck-nya ada di workflow yang masih manual.",
+        "practicalAddOn": "Kalau mau hasil lebih cepat, pecah jadi 3 step: trigger, action, follow-up.",
+        "questionReply": "Kalau harus pilih satu bottleneck dulu, yang paling bikin lambat sekarang apa: content, leads, atau follow-up?",
+        "softBridge": "Saya baru breakdown ini di post terakhir saya, inti masalahnya justru ada di proses sebelum AI dipakai."
+      }
+    }
+  ],
+  "generatedAt": "2026-03-17T08:24:19.642Z",
+  "current": {
+    "date": "2026-03-17",
+    "targetRelevantPosts": 15,
+    "targetReplies": 10,
+    "executedReplies": 0,
+    "monitoredWindows": [
+      "12:30 WIB",
+      "19:00 WIB"
+    ],
+    "sourceClusters": [
+      "AI automation",
+      "digital marketing",
+      "career advice"
+    ],
+    "rules": {
+      "postAgeHoursMax": 24,
+      "requireVisibleDiscussion": true,
+      "requireTopicMatch": true
+    },
+    "templateClasses": {
+      "problemReframer": "Bukan cuma soal tools. Biasanya bottleneck-nya ada di workflow yang masih manual.",
+      "practicalAddOn": "Kalau mau hasil lebih cepat, pecah jadi 3 step: trigger, action, follow-up.",
+      "questionReply": "Kalau harus pilih satu bottleneck dulu, yang paling bikin lambat sekarang apa: content, leads, atau follow-up?",
+      "softBridge": "Saya baru breakdown ini di post terakhir saya, inti masalahnya justru ada di proses sebelum AI dipakai."
+    }
+  }
+}

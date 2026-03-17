@@ -14,7 +14,8 @@ const log = createLogger('notify-tuan');
 const stateDir = path.join(root, 'memory', 'repliz-social-state');
 const draftsData = await readJson(path.join(stateDir, 'smart-drafts.json'), { drafts: [] });
 const pendingDrafts = (draftsData.drafts || []).filter((draft) => draft.status === 'awaiting_approval');
-const queue = [];
+const approvalQueue = [];
+let sent = 0;
 
 for (const draft of pendingDrafts) {
   const limiter = await checkRateLimit(path.join(stateDir, 'telegram-rate-limit.json'), 'notify', 20, 60 * 60 * 1000);
@@ -44,24 +45,53 @@ for (const draft of pendingDrafts) {
   if (result.ok) {
     draft.status = 'notified';
     draft.notificationSentAt = new Date().toISOString();
-    queue.push({
+    approvalQueue.push({
       commentId: draft.commentId,
       username: draft.username,
       draftReply: draft.draftReply,
       status: 'awaiting_approval',
       notifiedAt: draft.notificationSentAt,
     });
+    sent += 1;
+  }
+}
+
+const leadsFile = path.join(root, 'memory', 'leads.json');
+const leadsData = await readJson(leadsFile, { leads: [] });
+for (const lead of leadsData.leads || []) {
+  if (!lead.notify || lead.notificationSentAt) continue;
+  const limiter = await checkRateLimit(path.join(stateDir, 'telegram-rate-limit.json'), 'lead_notify', 20, 60 * 60 * 1000);
+  if (!limiter.allowed) break;
+  const message = [
+    '<b>Lead Signal</b>',
+    '',
+    `<b>User:</b> @${escapeHtml(lead.username || 'unknown')}`,
+    `<b>Keyword:</b> ${escapeHtml(lead.keyword || '-')}`,
+    `<b>Intent:</b> ${escapeHtml(lead.intent || '-')}`,
+    `<b>Stage:</b> ${escapeHtml(lead.stage || '-')}`,
+    `<b>Channel:</b> ${escapeHtml(lead.channel || '-')}`,
+    `<b>Message:</b> ${escapeHtml(lead.message || '-')}`,
+    `<b>Follow Up:</b> ${escapeHtml(lead.followUpSuggestion || '-')}`,
+  ].join('\n');
+
+  const result = await sendTelegramMessage({
+    botToken: config.telegramBotToken,
+    chatId: config.telegramChatId,
+    text: message,
+  });
+
+  if (result.ok) {
+    lead.notificationSentAt = new Date().toISOString();
+    sent += 1;
   }
 }
 
 await writeJson(path.join(stateDir, 'smart-drafts.json'), draftsData);
 await writeJson(path.join(stateDir, 'approval-queue.json'), {
   lastUpdated: new Date().toISOString(),
-  pendingApprovals: queue,
+  pendingApprovals: approvalQueue,
 });
+await writeJson(leadsFile, leadsData);
 
-await log.info('approval notifications sent', { sent: queue.length });
-console.log(JSON.stringify({ ok: true, sent: queue.length }, null, 2));
-
-
-
+await log.info('notifications sent', { sent, approvals: approvalQueue.length });
+console.log(JSON.stringify({ ok: true, sent, approvals: approvalQueue.length }, null, 2));

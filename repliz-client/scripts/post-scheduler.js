@@ -1,21 +1,18 @@
 #!/usr/bin/env node
-/**
- * post-scheduler.js — Automated Posting Scheduler for Threads
- * 
- * Run via cron every 15 minutes to check and publish scheduled posts
- * Cron: 0,15,30,45 * * * * cd /root/.openclaw/workspace/claudia && node repliz-client/scripts/post-scheduler.js
- */
-
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ReplizClient } from './repliz-client.js';
+import { readJson, writeJson } from '../../packages/core/state-manager.js';
+import { GROWTH_TARGETS, normalizeScheduledPost } from '../../packages/core/growth-recovery.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
+const root = path.resolve(__dirname, '..', '..');
 const QUEUE_FILE = path.join(__dirname, '..', 'content', 'scheduled', 'queue.json');
 const POSTED_DIR = path.join(__dirname, '..', 'content', 'posted');
 const LOG_FILE = path.join(__dirname, '..', 'logs', 'scheduler.log');
+const POST_PERF_FILE = path.join(root, 'memory', 'repliz-social-state', 'post-performance.json');
+const CONTENT_PERF_FILE = path.join(root, 'memory', 'content-performance.json');
 
 async function log(message) {
   const timestamp = new Date().toISOString();
@@ -24,109 +21,130 @@ async function log(message) {
   await fs.appendFile(LOG_FILE, logLine).catch(() => {});
 }
 
-async function loadQueue() {
-  try {
-    const data = await fs.readFile(QUEUE_FILE, 'utf-8');
-    return JSON.parse(data);
-  } catch (err) {
-    return { queue: [], lastUpdated: new Date().toISOString() };
-  }
-}
-
-async function saveQueue(queueData) {
-  queueData.lastUpdated = new Date().toISOString();
-  await fs.writeFile(QUEUE_FILE, JSON.stringify(queueData, null, 2));
-}
-
 async function archivePost(post) {
   await fs.mkdir(POSTED_DIR, { recursive: true });
   const archiveFile = path.join(POSTED_DIR, `${post.id}_${Date.now()}.json`);
   await fs.writeFile(archiveFile, JSON.stringify(post, null, 2));
 }
 
-// Promisified setTimeout
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+function upsertPostMetric(posts, payload) {
+  const index = posts.findIndex((item) => item.id === payload.id);
+  if (index === -1) {
+    posts.push(payload);
+    return;
+  }
+  posts[index] = { ...posts[index], ...payload };
+}
 
 async function main() {
   await fs.mkdir(path.dirname(LOG_FILE), { recursive: true });
-  
-  log('Scheduler started');
-  
-  const client = new ReplizClient();
-  await client.init();
-  
-  const queueData = await loadQueue();
+  await log('Scheduler started');
+
+  const queueData = await readJson(QUEUE_FILE, { queue: [], lastUpdated: null });
+  const queue = (queueData.queue || []).map(normalizeScheduledPost);
   const now = new Date();
-  
+  const client = new ReplizClient();
+  const init = await client.init();
+  const postPerf = await readJson(POST_PERF_FILE, { generatedAt: null, posts: [] });
+  const perf = await readJson(CONTENT_PERF_FILE, { generatedAt: null, targets: GROWTH_TARGETS, metrics: {} });
+
   let published = 0;
-  let skipped = 0;
-  
-  const publishTasks = [];
-  
-  for (const post of queueData.queue) {
-    // Skip already posted
-    if (post.status === 'posted') {
+  let failed = 0;
+  let duePending = 0;
+
+  for (const post of queue) {
+    const scheduledTime = post.scheduledFor ? new Date(post.scheduledFor) : now;
+    const isDue = Number.isNaN(scheduledTime.getTime()) || scheduledTime.getTime() <= now.getTime();
+    if (post.status === 'posted') continue;
+    if (!isDue) continue;
+    duePending += 1;
+
+    if (!init.ok) {
+      post.status = 'publish_failed';
+      post.lastError = init.error || 'Repliz client init failed';
+      failed += 1;
       continue;
     }
-    
-    const scheduledTime = new Date(post.scheduledFor);
-    
-    // Check if it's time to post (within last 15 minutes)
-    const timeDiff = now - scheduledTime;
-    const fifteenMinutes = 15 * 60 * 1000;
-    
-    if (timeDiff >= 0 && timeDiff <= fifteenMinutes) {
-      // 🎲 JITTERING: Add random delay between 1 to 45 minutes to seem human
-      const jitterMinutes = Math.floor(Math.random() * 45) + 1;
-      const jitterMs = jitterMinutes * 60 * 1000;
-      
-      log(`Jitter delay added: waiting ${jitterMinutes} minutes before publishing post ${post.id}...`);
-      
-      // Push promise to array to wait for all jittered posts
-      publishTasks.push((async () => {
-        await delay(jitterMs);
-        
-        log(`Executing jittered publication for post ${post.id}...`);
-        try {
-          const result = await client.createPost(post.content);
-          
-          if (result.ok) {
-            post.status = 'posted';
-            post.postedAt = new Date().toISOString();
-            post.postId = result.postId;
-            post.url = result.url;
-            
-            await archivePost(post);
-            published++;
-            log(`✅ Published: ${result.url}`);
-          } else {
-            log(`❌ Failed to publish ${post.id}: ${result.reason || 'Unknown error'}`);
-          }
-        } catch (err) {
-          log(`❌ Error publishing ${post.id}: ${err.message}`);
-        }
-      })());
-      
-    } else if (timeDiff > fifteenMinutes) {
-      // Missed the window
-      log(`⚠️ Missed window for ${post.id}`);
-      post.status = 'missed';
-      skipped++;
+
+    try {
+      const result = await client.createPost(post.content, { scheduleAt: now.toISOString() });
+      if (result.ok) {
+        post.status = 'posted';
+        post.postedAt = new Date().toISOString();
+        post.postId = result.data?._id || result.postId || result.data?.id || null;
+        post.url = result.data?.url || result.url || null;
+        published += 1;
+        await archivePost(post);
+        upsertPostMetric(postPerf.posts, {
+          id: post.id,
+          draftId: post.draftId || post.id,
+          externalPostId: post.postId,
+          url: post.url,
+          topic: post.metadata?.topic || null,
+          hookType: post.metadata?.hookType || 'problem_first',
+          ctaKeyword: post.metadata?.ctaKeyword || null,
+          scheduledFor: post.scheduledFor,
+          publishedAt: post.postedAt,
+          status: 'posted',
+          impressions: 0,
+          impressionsProxy: 0,
+          likes: 0,
+          comments: 0,
+          dmSignals: 0,
+          engagementEvents: 0,
+          leadsCreated: 0,
+          engagementRate: 0,
+          outcome: 'tweak',
+        });
+        await log(`Published ${post.id}`);
+      } else {
+        post.status = 'publish_failed';
+        post.lastError = result.error || result.reason || 'Unknown publish error';
+        failed += 1;
+        await log(`Failed ${post.id}: ${post.lastError}`);
+      }
+    } catch (error) {
+      post.status = 'publish_failed';
+      post.lastError = error.message;
+      failed += 1;
+      await log(`Error ${post.id}: ${error.message}`);
     }
   }
-  
-  // Wait for all jittered publishers to finish
-  if (publishTasks.length > 0) {
-    log(`Waiting for ${publishTasks.length} jittered post(s) to finish...`);
-    await Promise.all(publishTasks);
-  }
-  
-  await saveQueue(queueData);
-  
-  log(`Scheduler complete: ${published} published, ${skipped} missed`);
+
+  const postedCount = queue.filter((item) => item.status === 'posted').length;
+  const pendingCount = queue.filter((item) => item.status === 'pending').length;
+  const publishAttempts = postedCount + failed;
+  perf.generatedAt = new Date().toISOString();
+  perf.targets = perf.targets || GROWTH_TARGETS;
+  perf.metrics = {
+    ...(perf.metrics || {}),
+    content_posts: postedCount,
+    published_posts_48h: postedCount,
+    publish_attempts: publishAttempts,
+    publish_success_rate: publishAttempts > 0 ? postedCount / publishAttempts : 0,
+    queue_pending: pendingCount,
+    due_queue_items: duePending,
+    comments_total: perf.metrics?.comments_total || 0,
+    inbound_interactions: perf.metrics?.inbound_interactions || 0,
+    new_leads: perf.metrics?.new_leads || 0,
+    impressions_proxy_total: perf.metrics?.impressions_proxy_total || 0,
+    engagement_rate: perf.metrics?.engagement_rate || 0,
+  };
+  perf.publishHealth = {
+    lastRunAt: new Date().toISOString(),
+    published,
+    failed,
+    queuePending: pendingCount,
+  };
+
+  postPerf.generatedAt = new Date().toISOString();
+  await writeJson(POST_PERF_FILE, postPerf);
+  await writeJson(CONTENT_PERF_FILE, perf);
+  await writeJson(QUEUE_FILE, { queue, lastUpdated: new Date().toISOString() });
+  await log(`Scheduler complete: ${published} published, ${failed} failed`);
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('Scheduler error:', err);
   process.exit(1);
 });

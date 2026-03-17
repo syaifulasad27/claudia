@@ -10,10 +10,10 @@ const root = path.resolve(__dirname, '..', '..');
 const stateDir = path.join(root, 'memory', 'repliz-social-state');
 const log = createLogger('comment-fetcher');
 
-const blockedRanges = [/[\u4E00-\u9FFF]/, /[\u3040-\u309F]/, /[\u30A0-\u30FF]/, /[\uAC00-\uD7AF]/, /[\u0600-\u06FF]/, /[\u0590-\u05FF]/, /[\u0E00-\u0E7F]/, /[\u0900-\u097F]/];
+const blockedRanges = [/[^\x00-\x7F]/];
 const spamKeywords = ['check my bio', 'dm for signal', 'wa.me/', 'telegram.me/', 'free signal', 'promo', 'diskon'];
 
-function containsForeignChars(text) {
+function containsBlockedChars(text) {
   return blockedRanges.some((range) => range.test(String(text || '')));
 }
 
@@ -26,7 +26,7 @@ function classifyComment(text) {
   const lower = String(text || '').toLowerCase();
   if (isSpam(lower)) return 'spam';
   if (/(harga|price|paket|join|daftar|service|jasa|demo|consult|konsultasi)/.test(lower)) return 'product_question';
-  if (/(dm|beli|order|tertarik|mau dong|boleh detail|info lebih lanjut)/.test(lower)) return 'potential_lead';
+  if (/(dm|beli|order|tertarik|mau dong|boleh detail|info lebih lanjut|audit|calendar|system|funnel|career)/.test(lower)) return 'potential_lead';
   if (/(salah|gagal|buruk|jelek|kecewa|complain|komplain)/.test(lower)) return 'complaint';
   return 'normal_comment';
 }
@@ -50,7 +50,7 @@ const comments = [];
 for (const item of rawComments) {
   const commentData = item.comment || item;
   const text = commentData.text || commentData.description || '';
-  if (containsForeignChars(text) || isSpam(text)) continue;
+  if (containsBlockedChars(text) || isSpam(text)) continue;
   const classification = classifyComment(text);
   comments.push({
     id: item._id || item.id,
@@ -58,15 +58,17 @@ for (const item of rawComments) {
     text,
     category: classification,
     classification,
-    postId: item.content?.id || item.content?._id || 'unknown',
+    postId: item.content?.id || item.content?._id || item.post?.id || 'unknown',
     postContext: {
       title: item.content?.title || item.post?.title || '',
       text: item.content?.description || item.content?.text || item.post?.description || item.post?.text || '',
       url: item.content?.url || item.post?.url || '',
+      topic: item.content?.title || item.post?.title || '',
     },
     threadContext: {
       existingReplyCount: Array.isArray(commentData.replies) ? commentData.replies.length : 0,
     },
+    channel: 'comment',
     status: 'pending_draft',
     fetchedAt: new Date().toISOString(),
   });
@@ -79,17 +81,35 @@ await writeJson(path.join(stateDir, 'pending-comments.json'), {
   comments,
 });
 
-const performance = await readJson(path.join(root, 'memory', 'content-performance.json'), { metrics: {} });
+const performanceFile = path.join(root, 'memory', 'content-performance.json');
+const performance = await readJson(performanceFile, { metrics: {} });
+performance.generatedAt = new Date().toISOString();
 performance.metrics = {
   ...(performance.metrics || {}),
-  engagement_rate: performance.metrics?.engagement_rate || 0.04,
-  new_leads: performance.metrics?.new_leads || 0,
-  content_posts: performance.metrics?.content_posts || 0,
+  comments_total: comments.length,
+  inbound_interactions: comments.length,
+  engagement_events: comments.length,
+  engagement_rate: performance.metrics?.content_posts > 0
+    ? comments.length / Math.max(performance.metrics.content_posts, 1)
+    : performance.metrics?.engagement_rate || 0,
 };
-await writeJson(path.join(root, 'memory', 'content-performance.json'), performance);
+await writeJson(performanceFile, performance);
+
+const postPerfFile = path.join(root, 'memory', 'repliz-social-state', 'post-performance.json');
+const postPerf = await readJson(postPerfFile, { posts: [] });
+for (const comment of comments) {
+  const related = postPerf.posts.find((post) => post.externalPostId === comment.postId || post.id === comment.postId || post.draftId === comment.postId);
+  if (!related) continue;
+  related.commentIds = Array.isArray(related.commentIds) ? related.commentIds : [];
+  if (!related.commentIds.includes(comment.id)) {
+    related.commentIds.push(comment.id);
+    related.comments = (related.comments || 0) + 1;
+    related.engagementEvents = (related.engagementEvents || 0) + 1;
+    related.impressionsProxy = Math.max(related.impressionsProxy || 0, related.comments * 10);
+    related.engagementRate = related.impressionsProxy > 0 ? related.engagementEvents / related.impressionsProxy : 0;
+  }
+}
+await writeJson(postPerfFile, postPerf);
 
 await log.info('comment queue updated', { totalFetched: rawComments.length, validComments: comments.length });
 console.log(JSON.stringify({ ok: true, count: comments.length }, null, 2));
-
-
-

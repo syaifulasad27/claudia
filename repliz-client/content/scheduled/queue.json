@@ -4,71 +4,158 @@
       "id": "post_001",
       "scheduledFor": "2026-03-03T08:00:00+07:00",
       "type": "market_prep",
-      "content": "?? Pre-US Session Check\n\nXAUUSD Setup: BULLISH (Confluence 9/12)\nKey Levels:\n� Support: 5335 (EMA20)\n� Resistance: 5425 (TP zone)\n\nRisk: Geopolitical volatility\nPlan: BUY_LIMIT @ 5335, SL @ 5290, TP @ 5425\n\n#MarketPrep #XAUUSD",
+      "content": "?? Pre-US Session Check XAUUSD Setup: BULLISH (Confluence 9/12) Key Levels: � Support: 5335 (EMA20) � Resistance: 5425 (TP zone) Risk: Geopolitical volatility Plan: BUY_LIMIT @ 5335, SL @ 5290, TP @ 5425 #MarketPrep #XAUUSD",
       "status": "on_hold",
       "postedAt": null,
-      "postId": null
+      "postId": null,
+      "metadata": {
+        "topic": null,
+        "hookType": "educational",
+        "ctaKeyword": null
+      }
     },
     {
       "id": "post_002",
       "scheduledFor": "2026-03-03T14:00:00+07:00",
       "type": "educational",
-      "content": "?? Kenapa ATR penting untuk SL?\n\nVolatilitas tidak statis.\nMarket tenang ? SL ketat cukup\nMarket gila ? SL ketat = SL hit terus\n\nSolusi: SL dinamis = 1.5 � ATR\n\nContoh:\nATR 30 ? SL 45 pips\nATR 50 ? SL 75 pips\n\nAdjust size, bukan SL.\n\n#TradingEducation #RiskManagement",
+      "content": "?? Kenapa ATR penting untuk SL? Volatilitas tidak statis. Market tenang ? SL ketat cukup Market gila ? SL ketat = SL hit terus Solusi: SL dinamis = 1.5 � ATR Contoh: ATR 30 ? SL 45 pips ATR 50 ? SL 75 pips Adjust size, bukan SL. #TradingEducation #RiskManagement",
       "status": "on_hold",
       "postedAt": null,
-      "postId": null
+      "postId": null,
+      "metadata": {
+        "topic": null,
+        "hookType": "educational",
+        "ctaKeyword": null
+      }
     },
     {
       "id": "post_003",
       "scheduledFor": "2026-03-03T20:00:00+07:00",
       "type": "trade_journal",
-      "content": "?? Trade #002: Menunggu dengan Sabar\n\nStatus: PENDING (belum entry)\n\nSetup bagus, tapi price extended 22 pips dari EMA20.\n\nPilihan:\n? FOMO entry sekarang ? RR buruk\n? Tunggu pullback ? RR optimal\n\nDiscipline = menunggu di saat FOMO\n\n#TradeJournal #XAUUSD #Patience",
+      "content": "?? Trade #002: Menunggu dengan Sabar Status: PENDING (belum entry) Setup bagus, tapi price extended 22 pips dari EMA20. Pilihan: ? FOMO entry sekarang ? RR buruk ? Tunggu pullback ? RR optimal Discipline = menunggu di saat FOMO #TradeJournal #XAUUSD #Patience",
       "status": "on_hold",
       "postedAt": null,
-      "postId": null
+      "postId": null,
+      "metadata": {
+        "topic": null,
+        "hookType": "educational",
+        "ctaKeyword": null
+      }
     },
     {
       "id": "f7c9837b-6531-4c5f-af3d-ede179d22708",
       "type": "text",
       "description": "Kenapa AI automation penting buat general audience?. general audience biasanya struggle di need clarity. Fokus konten ini adalah langkah yang realistis, singkat, dan bisa langsung dicoba hari ini. Ajak diskusi via komentar atau DM.",
       "scheduleAt": "2026-03-16T13:30:43.227Z",
-      "status": "pending"
+      "status": "pending",
+      "content": "Kenapa AI automation penting buat general audience?. general audience biasanya struggle di need clarity. Fokus konten ini adalah langkah yang realistis, singkat, dan bisa langsung dicoba hari ini. Ajak diskusi via komentar atau DM.",
+      "scheduledFor": "2026-03-16T13:30:43.227Z",
+      "metadata": {
+        "topic": null,
+        "hookType": "educational",
+        "ctaKeyword": null
+      }
     },
     {
       "id": "83a5f873-c68b-4f7e-a344-f90e8fa3f511",
       "type": "text",
       "description": "AI automation untuk general audience. Masalah utama,Kenapa ini sering gagal,Framework sederhana,Contoh praktis,CTA comment prompt",
       "scheduleAt": "2026-03-16T16:30:46.056Z",
-      "status": "pending"
+      "status": "pending",
+      "content": "AI automation untuk general audience. Masalah utama,Kenapa ini sering gagal,Framework sederhana,Contoh praktis,CTA comment prompt",
+      "scheduledFor": "2026-03-16T16:30:46.056Z",
+      "metadata": {
+        "topic": null,
+        "hookType": "educational",
+        "ctaKeyword": null
+      }
     },
     {
       "id": "83a5f873-c68b-4f7e-a344-f90e8fa3f511",
       "type": "text",
       "description": "AI automation untuk general audience. Masalah utama,Kenapa ini sering gagal,Framework sederhana,Contoh praktis,CTA comment prompt",
       "scheduleAt": "2026-03-17T01:30:56.986Z",
-      "status": "pending"
+      "status": "pending",
+      "content": "AI automation untuk general audience. Masalah utama,Kenapa ini sering gagal,Framework sederhana,Contoh praktis,CTA comment prompt",
+      "scheduledFor": "2026-03-17T01:30:56.986Z",
+      "metadata": {
+        "topic": null,
+        "hookType": "educational",
+        "ctaKeyword": null
+      }
     },
     {
       "id": "b2590b97-3599-4356-a9db-3442e1e70de2",
       "type": "text",
       "description": "Kenapa AI automation penting buat general audience?. general audience biasanya struggle di need clarity. Fokus konten ini adalah langkah yang realistis, singkat, dan bisa langsung dicoba hari ini. comment prompt",
       "scheduleAt": "2026-03-17T03:30:44.737Z",
-      "status": "pending"
+      "status": "pending",
+      "content": "Kenapa AI automation penting buat general audience?. general audience biasanya struggle di need clarity. Fokus konten ini adalah langkah yang realistis, singkat, dan bisa langsung dicoba hari ini. comment prompt",
+      "scheduledFor": "2026-03-17T03:30:44.737Z",
+      "metadata": {
+        "topic": null,
+        "hookType": "educational",
+        "ctaKeyword": null
+      }
     },
     {
       "id": "f883dca7-66b5-4fbb-9ad4-99bf07dbc55e",
       "type": "text",
       "description": "conversion copy yang lebih terukur untuk general audience. Menjawab pain point: conversion copy | Fokus pada hasil dan langkah praktis | Cocok untuk funnel awareness sampai conversion comment prompt",
       "scheduleAt": "2026-03-17T04:30:50.197Z",
-      "status": "pending"
+      "status": "pending",
+      "content": "conversion copy yang lebih terukur untuk general audience. Menjawab pain point: conversion copy | Fokus pada hasil dan langkah praktis | Cocok untuk funnel awareness sampai conversion comment prompt",
+      "scheduledFor": "2026-03-17T04:30:50.197Z",
+      "metadata": {
+        "topic": null,
+        "hookType": "educational",
+        "ctaKeyword": "funnel"
+      }
     },
     {
       "id": "fa329f04-3095-4498-bdc1-dcf7c89c0627",
       "type": "text",
       "description": "Kenapa AI automation penting buat general audience?. general audience biasanya struggle di need clarity. Fokus konten ini adalah langkah yang realistis, singkat, dan bisa langsung dicoba hari ini. comment prompt",
       "scheduleAt": "2026-03-17T06:31:04.207Z",
-      "status": "pending"
+      "status": "pending",
+      "content": "Kenapa AI automation penting buat general audience?. general audience biasanya struggle di need clarity. Fokus konten ini adalah langkah yang realistis, singkat, dan bisa langsung dicoba hari ini. comment prompt",
+      "scheduledFor": "2026-03-17T06:31:04.207Z",
+      "metadata": {
+        "topic": null,
+        "hookType": "educational",
+        "ctaKeyword": null
+      }
+    },
+    {
+      "id": "155fb775-c6d5-4de8-9f5f-6f7ce725fe2e",
+      "draftId": "155fb775-c6d5-4de8-9f5f-6f7ce725fe2e",
+      "type": "text",
+      "content": "Masalah utama,Kenapa ini sering gagal,Framework sederhana,Contoh praktis,CTA comment prompt",
+      "scheduledFor": "2026-03-17T12:00:00.000Z",
+      "status": "pending",
+      "metadata": {
+        "topic": "AI automation untuk general audience",
+        "hookType": "problem_first",
+        "ctaKeyword": null,
+        "persona": "general audience",
+        "sourceDraftCreatedAt": "2026-03-17T01:00:56.901Z"
+      }
+    },
+    {
+      "id": "c6bde774-a2e7-40b3-a06e-2590253fd716",
+      "draftId": "c6bde774-a2e7-40b3-a06e-2590253fd716",
+      "type": "text",
+      "content": "Masalah utama,Kenapa ini sering gagal,Framework sederhana,Contoh praktis,CTA comment prompt",
+      "scheduledFor": "2026-03-18T01:00:00.000Z",
+      "status": "pending",
+      "metadata": {
+        "topic": "AI automation untuk general audience",
+        "hookType": "problem_first",
+        "ctaKeyword": null,
+        "persona": "general audience",
+        "sourceDraftCreatedAt": "2026-03-17T06:01:04.123Z"
+      }
     }
   ],
-  "lastUpdated": "2026-03-03T11:26:00+07:00"
+  "lastUpdated": "2026-03-17T08:26:01.723Z"
 }

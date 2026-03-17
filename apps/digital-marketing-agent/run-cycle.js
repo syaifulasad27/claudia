@@ -57,7 +57,9 @@ try {
   await run('ContentEngine/scripts/generate-carousel.js');
   await run('ContentEngine/scripts/generate-sales-copy.js');
   await run('ContentEngine/scripts/schedule-post.js');
+  await run('repliz-client/scripts/post-scheduler.js');
   steps.push('content_engine');
+  await run('repliz-client/scripts/update-outreach-engine.js');
   await run('repliz-client/scripts/comment-fetcher.js');
   await run('SalesManager/scripts/detect-leads.js');
   await run('SalesManager/scripts/update-funnel-stage.js');
@@ -75,6 +77,7 @@ try {
   await run('ContentExperimentEngine/scripts/run-cta-test.js');
   await run('ContentExperimentEngine/scripts/compare-posting-times.js');
   await run('ContentExperimentEngine/scripts/compare-content-formats.js');
+  await run('apps/digital-marketing-agent/scripts/evaluate-growth-system.js');
   steps.push('learning_loop');
 
   const currentPlan = await readJson(path.join(stateDir, 'current-plan.json'), {});
@@ -96,4 +99,3 @@ try {
 } finally {
   await releaseLock(lockFile);
 }
-

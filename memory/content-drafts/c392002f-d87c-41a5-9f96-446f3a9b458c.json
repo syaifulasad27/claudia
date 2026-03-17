@@ -1,0 +1,17 @@
+{
+  "id": "c392002f-d87c-41a5-9f96-446f3a9b458c",
+  "type": "short_post",
+  "channel": "threads",
+  "theme": "AI automation",
+  "hookType": "problem_first",
+  "ctaKeyword": "audit",
+  "hook": "Masalahnya bukan kurang tools AI. Masalahnya workflow kamu masih manual.",
+  "body": "Kalau tiap hari masih copy-paste, cek inbox satu-satu, dan nulis ulang konten dari nol, bottleneck-nya ada di sistem kerja, bukan effort.",
+  "cta": "Comment audit kalau mau saya kasih 3 area automation yang paling cepat dibenahi.",
+  "status": "draft",
+  "createdAt": "2026-03-17T08:24:19.737Z",
+  "sourceInsightIds": [
+    "AI automation"
+  ],
+  "persona": "general audience"
+}

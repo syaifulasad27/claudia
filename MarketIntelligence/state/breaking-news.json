@@ -1,0 +1,237 @@
+{
+  "generated_at": "2026-03-02T12:28:16.838Z",
+  "sources": {
+    "investing-breaking": "empty_or_error",
+    "yahoo-finance": "ok"
+  },
+  "items": [
+    {
+      "id": "yahoo-finance-fast-d1dfc8f9-f729-3403-b6a4-8f87dd02a8ed",
+      "timestamp_utc": "2026-03-02T12:23:00.000Z",
+      "age_ms": 316835,
+      "source": "yahoo-finance",
+      "type": "breaking_news",
+      "title": "SLAM Reports Soil Samples up to 0.466 g/t Gold at Jake Lee",
+      "url": "https://finance.yahoo.com/news/slam-reports-soil-samples-0-122300817.html?.tsrc=rss",
+      "summary": "Gold, Silver and Critical Elements in the Mineral-Rich Province of New Brunswick, Canada MIRAMICHI, NB / ACCESS Newswire / March 2, 2026 /SLAM Exploration Ltd. (TSXV:SXL) (\"SLAM\" or the \"Company\") is pleased to announce gold assays up to 0.466 g/t ...",
+      "impact_raw": "FAST_TRACK",
+      "assets_affected": [
+        "XAUUSD"
+      ]
+    },
+    {
+      "id": "yahoo-finance-fast-070438a4-41e7-3582-93fd-7a26fbdc1e73",
+      "timestamp_utc": "2026-03-02T12:21:43.000Z",
+      "age_ms": 393835,
+      "source": "yahoo-finance",
+      "type": "breaking_news",
+      "title": "Sonoro Gold Releases Updated Mineral Resource Estimate, Preliminary Economic Assessment on Cerro Caliche Gold Project",
+      "url": "https://finance.yahoo.com/news/sonoro-gold-releases-updated-mineral-122143746.html?.tsrc=rss",
+      "summary": "Sonoro Gold (SGO.V) on Saturday announced the results of an updated mineral resource estimate and pr",
+      "impact_raw": "FAST_TRACK",
+      "assets_affected": [
+        "XAUUSD"
+      ]
+    },
+    {
+      "id": "yahoo-finance-fast-3a15d715-45db-37c2-aba9-629333364ced",
+      "timestamp_utc": "2026-03-02T12:20:07.000Z",
+      "age_ms": 489835,
+      "source": "yahoo-finance",
+      "type": "breaking_news",
+      "title": "Stocks Fall Pre-Bell, Oil Prices Jump Following US-Israel Strikes on Iran",
+      "url": "https://finance.yahoo.com/news/stocks-fall-pre-bell-oil-122007989.html?.tsrc=rss",
+      "summary": "The benchmark US stock measures were tracking in the red before the opening bell Monday, while oil p",
+      "impact_raw": "FAST_TRACK",
+      "assets_affected": [
+        "XAUUSD",
+        "NASDAQ"
+      ]
+    },
+    {
+      "id": "yahoo-finance-fast-156b333e-c587-3263-9bd8-9b225d347208",
+      "timestamp_utc": "2026-03-02T12:00:00.000Z",
+      "age_ms": 1696835,
+      "source": "yahoo-finance",
+      "type": "breaking_news",
+      "title": "Irving Resources Announces Further Drilling Results  at the Yamagano Joint Venture, Kyushu, Japan",
+      "url": "https://finance.yahoo.com/news/irving-resources-announces-further-drilling-120000735.html?.tsrc=rss",
+      "summary": "VANCOUVER, BC / ACCESS Newswire / March 2, 2026 / Irving Resources Inc. (CSE:IRV)(OTCQX:IRVRF)(FSE:1IR) (\"Irving\" or the \"Company\") is pleased to: announce high-grade gold assay results from drill hole 25SY-003 that confirms a potential eastward extension ...",
+      "impact_raw": "FAST_TRACK",
+      "assets_affected": [
+        "XAUUSD"
+      ]
+    },
+    {
+      "id": "yahoo-finance-fast-24822909-ab7b-38ea-89e5-a184e8375060",
+      "timestamp_utc": "2026-03-02T12:00:00.000Z",
+      "age_ms": 1696835,
+      "source": "yahoo-finance",
+      "type": "breaking_news",
+      "title": "Athena Receives Permits for Maiden Drill Program at Laird Lake Project in Ontario's Red Lake Gold Camp",
+      "url": "https://finance.yahoo.com/news/athena-receives-permits-maiden-drill-120000551.html?.tsrc=rss",
+      "summary": "Prepares for fully funded, 5,000 m drill program, testing new targets WHITE ROCK, BC / ACCESS Newswire / March 2, 2026 / Athena Gold Corporation (CSE:ATHA)(OTCQB:AHNRF) (\"Athena\" or the \"Company\") is pleased to announce the receipt of permits (PR ...",
+      "impact_raw": "FAST_TRACK",
+      "assets_affected": [
+        "XAUUSD"
+      ]
+    },
+    {
+      "id": "yahoo-finance-fast-5488c654-139c-38d6-bfaa-37949b6f41fe",
+      "timestamp_utc": "2026-03-02T12:00:00.000Z",
+      "age_ms": 1696835,
+      "source": "yahoo-finance",
+      "type": "breaking_news",
+      "title": "Jaguar Mining Reports on Ongoing Exploration Drilling at the BA Zone of the Pilar Gold Mine, Brazil",
+      "url": "https://finance.yahoo.com/news/jaguar-mining-reports-ongoing-exploration-120000165.html?.tsrc=rss",
+      "summary": "- Drilling supports down-plunge continuity of the BA mineralization and confirms multiple high-grade intercepts TORONTO, ON / ACCESS Newswire / March 2, 2026 / Jaguar Mining Inc. (\"Jaguar\" or the \"Company\") (TSX:JAG)(OTCQX:JAGGF) today reported results ...",
+      "impact_raw": "FAST_TRACK",
+      "assets_affected": [
+        "XAUUSD"
+      ]
+    },
+    {
+      "id": "yahoo-finance-fast-b9367b05-8626-302b-95c7-0629981e00dd",
+      "timestamp_utc": "2026-03-02T12:00:00.000Z",
+      "age_ms": 1696835,
+      "source": "yahoo-finance",
+      "type": "breaking_news",
+      "title": "Westhaven Appoints Senior Leaders in Indigenous, Community Relations and Permitting",
+      "url": "https://finance.yahoo.com/news/westhaven-appoints-senior-leaders-indigenous-120000869.html?.tsrc=rss",
+      "summary": "VANCOUVER, British Columbia, March 02, 2026 (GLOBE NEWSWIRE) -- Westhaven Gold Corp. (TSX-V: WHN) (OTCQB: WTHVF) (“Westhaven” or the “Company”) announces the appointments of Allison Rippin Armstrong as Vice President, Indigenous and Community Relations, and Pamela O’Hara as Vice President, Permitting and Government Affairs, effective April 1, 2026. Ken Armstrong, President and Chief Executive Officer of Westhaven, commented, \"I am pleased to welcome Allison and Pamela to Westhaven at a defining",
+      "impact_raw": "FAST_TRACK",
+      "assets_affected": [
+        "XAUUSD"
+      ]
+    },
+    {
+      "id": "yahoo-finance-fast-bf0e2474-d826-31f8-a6bf-9af1a24360a4",
+      "timestamp_utc": "2026-03-02T12:00:00.000Z",
+      "age_ms": 1696835,
+      "source": "yahoo-finance",
+      "type": "breaking_news",
+      "title": "Mayo Delineates Reduced Intrusion Related Gold System Target at Dawn Gulch",
+      "url": "https://finance.yahoo.com/news/mayo-delineates-reduced-intrusion-related-120000529.html?.tsrc=rss",
+      "summary": "On 10 km long Anderson Gold Trend (AGT); some 15 km SE of BYN's RIRGS AurMac Project Increases Probability of More Drill Targets and a Gold Mining Camp in the Making Closes Second Tranche of PlacementHighlights of Press ReleaseSoil Geochemistry and Soil Gas Hydrocarbon (SGH) results at Dawn GulchThe presence of an alteration halo overlying an extensive buried mineral deposit is demonstrated by elevated anomalous and enhanced metals in soil with linear patterns and broad areal patterns. This all.",
+      "impact_raw": "FAST_TRACK",
+      "assets_affected": [
+        "XAUUSD"
+      ]
+    },
+    {
+      "id": "yahoo-finance-fast-d768ad6b-75d3-341b-beb7-7bc773feab25",
+      "timestamp_utc": "2026-03-02T12:00:00.000Z",
+      "age_ms": 1696835,
+      "source": "yahoo-finance",
+      "type": "breaking_news",
+      "title": "ONGold Advances Geological and Structural Understanding of the Monument Bay Gold & Tungsten Deposit",
+      "url": "https://finance.yahoo.com/news/ongold-advances-geological-structural-understanding-120000714.html?.tsrc=rss",
+      "summary": "Toronto, Ontario--(Newsfile Corp. - March 2, 2026) - ONGold Resources Ltd. (TSXV: ONAU) (OTCQB: ONGRF) (the \"Company\" or \"ONGold\") is pleased to provide an update on the key outcomes of the Monument Bay gold and tungsten project geological and structural review undertaken as part of the historical core re-logging and infill sampling program initiated during the summer of 2025. The field program was recently concluded, resulting in the completion of the strategic re-logging of 83 historical...",
+      "impact_raw": "FAST_TRACK",
+      "assets_affected": [
+        "XAUUSD"
+      ]
+    },
+    {
+      "id": "yahoo-finance-fast-fed45d20-92dc-31c0-a086-0195eea1bcc2",
+      "timestamp_utc": "2026-03-02T12:00:00.000Z",
+      "age_ms": 1696835,
+      "source": "yahoo-finance",
+      "type": "breaking_news",
+      "title": "Cascadia Announces 2026 Exploration Plans at the Carmacks Project, Yukon",
+      "url": "https://finance.yahoo.com/news/cascadia-announces-2026-exploration-plans-120000469.html?.tsrc=rss",
+      "summary": "Cascadia Minerals Ltd. (\"Cascadia\") (TSXV: CAM) (OTCQB: CAMNF) is pleased to announce plans for the upcoming exploration season at its wholly owned Carmacks copper-gold project in central Yukon.",
+      "impact_raw": "FAST_TRACK",
+      "assets_affected": [
+        "XAUUSD"
+      ]
+    },
+    {
+      "id": "yahoo-finance-fast-ff54993a-50aa-3c46-9bbf-d72396478755",
+      "timestamp_utc": "2026-03-02T12:00:00.000Z",
+      "age_ms": 1696835,
+      "source": "yahoo-finance",
+      "type": "breaking_news",
+      "title": "Aldebaran and Centauri Announce Significant Increase in Mineral Resources for the Rio Grande Gold-Copper Project in Salta, Argentina",
+      "url": "https://finance.yahoo.com/news/aldebaran-centauri-announce-significant-increase-120000301.html?.tsrc=rss",
+      "summary": "VANCOUVER, British Columbia, March 02, 2026 (GLOBE NEWSWIRE) -- Aldebaran Resources Inc. (“Aldebaran” or the “Company”) (TSX-V: ALDE, OTCQX: ADBRF) and Centauri Minerals Inc. (“Centauri”) are pleased to announce the results of an updated mineral resource estimate for the Rio Grande gold-copper project in Salta, Argentina (the “MRE”). Highlights Indicated Resources containing 1.45 million ounces of gold, 384,000 tonnes of copper and 12.7 million ounces of silver 153.7 million tonnes grading 0.29",
+      "impact_raw": "FAST_TRACK",
+      "assets_affected": [
+        "XAUUSD"
+      ]
+    },
+    {
+      "id": "yahoo-finance-fast-3dc04780-e18e-3353-9ac8-4dea63c6adc9",
+      "timestamp_utc": "2026-03-02T11:45:00.000Z",
+      "age_ms": 2596835,
+      "source": "yahoo-finance",
+      "type": "breaking_news",
+      "title": "GoldMining Congratulates U.S. GoldMining on the Successful Completion of the Initial PEA at its Whistler Gold-Copper Project, Alaska",
+      "url": "https://finance.yahoo.com/news/goldmining-congratulates-u-goldmining-successful-114500892.html?.tsrc=rss",
+      "summary": "GoldMining Inc. (TSX: GOLD) (NYSE American: GLDG) (\"GoldMining\" or the \"Company\") congratulates its majority owned subsidiary, U.S. GoldMining Inc. (NASDAQ: USGO) (\"U.S. GoldMining\") on its announcement today of a positive initial economic assessment (the \"PEA\") for its 100% owned Whistler Gold-Copper Project (the \"Whistler Project\"), located 105 miles northwest of Anchorage, Alaska.",
+      "impact_raw": "FAST_TRACK",
+      "assets_affected": [
+        "XAUUSD",
+        "NASDAQ"
+      ]
+    },
+    {
+      "id": "yahoo-finance-fast-a624c5d5-9c46-3e65-911d-6fd6144cf7c0",
+      "timestamp_utc": "2026-03-02T11:38:00.000Z",
+      "age_ms": 3016835,
+      "source": "yahoo-finance",
+      "type": "breaking_news",
+      "title": "Gold and Silver Prices Rise Amid Middle East Fighting",
+      "url": "https://finance.yahoo.com/m/a624c5d5-9c46-3e65-911d-6fd6144cf7c0/gold-and-silver-prices-rise.html?.tsrc=rss",
+      "summary": "Precious metals prices rose early Monday, as investors flocked to haven assets amid heightened tensions in the Middle East.",
+      "impact_raw": "FAST_TRACK",
+      "assets_affected": [
+        "XAUUSD"
+      ]
+    },
+    {
+      "id": "yahoo-finance-fast-02c926c9-532b-3dd7-9e1b-6e2fc2bbfc97",
+      "timestamp_utc": "2026-03-02T11:30:00.000Z",
+      "age_ms": 3496835,
+      "source": "yahoo-finance",
+      "type": "breaking_news",
+      "title": "Hemlo Mining Corp. Strengthens Executive Team with Appointment of Jason Banducci as Vice President, Corporate Development & Investor Relations",
+      "url": "https://finance.yahoo.com/news/hemlo-mining-corp-strengthens-executive-113000506.html?.tsrc=rss",
+      "summary": "Hemlo Mining Corp. (TSXV: HMMC) (\"Hemlo Mining\" or the \"Company\") is pleased to announce the appointment of Jason Banducci as Vice President, Corporate Development & Investor Relations, effective immediately.",
+      "impact_raw": "FAST_TRACK",
+      "assets_affected": [
+        "XAUUSD",
+        "NASDAQ"
+      ]
+    },
+    {
+      "id": "yahoo-finance-fast-47317cf0-fac7-3219-96e1-f3555c7b6fc5",
+      "timestamp_utc": "2026-03-02T11:30:00.000Z",
+      "age_ms": 3496835,
+      "source": "yahoo-finance",
+      "type": "breaking_news",
+      "title": "Zacatecas Silver Announces Agreement to Acquire Multi-Asset Exploration Portfolio from Heliostar Metals, Significantly Expanding Mexican Asset Base",
+      "url": "https://finance.yahoo.com/news/zacatecas-silver-announces-agreement-acquire-113000509.html?.tsrc=rss",
+      "summary": "VANCOUVER, British Columbia, March 02, 2026 (GLOBE NEWSWIRE) -- Zacatecas Silver Corp. (“Zacatecas Silver” or the “Company”) is pleased to announce that it has entered into a binding agreement with Heliostar Metals Ltd. (“Heliostar”) to acquire a 100 percent interest in the Cumaro, La Lola, Oso Negro and Ejutla exploration properties located in Sonora, and Oaxaca, Mexico (collectively, the “Exploration Portfolio”). The acquisition establishes a new district-scale exploration platform for the Com",
+      "impact_raw": "FAST_TRACK",
+      "assets_affected": [
+        "XAUUSD",
+        "NASDAQ"
+      ]
+    },
+    {
+      "id": "yahoo-finance-fast-92f67236-f40d-3f90-b758-cae3e28b6e9b",
+      "timestamp_utc": "2026-03-02T11:30:00.000Z",
+      "age_ms": 3496835,
+      "source": "yahoo-finance",
+      "type": "breaking_news",
+      "title": "With Step-Out Drilling Continuing, Radisson Demonstrates Meaningful Resource Growth at O'Brien with an Updated Mineral Resource Estimate",
+      "url": "https://finance.yahoo.com/news/step-drilling-continuing-radisson-demonstrates-113000712.html?.tsrc=rss",
+      "summary": "Rouyn-Noranda, Quebec--(Newsfile Corp. - March 2, 2026) - Radisson Mining Resources Inc. (TSXV: RDS) (OTCQB: RMRDF) (\"Radisson\" or the \"Company\") is pleased to report an updated Mineral Resource Estimate (\"MRE\") at its 100%-owned O'Brien Gold Project (\"O'Brien\" or the \"Project\") located in the Abitibi region of Québec. The Company is currently undertaking a fully-funded 140,000-metre step-out drill program at the Project with the objective of determining the scope of mineralization to a depth...",
+      "impact_raw": "FAST_TRACK",
+      "assets_affected": [
+        "XAUUSD"
+      ]
+    }
+  ]
+}

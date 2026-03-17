@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-15T23:07:53.565Z",
+  "generatedAt": "2026-03-17T06:01:05.650Z",
   "experiments": [
     {
       "id": "hook-1773616073158",
@@ -45,6 +45,276 @@
       ],
       "observedLift": 0.11,
       "createdAt": "2026-03-15T23:07:53.564Z"
+    },
+    {
+      "id": "hook-1773666044790",
+      "type": "hook_test",
+      "winner": "problem-first hook",
+      "compared": [
+        "problem-first hook",
+        "story hook"
+      ],
+      "observedLift": 0.12,
+      "createdAt": "2026-03-16T13:00:44.790Z"
+    },
+    {
+      "id": "cta-1773666044832",
+      "type": "cta_test",
+      "winner": "DM invitation",
+      "compared": [
+        "comment prompt",
+        "DM invitation"
+      ],
+      "observedLift": 0.18,
+      "createdAt": "2026-03-16T13:00:44.832Z"
+    },
+    {
+      "id": "time-1773666044873",
+      "type": "posting_time_test",
+      "winner": "19:00 WIB",
+      "compared": [
+        "08:00 WIB",
+        "12:30 WIB",
+        "19:00 WIB"
+      ],
+      "observedLift": 0.09,
+      "createdAt": "2026-03-16T13:00:44.873Z"
+    },
+    {
+      "id": "format-1773666044915",
+      "type": "format_test",
+      "winner": "carousel",
+      "compared": [
+        "short_post",
+        "carousel"
+      ],
+      "observedLift": 0.11,
+      "createdAt": "2026-03-16T13:00:44.915Z"
+    },
+    {
+      "id": "hook-1773676847473",
+      "type": "hook_test",
+      "winner": "problem-first hook",
+      "compared": [
+        "problem-first hook",
+        "story hook"
+      ],
+      "observedLift": 0.12,
+      "createdAt": "2026-03-16T16:00:47.473Z"
+    },
+    {
+      "id": "cta-1773676847515",
+      "type": "cta_test",
+      "winner": "DM invitation",
+      "compared": [
+        "comment prompt",
+        "DM invitation"
+      ],
+      "observedLift": 0.18,
+      "createdAt": "2026-03-16T16:00:47.515Z"
+    },
+    {
+      "id": "time-1773676847556",
+      "type": "posting_time_test",
+      "winner": "19:00 WIB",
+      "compared": [
+        "08:00 WIB",
+        "12:30 WIB",
+        "19:00 WIB"
+      ],
+      "observedLift": 0.09,
+      "createdAt": "2026-03-16T16:00:47.556Z"
+    },
+    {
+      "id": "format-1773676847597",
+      "type": "format_test",
+      "winner": "carousel",
+      "compared": [
+        "short_post",
+        "carousel"
+      ],
+      "observedLift": 0.11,
+      "createdAt": "2026-03-16T16:00:47.597Z"
+    },
+    {
+      "id": "hook-1773709258355",
+      "type": "hook_test",
+      "winner": "problem-first hook",
+      "compared": [
+        "problem-first hook",
+        "story hook"
+      ],
+      "observedLift": 0.12,
+      "createdAt": "2026-03-17T01:00:58.355Z"
+    },
+    {
+      "id": "cta-1773709258397",
+      "type": "cta_test",
+      "winner": "DM invitation",
+      "compared": [
+        "comment prompt",
+        "DM invitation"
+      ],
+      "observedLift": 0.18,
+      "createdAt": "2026-03-17T01:00:58.397Z"
+    },
+    {
+      "id": "time-1773709258438",
+      "type": "posting_time_test",
+      "winner": "19:00 WIB",
+      "compared": [
+        "08:00 WIB",
+        "12:30 WIB",
+        "19:00 WIB"
+      ],
+      "observedLift": 0.09,
+      "createdAt": "2026-03-17T01:00:58.438Z"
+    },
+    {
+      "id": "format-1773709258479",
+      "type": "format_test",
+      "winner": "carousel",
+      "compared": [
+        "short_post",
+        "carousel"
+      ],
+      "observedLift": 0.11,
+      "createdAt": "2026-03-17T01:00:58.479Z"
+    },
+    {
+      "id": "hook-1773716446673",
+      "type": "hook_test",
+      "winner": "problem-first hook",
+      "compared": [
+        "problem-first hook",
+        "story hook"
+      ],
+      "observedLift": 0.12,
+      "createdAt": "2026-03-17T03:00:46.673Z"
+    },
+    {
+      "id": "cta-1773716446716",
+      "type": "cta_test",
+      "winner": "DM invitation",
+      "compared": [
+        "comment prompt",
+        "DM invitation"
+      ],
+      "observedLift": 0.18,
+      "createdAt": "2026-03-17T03:00:46.716Z"
+    },
+    {
+      "id": "time-1773716446762",
+      "type": "posting_time_test",
+      "winner": "19:00 WIB",
+      "compared": [
+        "08:00 WIB",
+        "12:30 WIB",
+        "19:00 WIB"
+      ],
+      "observedLift": 0.09,
+      "createdAt": "2026-03-17T03:00:46.762Z"
+    },
+    {
+      "id": "format-1773716446806",
+      "type": "format_test",
+      "winner": "carousel",
+      "compared": [
+        "short_post",
+        "carousel"
+      ],
+      "observedLift": 0.11,
+      "createdAt": "2026-03-17T03:00:46.806Z"
+    },
+    {
+      "id": "hook-1773720051664",
+      "type": "hook_test",
+      "winner": "problem-first hook",
+      "compared": [
+        "problem-first hook",
+        "story hook"
+      ],
+      "observedLift": 0.12,
+      "createdAt": "2026-03-17T04:00:51.664Z"
+    },
+    {
+      "id": "cta-1773720051707",
+      "type": "cta_test",
+      "winner": "DM invitation",
+      "compared": [
+        "comment prompt",
+        "DM invitation"
+      ],
+      "observedLift": 0.18,
+      "createdAt": "2026-03-17T04:00:51.707Z"
+    },
+    {
+      "id": "time-1773720051749",
+      "type": "posting_time_test",
+      "winner": "19:00 WIB",
+      "compared": [
+        "08:00 WIB",
+        "12:30 WIB",
+        "19:00 WIB"
+      ],
+      "observedLift": 0.09,
+      "createdAt": "2026-03-17T04:00:51.749Z"
+    },
+    {
+      "id": "format-1773720051798",
+      "type": "format_test",
+      "winner": "carousel",
+      "compared": [
+        "short_post",
+        "carousel"
+      ],
+      "observedLift": 0.11,
+      "createdAt": "2026-03-17T04:00:51.798Z"
+    },
+    {
+      "id": "hook-1773727265523",
+      "type": "hook_test",
+      "winner": "problem-first hook",
+      "compared": [
+        "problem-first hook",
+        "story hook"
+      ],
+      "observedLift": 0.12,
+      "createdAt": "2026-03-17T06:01:05.523Z"
+    },
+    {
+      "id": "cta-1773727265565",
+      "type": "cta_test",
+      "winner": "DM invitation",
+      "compared": [
+        "comment prompt",
+        "DM invitation"
+      ],
+      "observedLift": 0.18,
+      "createdAt": "2026-03-17T06:01:05.565Z"
+    },
+    {
+      "id": "time-1773727265608",
+      "type": "posting_time_test",
+      "winner": "19:00 WIB",
+      "compared": [
+        "08:00 WIB",
+        "12:30 WIB",
+        "19:00 WIB"
+      ],
+      "observedLift": 0.09,
+      "createdAt": "2026-03-17T06:01:05.608Z"
+    },
+    {
+      "id": "format-1773727265650",
+      "type": "format_test",
+      "winner": "carousel",
+      "compared": [
+        "short_post",
+        "carousel"
+      ],
+      "observedLift": 0.11,
+      "createdAt": "2026-03-17T06:01:05.650Z"
     }
   ]
 }
